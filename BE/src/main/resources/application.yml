@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+spring:
+  profiles:
+    default: local
+  datasource:
+    url: ${DB_URL}?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      connection-timeout: 3000
+      validation-timeout: 3000
+      minimum-idle: 2
+      max-lifetime: 240000
+      maximum-pool-size: 2
+
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    properties:
+      hibernate:
+        format_sql: true
