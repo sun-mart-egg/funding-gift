@@ -3,9 +3,6 @@ package com.d201.fundingift.account.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
 @ToString
