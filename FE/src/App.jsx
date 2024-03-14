@@ -1,10 +1,19 @@
-function App() {
+import React from "react"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 
-  return (
-    <>
-      
-    </>
-  )
-}
+import Product from "./components/Products/Product";
+
+  function App() {
+
+    return (
+      <>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/product" element={<Product />} />
+          </Routes>
+        </BrowserRouter>
+      </>
+    )
+  }
 
 export default App

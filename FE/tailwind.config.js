@@ -1,11 +1,13 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+const config = {
   content: [
     "./index.html",
     "./src/**/*.{js,jsx,ts,tsx}"
   ],
   theme: {
     extend: {
+      width: {},
+      height: {},
       colors: {
         'cusColor1': '#0802A3', // 로고, 뒤로가기 등등
         'cusColor2': '#91D54E', // 달력 이모티콘
@@ -19,3 +21,9 @@ export default {
   plugins: [],
 }
 
+for (let i = 0.5; i <= 100; i+= 0.5) {
+  config.theme.extend.width[`${i}p`] = `${i}%`;
+  config.theme.extend.height[`${i}p`] = `${i}%`;
+}
+
+export default config;
