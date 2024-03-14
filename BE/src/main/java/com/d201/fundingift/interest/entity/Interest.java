@@ -34,7 +34,7 @@ public class Interest {
     private Product product;
 
     @Builder
-    public Interest(Consumer consumer, Product product) {
+    private Interest(Consumer consumer, Product product) {
         this.consumer = consumer;
         this.product = product;
     }

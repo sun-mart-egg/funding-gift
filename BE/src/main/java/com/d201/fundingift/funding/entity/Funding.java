@@ -1,6 +1,7 @@
 package com.d201.fundingift.funding.entity;
 
 import com.d201.fundingift._common.entity.BaseTime;
+import com.d201.fundingift.attendance.entity.Attendance;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.funding.entity.status.FundingStatus;
 import com.d201.fundingift.product.entity.Product;
@@ -12,6 +13,8 @@ import org.hibernate.annotations.DynamicInsert;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -89,6 +92,9 @@ public class Funding extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_option_id", referencedColumnName = "product_option_id")
     private ProductOption productOption;
+
+    @OneToMany(mappedBy = "funding", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attendance> attendances = new ArrayList<>();
 
     @Builder
     private Funding(Integer sumPrice, Integer minPrice, Integer targetPrice, LocalDate anniversaryDate, LocalDateTime startDate, LocalDateTime endDate, String title, String content, String accountBank, String accountNo, String defaultAddr, String detailAddr, String zipCode, FundingStatus fundingStatus, Boolean isPrivate, Consumer consumer, AnniversaryCategory anniversaryCategory, Product product, ProductOption productOption) {
