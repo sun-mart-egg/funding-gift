@@ -1,6 +1,6 @@
 package com.d201.fundingift.product.entity;
 
-import com.d201.fundingift.product.entity.status.ProductCategoryStatus;
+import com.d201.fundingift._common.entity.Status;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -27,13 +27,13 @@ public class ProductCategory {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @ColumnDefault("'ACTIVE'")
-    private ProductCategoryStatus status;
+    private Status status;
 
     @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
 
     @Builder
-    private ProductCategory(String name, ProductCategoryStatus status) {
+    private ProductCategory(String name, Status status) {
         this.name = name;
         this.status = status;
     }

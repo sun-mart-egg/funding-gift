@@ -2,6 +2,7 @@ package com.d201.fundingift.product.entity;
 
 import com.d201.fundingift._common.entity.BaseTime;
 import com.d201.fundingift.product.entity.status.ProductStatus;
+import com.d201.fundingift.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
@@ -41,6 +42,9 @@ public class Product extends BaseTime {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductOption> productImages = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_category_id", referencedColumnName = "product_category_id")

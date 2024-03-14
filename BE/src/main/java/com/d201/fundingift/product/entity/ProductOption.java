@@ -2,10 +2,14 @@ package com.d201.fundingift.product.entity;
 
 import com.d201.fundingift._common.entity.BaseTime;
 import com.d201.fundingift.product.entity.status.ProductOptionStatus;
+import com.d201.fundingift.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -34,6 +38,9 @@ public class ProductOption extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     private Product product;
+
+    @OneToMany(mappedBy = "productOption", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Review> reviews = new ArrayList<>();
 
     @Builder
     private ProductOption(String name, Integer price, ProductOptionStatus status, Product product) {
