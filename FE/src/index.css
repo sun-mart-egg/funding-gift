@@ -3,3 +3,33 @@
 @tailwind utilities;
 
 /* 공통 디자인만 여기에 적으면 될 듯? */
+
+@font-face {
+    font-family: 'cusFont1';
+    src: url(/fonts/HSSantokki-Regular.ttf);
+}
+
+@font-face {
+    font-family: 'cusFont2';
+    src: url(/fonts/NanumSquare_acB.ttf);
+}
+
+@font-face {
+    font-family: 'cusFont3';
+    src: url(/fonts/NanumSquare_acR.ttf);
+}
+
+@font-face {
+    font-family: 'cusFont4';
+    src: url(/fonts/Ownglyph_2022_UWY_Si_Woo-Rg.ttf);
+}
+
+@font-face {
+    font-family: 'cusFont5';
+    src: url(/fonts/SDSamliphopangcheTTFBasic.ttf);
+}
+
+@font-face {
+    font-family: 'cusFont6';
+    src: url(/fonts/Yeongdo.ttf);
+}
