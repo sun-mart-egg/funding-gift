@@ -29,7 +29,7 @@ public class Product extends BaseTime {
     @Column(nullable = false)
     private Integer price;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String description;
 
     @Enumerated(EnumType.STRING)

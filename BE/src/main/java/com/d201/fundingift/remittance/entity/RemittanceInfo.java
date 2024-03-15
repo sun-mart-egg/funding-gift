@@ -15,7 +15,7 @@ public class RemittanceInfo extends BaseTime {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_info_id", nullable = false)
+    @Column(name = "remittance_info_id", nullable = false)
     private Long id;
 
 }

@@ -50,7 +50,7 @@ public class Funding extends BaseTime {
     @Column(nullable = false, length = 20)
     private String title;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String content;
 
     @Column(nullable = false, length = 10)
@@ -65,7 +65,7 @@ public class Funding extends BaseTime {
     @Column(nullable = true, length = 50)
     private String detailAddr;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 10)
     private String zipCode;
 
     @Enumerated(EnumType.STRING)

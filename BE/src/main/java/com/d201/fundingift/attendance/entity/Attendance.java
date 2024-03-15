@@ -20,10 +20,10 @@ public class Attendance extends BaseTime {
     @Column(nullable = false, length = 20)
     private String sendMessageTitle;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String sendMessage;
 
-    @Column(nullable = true)
+    @Column(columnDefinition = "LONGTEXT", nullable = true)
     private String receiveMessage;
 
     @Column(nullable = false)

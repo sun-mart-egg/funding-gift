@@ -19,10 +19,10 @@ public class Address extends BaseTime {
     @Column(nullable = true, length = 10)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String defaultAddr;
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 50)
     private String detailAddr;
 
     @Column(nullable = false, length = 10)

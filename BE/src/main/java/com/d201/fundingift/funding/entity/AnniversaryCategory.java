@@ -17,7 +17,7 @@ public class AnniversaryCategory {
     @Column(name = "anniversary_category_id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 10)
     private String name;
 
 }
