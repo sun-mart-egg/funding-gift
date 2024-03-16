@@ -34,7 +34,6 @@ public class Funding extends BaseTime {
     private Integer sumPrice;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
     private Integer minPrice;
 
     @Column(nullable = false)
