@@ -1,4 +1,4 @@
-package com.d201.fundingift._common.order.entity;
+package com.d201.fundingift.order.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
