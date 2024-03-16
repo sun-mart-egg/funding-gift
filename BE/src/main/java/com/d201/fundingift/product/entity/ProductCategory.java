@@ -1,11 +1,11 @@
 package com.d201.fundingift.product.entity;
 
-import com.d201.fundingift._common.entity.Status;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.SQLDelete;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +14,7 @@ import java.util.List;
 @ToString
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE product_category set deleted_at = CONVERT_TZ(NOW(), 'UTC', 'Asia/Seoul') where product_category_id = ?")
 public class ProductCategory {
 
     @Id
@@ -24,18 +25,15 @@ public class ProductCategory {
     @Column(nullable = false, length = 10)
     private String name;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @ColumnDefault("'ACTIVE'")
-    private Status status;
+    @Column(nullable = true)
+    private LocalDateTime deletedAt;
 
     @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
 
     @Builder
-    private ProductCategory(String name, Status status) {
+    private ProductCategory(String name) {
         this.name = name;
-        this.status = status;
     }
 
 }

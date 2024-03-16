@@ -8,6 +8,7 @@ import com.d201.fundingift.interest.entity.Interest;
 import com.d201.fundingift.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE consumer set deleted_at = CONVERT_TZ(NOW(), 'UTC', 'Asia/Seoul') where consumer_id = ?")
 public class Consumer extends BaseTime {
 
     @Id

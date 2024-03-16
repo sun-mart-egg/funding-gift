@@ -21,4 +21,7 @@ public class BaseTime {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
+    @Column(nullable = true)
+    private LocalDateTime deletedAt;
+
 }

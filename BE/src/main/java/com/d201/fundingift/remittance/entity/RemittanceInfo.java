@@ -6,11 +6,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE remittance set deleted_at = CONVERT_TZ(NOW(), 'UTC', 'Asia/Seoul') where remittance_id = ?")
 public class RemittanceInfo extends BaseTime {
 
     @Id

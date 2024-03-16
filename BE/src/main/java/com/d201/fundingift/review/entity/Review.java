@@ -1,20 +1,22 @@
 package com.d201.fundingift.review.entity;
 
 import com.d201.fundingift._common.entity.BaseTime;
-import com.d201.fundingift._common.entity.Status;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.entity.ProductOption;
+import com.d201.fundingift.review.entity.status.ReviewStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
 @Getter
 @ToString
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLDelete(sql = "UPDATE review set deleted_at = CONVERT_TZ(NOW(), 'UTC', 'Asia/Seoul') where review_id = ?")
 public class Review extends BaseTime {
 
     @Id
@@ -37,7 +39,7 @@ public class Review extends BaseTime {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @ColumnDefault("'ACTIVE'")
-    private Status status;
+    private ReviewStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
@@ -52,7 +54,7 @@ public class Review extends BaseTime {
     private Consumer consumer;
 
     @Builder
-    private Review(Integer star, String content, String image1, String image2, Status status, Product product, ProductOption productOption, Consumer consumer) {
+    private Review(Integer star, String content, String image1, String image2, ReviewStatus status, Product product, ProductOption productOption, Consumer consumer) {
         this.star = star;
         this.content = content;
         this.image1 = image1;
