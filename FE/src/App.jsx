@@ -1,9 +1,9 @@
-import MyFunding from "./components/Funding/pages/MyFunding"
+import MyFundingDetail from "./components/Funding/pages/MyFundingDetail"
 
 function App() {
 
   return (
-    <MyFunding/>
+   <MyFundingDetail/>
   )
 }
 
