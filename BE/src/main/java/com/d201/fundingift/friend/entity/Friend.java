@@ -28,14 +28,6 @@ public class Friend implements Serializable {
         this.isFavorite = isFavorite;
     }
 
-    public static Friend of(Long consumerId, Long toConsumerId, Boolean isFavorite) {
-        return builder()
-                .consumerId(consumerId)
-                .toConsumerId(toConsumerId)
-                .isFavorite(isFavorite)
-                .build();
-    }
-
     public void updateIsFavorite(Boolean flag) {
         this.isFavorite = flag;
     }
