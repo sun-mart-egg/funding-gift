@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum SuccessType {
 
-    LOGIN_SUCCESSFULLY("로그인 성공"),
+    LOGIN_SUCCESS("로그인 성공"),
     ;
 
     private final String msg;
