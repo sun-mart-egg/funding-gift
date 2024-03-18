@@ -21,3 +21,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+redis:
+  host: ${EC2_PUBLIC_IP}
+  port: ${REDIS_PORT}
+  password: ${REDIS_PASSWORD}
