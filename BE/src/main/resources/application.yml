@@ -22,7 +22,35 @@ spring:
       hibernate:
         format_sql: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${KAKAO_CLIENT_ID}
+            client-secret: ${KAKAO_CLIENT_SECRET}
+            client-authentication-method: client_secret_post
+            authorization-grant-type: authorization_code
+            scope: # https://developers.kakao.com/docs/latest/ko/kakaologin/common#user-info
+              - profile_nickname
+              - profile_image
+              # - account_email // 테스트를 위해 일단 제외.
+            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            client-name: Kakao
+
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-info-authentication-method: header
+            user-name-attribute: id # Kakao 응답 값 id, connected_at, properties, kakao_account 중 id 지정
+
+
 redis:
   host: ${EC2_PUBLIC_IP}
   port: ${REDIS_PORT}
   password: ${REDIS_PASSWORD}
+
+jwt:
+  secret: ${JWT_SECRET}
