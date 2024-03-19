@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const BottomSheet = ({ title, children, isOpen, setIsOpen }) => {
+const BottomSheet = ({ message, children, isOpen, setIsOpen }) => {
     const [startTouchY, setStartTouchY] = useState(0);
     const [currentTouchY, setCurrentTouchY] = useState(0);
 
@@ -33,9 +33,18 @@ const BottomSheet = ({ title, children, isOpen, setIsOpen }) => {
                     onTouchMove={handleTouchMove}
                     onTouchEnd={handleTouchEnd}
                 >
-                    <div className="text-center">Swipe here to {isOpen ? "close" : "open"}</div>
+                    <div className="bg-gray-400 w-1/2 rounded-lg h-4"></div>
                 </div>
-                <div className="w-full bg-white overflow-y-auto">{children}</div>
+                <div className="w-full bg-white overflow-y-auto">
+                    <div>{message.title}</div>
+                    <div>by {message.name}</div>
+                    <div>{message.detail}</div>
+                    {message.reply === null ? (
+                        <button className="p-2 bg-blue-500 text-white rounded">{message.name}님에게 답장하기</button>
+                    ) : (
+                        <div> {message.reply}</div>
+                    )}
+                </div>
             </div>
         </div>
     );
