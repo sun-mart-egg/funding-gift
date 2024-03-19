@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import FundingDetailInfo from "../component/FundingDetailInfo";
 
 function ParticipatePage() {
@@ -16,6 +17,8 @@ function ParticipatePage() {
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
 
+  const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
+
   const handleInputChange = (e) => {
     const value = e.target.value;
     const max = data.price - data.price * (data.progress / 100);
@@ -26,6 +29,20 @@ function ParticipatePage() {
       setError(`펀딩 금액은 최대 ${max} 이하이어야 합니다.`);
     } else {
       setError("");
+    }
+  };
+
+  const handleParticipate = () => {
+    // 유효성 검사 후 navigate 실행
+    if (
+      amount &&
+      Number(amount) >= data.min &&
+      Number(amount) <= data.price - data.price * (data.progress / 100)
+    ) {
+      navigate("/pay", { state: { amount } }); // payPage로 이동하면서 amount 값을 state로 전달합니다.
+    } else {
+      // 에러 처리
+      setError("유효한 펀딩 금액을 입력해주세요.");
     }
   };
 
@@ -62,7 +79,10 @@ function ParticipatePage() {
         placeholder="친구에게 축하 메세지를 전달해 보세요."
         className="w-full"
       ></textarea>
-      <button className="fixed bottom-0 left-28 bg-blue-500 py-3 text-white">
+      <button
+        className="fixed bottom-0 left-28 bg-blue-500 py-3 text-white"
+        onClick={handleParticipate}
+      >
         펀딩 참여하기
       </button>
     </div>
