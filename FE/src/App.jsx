@@ -7,6 +7,7 @@ import Product from "./components/Products/Product";
 import ProductDetail from "./components/Products/ProductDetail";
 import BrandStore from "./components/Products/BrandStore";
 import Wishlist from "./components/Products/Wishlist";
+import Signup from "./components/Login/Signup.jsx"
 
 
 function App() {
