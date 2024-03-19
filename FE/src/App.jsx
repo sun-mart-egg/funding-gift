@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MyFunding from "./components/Funding/pages/MyFunding";
+import AccountListPage from "./components/Funding/pages/AccountListPage.jsx";
 import MakeFundingMain from "./components/Funding/pages/MakeFundingMain";
 import Product from "./components/Products/Product";
 import ProductDetail from "./components/Products/ProductDetail";
@@ -14,7 +15,7 @@ function App() {
         <>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<AddressListPage />} />
+                    <Route path="/" element={<AccountListPage />} />
                     <Route path="/my-funding" element={<MyFunding />} />
                     <Route path="/product" element={<Product />} />
                     <Route path="/product" element={<Product />} />
