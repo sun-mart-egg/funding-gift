@@ -6,6 +6,7 @@ import Product from "./components/Products/Product";
 import ProductDetail from "./components/Products/ProductDetail";
 import BrandStore from "./components/Products/BrandStore";
 import Wishlist from "./components/Products/Wishlist";
+import AddressListPage from "./components/Funding/pages/AddressListPage.jsx";
 import Signup from "./components/Login/Signup.jsx";
 
 function App() {
@@ -13,6 +14,9 @@ function App() {
         <>
             <BrowserRouter>
                 <Routes>
+                    <Route path="/" element={<AddressListPage />} />
+                    <Route path="/my-funding" element={<MyFunding />} />
+                    <Route path="/product" element={<Product />} />
                     <Route path="/product" element={<Product />} />
                     <Route path="/product/:productId" element={<ProductDetail />} />
                     <Route path="/brand/:brandId" element={<BrandStore />} />
