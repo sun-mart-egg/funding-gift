@@ -8,7 +8,7 @@ function CongratulateList({ listData, onCardClick }) {
                     key={index}
                     name={listData.name}
                     title={listData.title}
-                    onClick={() => onCardClick()}
+                    onClick={() => onCardClick(listData.detail)}
                 />
             ))}
         </div>

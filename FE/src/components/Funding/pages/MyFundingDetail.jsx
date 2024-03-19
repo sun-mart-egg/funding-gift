@@ -11,32 +11,39 @@ function MyFundingDetail() {
         progress: 70,
     };
 
-    const friendList = [
+    const MessageList = [
         {
             name: "박창준",
             title: "시은아 생일 축하해",
+            detail: "메세지 내용 테스트임 1",
         },
         {
             name: "임수빈",
             title: "시은아 생일 축하해1",
+            detail: "메세지 내용 테스트임 2",
         },
         {
             name: "김대영",
             title: "시은아 생일 축하해2",
+            detail: "메세지 내용 테스트임 3",
         },
         {
             name: "이민수",
             title: "시은아 생일 축하해3",
+            detail: "메세지 내용 테스트임 4",
         },
         {
             name: "박종혁",
             title: "시은아 생일 축하해4",
+            detail: "메세지 내용 테스트임 5",
         },
     ];
 
-    const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+    const [isBottomSheetOpen, setIsBottomSheetOpen, selectId] = useState(false);
+    const [selectedDetail, setSelectedDetail] = useState("");
 
-    const toggleBottomSheet = () => {
+    const toggleBottomSheet = (detail) => {
+        setSelectedDetail(detail);
         setIsBottomSheetOpen(!isBottomSheetOpen);
     };
 
@@ -55,33 +62,10 @@ function MyFundingDetail() {
                         <p>축하 받은 리스트</p>
                     </div>
                 </div>
-                <CongratulateList listData={friendList} onCardClick={toggleBottomSheet} />
+                <CongratulateList listData={MessageList} onCardClick={toggleBottomSheet} />
             </div>
             <BottomSheet isOpen={isBottomSheetOpen} setIsOpen={setIsBottomSheetOpen}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tincidunt dui laoreet sapien
-                euismod dictum. Phasellus ornare ligula non ante eleifend, id efficitur diam laoreet. Donec dapibus, est
-                ut aliquam mollis, ligula purus porta ipsum, sed luctus nunc ex sit amet arcu. Suspendisse molestie arcu
-                ac egestas lobortis. Aliquam eu nisi vel risus suscipit venenatis vitae non velit. Aliquam vel tellus
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tincidunt dui laoreet sapien
-                euismod dictum. Phasellus ornare ligula non ante eleifend, id efficitur diam laoreet. Donec dapibus, est
-                ut aliquam mollis, ligula purus porta ipsum, sed luctus nunc ex sit amet arcu. Suspendisse molestie arcu
-                ac egestas lobortis. Aliquam eu nisi vel risus suscipit venenatis vitae non velit. Aliquam vel tellus
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tincidunt dui laoreet sapien
-                euismod dictum. Phasellus ornare ligula non ante eleifend, id efficitur diam laoreet. Donec dapibus, est
-                ut aliquam mollis, ligula purus porta ipsum, sed luctus nunc ex sit amet arcu. Suspendisse molestie arcu
-                ac egestas lobortis. Aliquam eu nisi vel risus suscipit venenatis vitae non velit. Aliquam vel tellus
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tincidunt dui laoreet sapien
-                euismod dictum. Phasellus ornare ligula non ante eleifend, id efficitur diam laoreet. Donec dapibus, est
-                ut aliquam mollis, ligula purus porta ipsum, sed luctus nunc ex sit amet arcu. Suspendisse molestie arcu
-                ac egestas lobortis. Aliquam eu nisi vel risus suscipit venenatis vitae non velit. Aliquam vel tellus
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tincidunt dui laoreet sapien
-                euismod dictum. Phasellus ornare ligula non ante eleifend, id efficitur diam laoreet. Donec dapibus, est
-                ut aliquam mollis, ligula purus porta ipsum, sed luctus nunc ex sit amet arcu. Suspendisse molestie arcu
-                ac egestas lobortis. Aliquam eu nisi vel risus suscipit venenatis vitae non velit. Aliquam vel tellus
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tincidunt dui laoreet sapien
-                euismod dictum. Phasellus ornare ligula non ante eleifend, id efficitur diam laoreet. Donec dapibus, est
-                ut aliquam mollis, ligula purus porta ipsum, sed luctus nunc ex sit amet arcu. Suspendisse molestie arcu
-                ac egestas lobortis. Aliquam eu nisi vel risus suscipit venenatis vitae non velit. Aliquam vel tellus
+                {selectedDetail}
             </BottomSheet>
         </div>
     );
