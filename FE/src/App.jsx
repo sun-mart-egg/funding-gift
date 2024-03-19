@@ -1,14 +1,18 @@
-import React from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
+
+import MyFunding from "./components/Funding/pages/MyFunding"
+import MakeFundingMain from "./components/Funding/pages/MakeFundingMain"
 import Product from "./components/Products/Product";
 import ProductDetail from "./components/Products/ProductDetail";
 import BrandStore from "./components/Products/BrandStore";
 import Wishlist from "./components/Products/Wishlist";
 
+
 function App() {
 
   return (
+
     <>
       <BrowserRouter>
         <Routes>
@@ -19,6 +23,7 @@ function App() {
         </Routes>
       </BrowserRouter>
     </>
+
   )
 }
 
