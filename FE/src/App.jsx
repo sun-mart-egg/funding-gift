@@ -9,13 +9,16 @@ import BrandStore from "./components/Products/BrandStore";
 import Wishlist from "./components/Products/Wishlist";
 import AddressListPage from "./components/Funding/pages/AddressListPage.jsx";
 import Signup from "./components/Login/Signup.jsx";
+import AnniversaryListPage from "./components/Funding/pages/AnniversaryListPage.jsx";
 
 function App() {
     return (
         <>
             <BrowserRouter>
                 <Routes>
-                    <Route path="/" element={<AccountListPage />} />
+                    <Route path="/" element={<AnniversaryListPage />} />
+                    <Route path="/account-list-page" element={<AccountListPage />} />
+                    <Route path="/address-list-page" element={<AddressListPage />} />
                     <Route path="/my-funding" element={<MyFunding />} />
                     <Route path="/product" element={<Product />} />
                     <Route path="/product" element={<Product />} />
