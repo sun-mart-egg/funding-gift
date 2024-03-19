@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ApiResponseDto<Void>> httpMethodException(HttpRequestMethodNotSupportedException e) {
         ErrorResponseDto responseDto = ErrorResponseDto.from(METHOD_NOT_SUPPORTED);
-        log.error("httpMethodException throw Exception : {}", METHOD_NOT_SUPPORTED);
+        log.error("httpMethodException throw Exception : {}", (Object) e.getStackTrace());
 
         return ResponseEntity.badRequest().body(ResponseUtils.error(responseDto));
     }
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
             TypeMismatchException.class})
     public ResponseEntity<ApiResponseDto<Void>> urlException(Exception e) {
         ErrorResponseDto responseDto = ErrorResponseDto.from(URL_NOT_FOUND);
-        log.error("urlException throw Exception : {}", URL_NOT_FOUND);
+        log.error("urlException throw Exception : {}", (Object) e.getStackTrace());
 
         return ResponseEntity.badRequest().body(ResponseUtils.error(responseDto));
     }
