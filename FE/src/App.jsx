@@ -7,10 +7,12 @@ import ProductDetail from "./components/Products/ProductDetail";
 import BrandStore from "./components/Products/BrandStore";
 import Wishlist from "./components/Products/Wishlist";
 import Signup from "./components/Login/Signup.jsx";
+import FriendFundingDetail from "./components/Funding/pages/FriendFundingDetail.jsx";
 
 function App() {
     return (
         <>
+            <FriendFundingDetail />
             <BrowserRouter>
                 <Routes>
                     <Route path="/product" element={<Product />} />
