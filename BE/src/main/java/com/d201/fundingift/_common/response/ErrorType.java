@@ -6,7 +6,10 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorType {
 
-    NOT_FOUND_USER(HttpStatus.BAD_REQUEST.value(), "등록된 사용자가 없습니다."),
+    METHOD_NOT_SUPPORTED(HttpStatus.BAD_REQUEST.value(), "지원되지 않는 Http Method 입니다."),
+    URL_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "잘못된 URL 입니다."),
+
+    USER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "등록된 사용자가 없습니다."),
     ;
 
     private int code;
