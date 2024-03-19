@@ -12,6 +12,7 @@ import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx"
 function App() {
     return (
         <>
+            <FriendFundingDetail />
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<MakeFundingDetail />} /> {/* 루트 경로 설정 */}
