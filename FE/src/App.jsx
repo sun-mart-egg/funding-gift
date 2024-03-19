@@ -8,21 +8,22 @@ import BrandStore from "./components/Products/BrandStore";
 import Wishlist from "./components/Products/Wishlist";
 import Signup from "./components/Login/Signup.jsx";
 import FriendFundingDetail from "./components/Funding/pages/FriendFundingDetail.jsx";
+import ParticipatePage from "./components/Funding/pages/ParticipatePage.jsx";
 
 function App() {
-    return (
-        <>
-            <FriendFundingDetail />
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/product" element={<Product />} />
-                    <Route path="/product/:productId" element={<ProductDetail />} />
-                    <Route path="/brand/:brandId" element={<BrandStore />} />
-                    <Route path="/wishlist/:userId" element={<Wishlist />} />
-                </Routes>
-            </BrowserRouter>
-        </>
-    );
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<ParticipatePage />} />
+          <Route path="/product" element={<Product />} />
+          <Route path="/product/:productId" element={<ProductDetail />} />
+          <Route path="/brand/:brandId" element={<BrandStore />} />
+          <Route path="/wishlist/:userId" element={<Wishlist />} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
 }
 
 export default App;
