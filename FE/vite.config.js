@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import { VitePWA } from 'vite-plugin-pwa'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,7 +12,7 @@ export default defineConfig({
       //   enabled: true
       // },
       workbox: {
-        globPatterns: ['**/*.{js,jsx,html,ico,png,svg}']
+        globPatterns: ["**/*.{js,jsx,html,ico,png,svg}"],
       },
       manifest: {
         name: "생선가게",
@@ -49,15 +49,16 @@ export default defineConfig({
           {
             src: "/icons/size-192.png",
             sizes: "192x192",
-            purpose: "maskable"
+            purpose: "maskable",
           },
           {
             src: "/icons/size-512.png",
             sizes: "512x512",
-            purpose: "maskable"
+            purpose: "maskable",
           },
-        ]
-      }
+        ],
+      },
     }),
   ],
-})
+  assetsInclude: ["**/*.PNG"],
+});

@@ -1,12 +1,13 @@
 import { FaHeart } from "react-icons/fa6";
 import { FaCartShopping } from "react-icons/fa6";
+import backgroundURL from "../../../../public/imgs/background.PNG";
 
 function MakeFundingMain() {
   return (
     <div
       className="flex h-screen items-center justify-center"
       style={{
-        backgroundImage: "url('/public/imgs/background.PNG')",
+        backgroundImage: `url(${backgroundURL})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
