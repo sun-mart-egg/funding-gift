@@ -4,6 +4,7 @@
 
 /* 공통 디자인만 여기에 적으면 될 듯? */
 
+/* 글꼴 */
 @font-face {
     font-family: 'cusFont1';
     src: url(/fonts/HSSantokki-Regular.ttf);
@@ -32,4 +33,31 @@
 @font-face {
     font-family: 'cusFont6';
     src: url(/fonts/Yeongdo.ttf);
+}
+
+/* 공통 버튼양식, 전체적인 레이어 등등... */
+@layer components {
+    .main-layer {
+        @apply flex flex-col items-center w-[360px] h-[640px] bg-white relative
+    }
+
+    .header-layer {
+        @apply flex flex-row justify-between w-[360px] h-[64px] shadow-lg bg-white absolute top-0 z-10
+    }
+
+    .footer-layer {
+        @apply flex flex-row justify-around items-center w-[360px] h-[64px] border-t-2 bg-white absolute bottom-0 z-10
+    }
+
+    .common-btn {
+        @apply w-[285px] h-[48px] font-cusFont2 text-white rounded-lg bg-cusColor3
+    }
+
+    .login-font {
+        @apply text-gray-400 font-cusFont3 text-base
+    }
+
+    .fav-btn {
+        @apply w-[100px] h-[100px] border border-gray-500 rounded-[10px]
+    }
 }
