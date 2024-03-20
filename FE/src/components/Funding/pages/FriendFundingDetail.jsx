@@ -53,7 +53,7 @@ function FriendFundingDetail() {
 
     return (
         <div className="relative min-h-screen">
-            <div id="page" className="flex flex-col items-center justify-center overflow-auto pb-16">
+            <div id="page" className="flex flex-col items-center justify-center pb-16 overflow-auto">
                 <FundingDetailInfo
                     friendName={data.frinedName}
                     title={data.title}
@@ -74,11 +74,11 @@ function FriendFundingDetail() {
                             <p>펀딩에 참여하여 친구를 축하해 보세요!</p>
                         </div>
                     ) : (
-                        <div className="flex-col justify-center items-center border border-black m-2 cursor-pointer">
+                        <div className="flex-col items-center justify-center m-2 border border-black cursor-pointer">
                             <p>{data.frinedName}님의 펀딩에 참여했어요!</p>
                             <p>{myParticipate.date}</p>
                             <p>{myParticipate.price}원</p>
-                            <button className="p-2 bg-blue-500 text-white rounded" onClick={toggleBottomSheet}>
+                            <button className="p-2 text-white bg-blue-500 rounded" onClick={toggleBottomSheet}>
                                 자세히보기
                             </button>
                         </div>
@@ -92,9 +92,9 @@ function FriendFundingDetail() {
                 <CongratulateList listData={MessageList} />
             </div>
             {myParticipate.price == null ? (
-                <button className="fixed bottom-0 left-28 bg-blue-500 text-white py-3">펀딩 참여하기</button>
+                <button className="fixed bottom-0 py-3 text-white bg-blue-500 left-28">펀딩 참여하기</button>
             ) : (
-                <button className="fixed bottom-0 left-28 bg-blue-500 text-white py-3">펀딩 추가 참여하기 </button>
+                <button className="fixed bottom-0 py-3 text-white bg-blue-500 left-28">펀딩 추가 참여하기 </button>
             )}
 
             <BottomSheet
