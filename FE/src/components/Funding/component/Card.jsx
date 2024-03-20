@@ -1,10 +1,11 @@
 import ProgressBar from "./ProgressBar";
+
 function Card({ title, name, date, progress }) {
   return (
     <div className="m-2 w-[45%] rounded-lg border-2 bg-white p-4 shadow-md">
       <div className="product_img_div flex justify-center pb-2">
         <img
-          src="src\components\Funding\assets\egg3.jpg"
+          src="../../../../public/imgs/egg3.jpg"
           alt=""
           className="size-3/4"
         />
