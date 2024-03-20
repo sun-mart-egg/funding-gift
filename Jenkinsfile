@@ -20,6 +20,17 @@ pipeline {
                 sh 'docker run -d --name fe -p 5173:5173 fe'   
             }
         }
+
+        stage('back_build'){
+            steps{
+                sh 'git checkout be'
+                sh 'docker stop be'
+                sh 'docker rm be'
+                sh 'docker rmi be'
+                sh 'docker build -t be ./BE'
+                sh 'docker run -d --name be -p 8081:8081 be'   
+            }
+        }
         
     }
 }
