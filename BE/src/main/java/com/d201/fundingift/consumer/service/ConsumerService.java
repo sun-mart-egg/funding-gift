@@ -1,10 +1,13 @@
 package com.d201.fundingift.consumer.service;
 
 import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
+import com.d201.fundingift.consumer.dto.response.ConsumerInfoResponseDto;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +42,28 @@ public class ConsumerService {
     public Optional<Consumer> findBySocialId(String socialId) {
         return consumerRepository.findBySocialId(socialId);
     }
+    public Optional<Consumer> findByEmail(String email) {
+        return consumerRepository.findByEmail(email);
+    }
 
+    // 내 정보 조회
+    public ConsumerInfoResponseDto getMyInfo(Authentication authentication) {
+        if (authentication == null) {
+            authentication = SecurityContextHolder.getContext().getAuthentication();
+        }
+
+        // Authentication 객체에서 사용자 정보를 가져옴
+        String email = authentication.getName();
+        // 또는 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        // String username = userDetails.getUsername(); // 사용자 이름 또는 ID를 추출
+
+        // username을 사용하여 데이터베이스에서 Consumer 정보 조회
+        Consumer consumer = consumerRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + email));
+
+        // Consumer 엔티티를 ConsumerInfoResponseDto로 변환
+        return ConsumerInfoResponseDto.from(consumer);
+    }
 
     // 소비자 프로필 조회
     public Object getConsumerProfile(Long consumerId) {
@@ -47,11 +71,6 @@ public class ConsumerService {
         return null;
     }
 
-    // 내 정보 조회
-    public Object getMyInfo(Authentication authentication) {
-        // Authentication 객체를 사용하여 현재 로그인된 사용자의 정보 조회 로직 구현
-        return null;
-    }
 
     // 친구 목록 생성 (회원가입 시)
     // 실제 서비스에서는 회원가입 로직과 연동되어야 합니다.

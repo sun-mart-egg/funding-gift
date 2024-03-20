@@ -72,9 +72,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                     .build().toUriString();
         }
 
+        // 로그인 버튼 눌렀을 시
         if ("login".equalsIgnoreCase(mode)) {
-            // TODO: DB 저장
-            // TODO: 액세스 토큰, 리프레시 토큰 발급
+            // TODO: 리프레시 토큰 발급
             // TODO: 리프레시 토큰 DB 저장
             log.info("email={}, name={}, nickname={}, profileUrl={}, accessToken={}",
                     principal.getUserInfo().getEmail(),
@@ -87,8 +87,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             String socialId = principal.getUserInfo().getId();
             Optional<Consumer> findMember = consumerService.findBySocialId(socialId);
 
+            // 가입 안 된 상태일 경우 -> 회원등록
+            // 가입 된 상태일 경우 -> 로그인
             if(findMember.isEmpty()){
-                // 가입 안 된 상태일 경우 -> 회원등록
+                // [회원등록]
                 String accessToken = jwtUtil.createToken(authentication);
                 //String refreshToken = "test_refresh_token";
 
@@ -102,7 +104,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                         .queryParam("nextPage","sign-in")
                         .build().toUriString();
             } else {
-                // 가입 된 상태일 경우 -> 로그인
+                // [로그인]
                 String accessToken = jwtUtil.createToken(authentication);
 
                 // 메인 페이지로 리다이렉트

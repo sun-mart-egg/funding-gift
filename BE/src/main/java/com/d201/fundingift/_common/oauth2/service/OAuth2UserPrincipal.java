@@ -65,7 +65,6 @@ public class OAuth2UserPrincipal implements OAuth2User, UserDetails {
     public String getName() {
         return userInfo.getEmail();
     }
-
 }
 /**
  * OAuth2User interface 사용자 정의 구현체 클래스
