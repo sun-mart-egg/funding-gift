@@ -13,6 +13,7 @@ import AnniversaryListPage from "./components/Funding/pages/AnniversaryListPage.
 import FriendFundingDetail from "./components/Funding/pages/FriendFundingDetail.jsx";
 import ParticipatePage from "./components/Funding/pages/ParticipatePage.jsx";
 import Paypage from "./components/Funding/pages/Paypage.jsx";
+import Login from "./components/Login/Login.jsx"
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/brand/:brandId" element={<BrandStore />} />
           <Route path="/wishlist/:userId" element={<Wishlist />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </>
