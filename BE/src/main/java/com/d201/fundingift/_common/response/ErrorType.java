@@ -6,17 +6,17 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorType {
 
-    METHOD_NOT_SUPPORTED(HttpStatus.BAD_REQUEST.value(), "지원되지 않는 Http Method 입니다."),
-    URL_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "잘못된 URL 입니다."),
+    METHOD_NOT_SUPPORTED(HttpStatus.BAD_REQUEST, "지원되지 않는 Http Method 입니다."),
+    URL_NOT_FOUND(HttpStatus.BAD_REQUEST, "잘못된 URL 입니다."),
 
-    USER_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "등록된 사용자가 없습니다."),
+    USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "등록된 사용자가 없습니다."),
     ;
 
-    private int code;
+    private HttpStatus httpStatus;
     private String msg;
 
-    ErrorType(int code, String msg) {
-        this.code = code;
+    ErrorType(HttpStatus httpStatus, String msg) {
+        this.httpStatus = httpStatus;
         this.msg = msg;
     }
 }
