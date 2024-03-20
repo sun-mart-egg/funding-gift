@@ -34,10 +34,9 @@ spring:
             scope: # https://developers.kakao.com/docs/latest/ko/kakaologin/common#user-info
               - profile_nickname
               - profile_image
-              # - account_email // 테스트를 위해 일단 제외.
+              - account_email
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             client-name: Kakao
-
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
@@ -45,7 +44,6 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-info-authentication-method: header
             user-name-attribute: id # Kakao 응답 값 id, connected_at, properties, kakao_account 중 id 지정
-
 
 redis:
   host: ${EC2_PUBLIC_IP}

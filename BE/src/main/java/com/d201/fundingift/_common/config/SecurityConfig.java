@@ -34,7 +34,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 // CORS 설정 (기본 설정 사용)
-                .cors(Customizer.withDefaults())
+//                .cors(Customizer.withDefaults())
                 // CSRF 보호 기능 비활성화
                 .csrf(AbstractHttpConfigurer::disable)
                 // HTTP 기본 인증 비활성화
@@ -49,7 +49,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(antMatcher("/api/user/**")).authenticated()
                         .requestMatchers(antMatcher("/h2-console/**")).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(antMatcher("/swagger-ui/")).permitAll()
+                        .anyRequest().permitAll()
                 )
                 // OAuth2 로그인 설정
                 .oauth2Login(configure ->
