@@ -1,4 +1,5 @@
 import ProgressBar from "./ProgressBar";
+import Egg from "../../../../public/imgs/egg3.jpg";
 
 function FundingDetailInfo({
   friendName,
@@ -16,7 +17,7 @@ function FundingDetailInfo({
       </div>
       <div id="fundingInfoSection" className="flex items-center p-4">
         <div id="fundingImg">
-          <img src="../../../../public/imgs/egg3.jpg" alt="" />
+          <img src={Egg} alt="" />
         </div>
         <div id="fundingInfo" className="p-4">
           <p>{name}</p>

@@ -2,6 +2,7 @@ import FundingDetailInfo from "../component/FundingDetailInfo";
 import CongratulateList from "../component/CongratulateList";
 import BottomSheet from "../component/BottomSheet";
 import React, { useState } from "react";
+
 function MyFundingDetail() {
   const data = {
     title: "EGG IS MY LIFE",
