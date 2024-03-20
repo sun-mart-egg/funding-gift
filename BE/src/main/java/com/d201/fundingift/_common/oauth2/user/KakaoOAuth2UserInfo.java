@@ -28,7 +28,8 @@ public class KakaoOAuth2UserInfo implements OAuth2UserInfo {
         this.email = (String) kakaoAccount.get("email");
 
         //this.name = (String) kakaoAccount.get("name");
-        this.name = "카카오 로그인 유저";
+        // 임시로 닉네임을 가져온다. (이름 권한 동의 X)
+        this.name =(String) kakaoProfile.get("nickname");
         
         this.firstName = null;
         this.lastName = null;

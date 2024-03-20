@@ -1,12 +1,15 @@
 package com.d201.fundingift.consumer.service;
 
+import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
 import com.d201.fundingift.consumer.dto.response.ConsumerInfoResponseDto;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
@@ -47,22 +50,22 @@ public class ConsumerService {
     }
 
     // 내 정보 조회
-    public ConsumerInfoResponseDto getMyInfo(Authentication authentication) {
-        if (authentication == null) {
-            authentication = SecurityContextHolder.getContext().getAuthentication();
+    public Consumer getMyInfo(Authentication authentication) {
+        if (authentication == null || authentication.getPrincipal() == null) {
+            throw new CustomException("User not authenticated", HttpStatus.UNAUTHORIZED);
         }
 
-        // Authentication 객체에서 사용자 정보를 가져옴
-        String email = authentication.getName();
-        // 또는 UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        // String username = userDetails.getUsername(); // 사용자 이름 또는 ID를 추출
+        String email;
+        if (authentication.getPrincipal() instanceof OAuth2UserPrincipal) {
+            email = ((OAuth2UserPrincipal) authentication.getPrincipal()).getUserInfo().getEmail();
+        } else if (authentication.getPrincipal() instanceof UserDetails) {
+            email = ((UserDetails) authentication.getPrincipal()).getUsername();
+        } else {
+            throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+        }
 
-        // username을 사용하여 데이터베이스에서 Consumer 정보 조회
-        Consumer consumer = consumerRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + email));
-
-        // Consumer 엔티티를 ConsumerInfoResponseDto로 변환
-        return ConsumerInfoResponseDto.from(consumer);
+        return findByEmail(email)
+                .orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
     }
 
     // 소비자 프로필 조회
