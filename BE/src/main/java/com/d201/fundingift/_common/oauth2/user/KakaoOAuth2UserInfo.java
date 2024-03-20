@@ -17,15 +17,19 @@ public class KakaoOAuth2UserInfo implements OAuth2UserInfo {
 
     public KakaoOAuth2UserInfo(String accessToken, Map<String, Object> attributes) {
         this.accessToken = accessToken;
+
         // attributes 맵의 kakao_account 키의 값에 실제 attributes 맵이 할당되어 있음
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> kakaoProfile = (Map<String, Object>) kakaoAccount.get("profile");
+
         this.attributes = new HashMap<>();
 
         this.id = ((Long) attributes.get("id")).toString();
         this.email = (String) kakaoAccount.get("email");
 
-        this.name = (String) kakaoAccount.get("name");
+        //this.name = (String) kakaoAccount.get("name");
+        this.name = "카카오 로그인 유저";
+        
         this.firstName = null;
         this.lastName = null;
         this.nickName = (String) kakaoProfile.get("nickname");

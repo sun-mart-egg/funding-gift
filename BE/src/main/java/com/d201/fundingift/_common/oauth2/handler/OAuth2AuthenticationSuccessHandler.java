@@ -6,6 +6,8 @@ import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
 import com.d201.fundingift._common.oauth2.user.OAuth2Provider;
 import com.d201.fundingift._common.oauth2.user.OAuth2UserUnlinkManager;
 import com.d201.fundingift._common.oauth2.util.CookieUtils;
+import com.d201.fundingift.consumer.entity.Consumer;
+import com.d201.fundingift.consumer.service.ConsumerService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,6 +32,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
     private final JwtUtil jwtUtil;
+    private final ConsumerService consumerService;
+
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -39,7 +43,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         targetUrl = determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
-
             logger.debug("Response has already been cimmitted. Unable to redirect to " + targetUrl);
             return;
         }
@@ -75,21 +78,41 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             // TODO: 리프레시 토큰 DB 저장
             log.info("email={}, name={}, nickname={}, profileUrl={}, accessToken={}",
                     principal.getUserInfo().getEmail(),
-                    //principal.getUserInfo().getName(),
+                    principal.getUserInfo().getName(),
                     principal.getUserInfo().getNickname(),
                     principal.getUserInfo().getProfileImageUrl(),
                     principal.getUserInfo().getAccessToken()
             );
 
+            String socialId = principal.getUserInfo().getId();
+            Optional<Consumer> findMember = consumerService.findBySocialId(socialId);
 
+            if(findMember.isEmpty()){
+                // 가입 안 된 상태일 경우 -> 회원등록
+                String accessToken = jwtUtil.createToken(authentication);
+                //String refreshToken = "test_refresh_token";
 
-            String accessToken = jwtUtil.createToken(authentication);
-            String refreshToken = "test_refresh_token";
+                // DB에 저장.
+                Long consumerId = consumerService.saveOAuth2User(principal);
 
-            return UriComponentsBuilder.fromUriString(targetUrl)
-                    .queryParam("access_token", accessToken)
-                    .queryParam("refresh_token", refreshToken)
-                    .build().toUriString();
+                // 회원가입 페이지로 리다이렉트(예정)
+                return UriComponentsBuilder.fromUriString(targetUrl)
+                        .queryParam("access-token", accessToken)
+                        .queryParam("consumer-id",consumerId)
+                        .queryParam("nextPage","sign-in")
+                        .build().toUriString();
+            } else {
+                // 가입 된 상태일 경우 -> 로그인
+                String accessToken = jwtUtil.createToken(authentication);
+
+                // 메인 페이지로 리다이렉트
+                return UriComponentsBuilder.fromUriString(targetUrl)
+                        .queryParam("access_token", accessToken)
+                        .queryParam("consumer-id",findMember.get().getId())
+                        .queryParam("nextPage","main")
+                        .build().toUriString();
+            }
+
 
         } else if ("unlink".equalsIgnoreCase(mode)) {
 
