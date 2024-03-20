@@ -19,7 +19,9 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MakeFundingMain />} />
+
+          <Route path="/" element={<MyFunding />} />
+          <Route path="/make-funding-main" element={<MakeFundingMain />} />
           <Route path="/participate" element={<ParticipatePage />} />
           <Route path="/pay" element={<Paypage />} />
           <Route path="/product" element={<Product />} />
