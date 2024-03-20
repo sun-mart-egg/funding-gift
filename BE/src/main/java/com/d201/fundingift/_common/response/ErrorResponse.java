@@ -1,15 +1,22 @@
 package com.d201.fundingift._common.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 
 @Getter
+@Schema(name = "ErrorResponse", description = "에러 응답")
 public class ErrorResponse {
 
+    @Schema(description = "에러 코드", example = "400")
     private int code;
+
+    @Schema(description = "에러 상태", example = "BAD_REQUEST")
     private String status;
+
+    @Schema(description = "에러 메시지", example = "에러 메시지")
     private String msg;
 
     @Builder
