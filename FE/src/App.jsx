@@ -10,10 +10,13 @@ import Wishlist from "./components/Products/Wishlist";
 import AddressListPage from "./components/Funding/pages/AddressListPage.jsx";
 import Signup from "./components/Login/Signup.jsx";
 import AnniversaryListPage from "./components/Funding/pages/AnniversaryListPage.jsx";
+import FriendFundingDetail from "./components/Funding/pages/FriendFundingDetail.jsx";
+
 
 function App() {
     return (
         <>
+            <FriendFundingDetail />
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<AnniversaryListPage />} />
