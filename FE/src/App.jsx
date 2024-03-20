@@ -14,13 +14,13 @@ import FriendFundingDetail from "./components/Funding/pages/FriendFundingDetail.
 import ParticipatePage from "./components/Funding/pages/ParticipatePage.jsx";
 import Paypage from "./components/Funding/pages/Paypage.jsx";
 
-
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<ParticipatePage />} />
+          <Route path="/" element={<MyFunding />} />
+          <Route path="/make-funding-main" element={<MakeFundingMain />} />
           <Route path="/pay" element={<Paypage />} />
           <Route path="/product" element={<Product />} />
           <Route path="/product/:productId" element={<ProductDetail />} />

@@ -1,18 +1,22 @@
-function Card({title, name, date, progress}) {
-    return (
-        <div className="bg-white rounded-lg shadow-md p-4 m-2 w-2/5 border-2">
-            <div className="product_img_div"><img src="" alt="" /></div>
-            <h5 className="product_title">{title}</h5>
-            <p>{progress}%</p>
-            <p className="product_des">{name}</p>
-            <div className="product_mon">{date}</div>  
-            {
-                progress ===100
-                ? <p>finished</p>
-                : <p></p>
-            }                
-        </div>
-    );
+import ProgressBar from "./ProgressBar";
+function Card({ title, name, date, progress }) {
+  return (
+    <div className="m-2 w-[45%] rounded-lg border-2 bg-white p-4 shadow-md">
+      <div className="product_img_div flex justify-center pb-2">
+        <img
+          src="src\components\Funding\assets\egg3.jpg"
+          alt=""
+          className="size-3/4"
+        />
+      </div>
+      <p className="product_title font-cusFont1 text-[14px]">{title}</p>
+      <ProgressBar progress={progress} />
+      <div className="pt-2">
+        <p className="product_des pb-1 text-[10px]">{name}</p>
+        <div className="product_mon  text-[10px]">{date}</div>
+      </div>
+    </div>
+  );
 }
 
-export default Card
+export default Card;
