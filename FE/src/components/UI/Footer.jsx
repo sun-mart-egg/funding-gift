@@ -1,6 +1,6 @@
 function Footer() {
 	return (
-		<div className="w-full h-[10%] bg-white">
+		<div className="w-500px h-[200px] bg-white">
 			<h1>푸터입니다.</h1>
 		</div>
 	)
