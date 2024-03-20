@@ -1,7 +1,7 @@
 package com.d201.fundingift.product.controller;
 
-import com.d201.fundingift._common.response.ApiResponseDto;
 import com.d201.fundingift._common.response.ResponseUtils;
+import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/categories")
-    public ApiResponseDto<?> getCategories() {
+    public SuccessResponse<?> getCategories() {
         return ResponseUtils.ok(productService.getCategories(), GET_CATEGORIES_SUCCESS);
     }
 
