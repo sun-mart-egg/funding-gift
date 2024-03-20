@@ -160,7 +160,7 @@ function Product() {
       <div className="flex items-center bg-gray-100 justify-center min-h-screen font-cusFont2">
 
         {/* 화면 - 패딩은 모바일 기준이므로 요소들이 너무 구석에 가지 않도록 설정 */}
-        <div className="w-[400px] h-[600px] min-h-[600px] p-2 bg-white flex flex-col items-center justify-start">
+        <div className="flex-start w-[400px] h-[600px] min-h-[600px] p-2 bg-white flex flex-col items-center justify-start">
           <Header />
           {/* 버튼 영역 */}
           <div className="flex justify-center ml-[1%] w-[90.5%] h-[10%]">
@@ -204,43 +204,53 @@ function Product() {
             <div>
               <span className="text-[12px]">물품 수: {products.length}</span>
             </div>
-            <div className="mt-2">
-              <button className="text-[12px] flex-grow border text-center px-2 py-1 w-[100%] rounded-md bg-cusColor3 text-white flex items-center" onClick={toggleListVisibility}>
+            <div className="mt-2 w-[28%]">
+              <button className="text-[12px] justify-center border px-2 py-1 w-[100%] rounded-md bg-cusColor3 text-white flex items-center" onClick={toggleListVisibility}>
                 {selectedToggle}
                 <img src={Down} alt="" className="h-[12px] w-[9px] ml-[5px]" />
               </button>
               {/* 토글 목록 */}
               {toggleListVisible && (
-                <div className="absolute bg-white p-2 px-[15px] mt-2 text-center border border-gray-300 rounded-md text-[12px]">
+                <div className="absolute flex-row bg-white p-2 px-[15px] mt-2 text-center border border-gray-300 rounded-md text-[12px]">
                   <button
-                    className={`block my-1 ${selectedToggle === '기본 순' ? 'bg-cusColor3 text-white' : ''}`}
+                    className="block my-1 w-full text-right"
                     onClick={() => selectToggle('기본 순')}
                   >
-                    기본 순
+                    <span className={`${selectedToggle === '기본 순' ? 'bg-cusColor3 text-white' : ''} p-1 rounded`}>
+                      기본 순
+                    </span>
                   </button>
                   <button
-                    className={`block my-1 ${selectedToggle === '리뷰 순' ? 'bg-cusColor3 text-white' : ''}`}
+                    className="block my-1 w-full text-right"
                     onClick={() => selectToggle('리뷰 순')}
                   >
-                    리뷰 순
+                    <span className={`${selectedToggle === '리뷰 순' ? 'bg-cusColor3 text-white' : ''} p-1 rounded`}>
+                      리뷰 순
+                    </span>
                   </button>
                   <button
-                    className={`block my-1 ${selectedToggle === '평점 순' ? 'bg-cusColor3 text-white' : ''}`}
+                    className="block my-1 w-full text-right"
                     onClick={() => selectToggle('평점 순')}
                   >
-                    평점 순
+                    <span className={`${selectedToggle === '평점 순' ? 'bg-cusColor3 text-white' : ''} p-1 rounded`}>
+                      평점 순
+                    </span>
                   </button>
                   <button
-                    className={`block my-1 ${selectedToggle === '가격 높은 순' ? 'bg-cusColor3 text-white' : ''}`}
+                    className="block my-1 w-full text-right"
                     onClick={() => selectToggle('가격 높은 순')}
                   >
-                    가격 높은 순
+                    <span className={`${selectedToggle === '가격 높은 순' ? 'bg-cusColor3 text-white' : ''} p-1 rounded`}>
+                      가격 높은 순
+                    </span>
                   </button>
                   <button
-                    className={`block my-1 ${selectedToggle === '가격 낮은 순' ? 'bg-cusColor3 text-white' : ''}`}
+                    className="block my-1 w-full text-right"
                     onClick={() => selectToggle('가격 낮은 순')}
                   >
-                    가격 낮은 순
+                    <span className={`${selectedToggle === '가격 낮은 순' ? 'bg-cusColor3 text-white' : ''} p-1 rounded`}>
+                      가격 낮은 순
+                    </span>
                   </button>
                 </div>
               )}
@@ -248,7 +258,7 @@ function Product() {
           </div>
 
           {/* 물품 목록(무한 스크롤) */}
-          <div className="flex flex-wrap flex-grow overflow-y-auto justify-center mt-4 w-[95.5%] bg-white">
+          <div className="flex flex-wrap flex-grow overflow-y-auto justify-center mt-4 w-[95.5%] min-h-[63%] bg-white">
             {filteredProducts.map(product => (
               <div key={product.id} className="flex-col w-[45%] h-[58.5%] text-[12px] rounded-md m-2">
                 {/* 이미지 영역 */}
@@ -274,6 +284,7 @@ function Product() {
                 </div>
               </div>
             ))}
+
           </div>
           <Footer />
         </div>
