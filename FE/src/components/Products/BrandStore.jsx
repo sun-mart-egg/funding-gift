@@ -8,9 +8,8 @@ function BrandStore() {
       <div className="w-[100%] bg-yellow-300">
         <h1>test</h1>
       </div>
+      <Footer />
     </div>
-
-
   )
 }
 

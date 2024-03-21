@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 function Header() {
     return (
         <header className="justify-between header">
-            <Link to={"/"}>
+            <Link to={"/"} onClick={() => setActiveIcon('home')}>
                 <img src="/imgs/logo.png" alt="logo"/>
             </Link>
 

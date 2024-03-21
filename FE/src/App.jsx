@@ -20,26 +20,26 @@ import Login from "./components/Login/Login.jsx"
 import MainLayout from "./components/UI/MainLayout.jsx";
 
 function App() {
+
   return (
-    <>
+    <div className="main-layer">
       <BrowserRouter>
         <Routes>
           <Route element={<MainLayout />}>
-            <Route path="/login" element={<Login />} />
-          </Route>
-
-          <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/" element={<MyFunding />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/product" element={<Product />} />
+          </Route>
+          <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/make-funding-main" element={<MakeFundingMain />} />
           <Route path="/participate" element={<ParticipatePage />} />
           <Route path="/pay" element={<Paypage />} />
-          <Route path="/product" element={<Product />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/brand/:brandId" element={<BrandStore />} />
           <Route path="/wishlist/:userId" element={<Wishlist />} />
         </Routes>
       </BrowserRouter>
-    </>
+    </div>
   );
 }
 

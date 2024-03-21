@@ -189,9 +189,6 @@ function ProductDetail() {
 							펀딩 만들기
 						</button>
 					</div>
-
-				
-
 				</div>
 			</div>
 		</>
