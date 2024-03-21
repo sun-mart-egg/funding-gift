@@ -89,13 +89,15 @@ function MakeFundingDetail() {
         );
       case 1:
         return (
-          <div className="flex flex-col justify-center  ">
-            <div>
-              <p className="text-center font-cusFont2 text-lg">펀딩정보</p>
+          <div className="text-md flex flex-col  justify-center">
+            <div id="card-title">
+              <p className="mb-10 text-center font-cusFont2 text-lg">
+                펀딩정보
+              </p>
             </div>
-            <div className="">
-              <div className="flex">
-                <p>친한친구 에게만 보여주기</p>
+            <div id="card-content">
+              <div id="is-bestfriend" className="mb-6 flex">
+                <p className="mr-4 ">친한친구에게만 공개하기</p>
                 <input
                   type="checkbox"
                   name="bestFriend"
@@ -104,20 +106,28 @@ function MakeFundingDetail() {
                   className="p-4"
                 />
               </div>
-              <p>펀딩 제목:</p>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-              />
-              <p>펀딩 소개:</p>
-              <textarea
-                type="text"
-                name="intro"
-                value={formData.intro}
-                onChange={handleInputChange}
-              />
+              <div id="funding-title" className="mb-6">
+                <p>펀딩 제목</p>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  placeholder="펀딩 제목을 입력해 주세요."
+                  onChange={handleInputChange}
+                  className="mt-2 h-7 w-full rounded-md border  border-gray-500 p-2 text-xs placeholder:text-xs"
+                />
+              </div>
+              <div id="funding-detail">
+                <p>펀딩 소개</p>
+                <textarea
+                  type="text"
+                  name="intro"
+                  value={formData.intro}
+                  onChange={handleInputChange}
+                  placeholder="펀딩에 대해 소개해 주세요."
+                  className="mt-2  w-full rounded-md border  border-gray-500 p-2 text-xs placeholder:text-xs"
+                />
+              </div>
             </div>
           </div>
         );
@@ -218,7 +228,7 @@ function MakeFundingDetail() {
     >
       <div
         id="makeCard"
-        className="mb-10 flex h-3/5 w-2/3 flex-col items-center justify-center rounded-xl bg-white p-4 shadow-md"
+        className="mb-10 flex h-3/5 w-[75%] flex-col items-center justify-center rounded-xl bg-white p-4 shadow-md"
       >
         <div id="contentSection">{renderContent()}</div>
       </div>
@@ -232,14 +242,14 @@ function MakeFundingDetail() {
               <button
                 onClick={handlePrev}
                 style={{ width: "calc(40% - 10px)" }} // 버튼 너비 조정
-                className="rounded-lg border border-cusColor3 bg-white "
+                className="common-btn border-cus border border-cusColor3 bg-white text-black "
               >
                 이전
               </button>
               <button
                 onClick={handleNext}
                 style={{ width: "calc(40% - 10px)" }} // 버튼 너비 조정
-                className="rounded-lg bg-cusColor3 p-2 text-white"
+                className="common-btn"
               >
                 다음
               </button>
@@ -248,7 +258,7 @@ function MakeFundingDetail() {
             <button
               onClick={handleNext}
               style={{ width: "calc(66% )" }} // 버튼 너비 조정
-              className="rounded-lg bg-cusColor3 p-2 text-white"
+              className="common-btn"
             >
               다음
             </button>
