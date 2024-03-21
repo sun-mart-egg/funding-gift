@@ -13,7 +13,10 @@ import AnniversaryListPage from "./components/Funding/pages/AnniversaryListPage.
 import FriendFundingDetail from "./components/Funding/pages/FriendFundingDetail.jsx";
 import ParticipatePage from "./components/Funding/pages/ParticipatePage.jsx";
 import Paypage from "./components/Funding/pages/Paypage.jsx";
+import MakeFundingDetail from "./components/Funding/pages/MakeFundingDetail.jsx";
+import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx";
 import Login from "./components/Login/Login.jsx"
+
 
 function App() {
   return (
@@ -21,6 +24,7 @@ function App() {
       <BrowserRouter>
         <Routes>
 
+          <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/" element={<MyFunding />} />
           <Route path="/make-funding-main" element={<MakeFundingMain />} />
           <Route path="/participate" element={<ParticipatePage />} />
