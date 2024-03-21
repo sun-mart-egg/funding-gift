@@ -44,8 +44,8 @@
   }
 
   .header {
-    @apply absolute top-0 flex 
-        h-full max-h-[60px] w-full max-w-[500px]
+    @apply flex h-full max-h-[60px] 
+        w-full max-w-[500px] 
         flex-row items-center
         bg-white shadow-lg;
   }

@@ -4,7 +4,6 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import egg from "/imgs/egg3.jpg";
 import Footer from "../../UI/Footer";
-import Header from "../../UI/Header";
 import anniversaryData from "../data";
 
 function MakeFundingDetail() {

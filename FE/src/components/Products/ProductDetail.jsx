@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 
 import SampleImage from '../../../public/imgs/product_sample.png'
 
@@ -10,6 +11,12 @@ import ActivatedSmile from '../../../public/imgs/smile_activated.png'
 import DeactivatedSmile from '../../../public/imgs/smile_deactivated.png'
 
 function ProductDetail() {
+
+	const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate('/make-funding-detail');
+  };
 
 	const [toggleListVisible, setToggleListVisible] = useState(false);
 	const [selectedFilter, setSelectedFilter] = useState('최신 순');
@@ -185,13 +192,12 @@ function ProductDetail() {
 						<button className="absolute left-[8%] mr-[20px]">
 							<img src={Heart} alt="" className="w-[27px]" />
 						</button>
-						<button className="bg-cusColor3  w-[50%] h-[80%] hover:bg-red-400 text-white text-base font-bold py-2 px-4 rounded-lg">
+						<button
+							className="bg-cusColor3  w-[50%] h-[80%] hover:bg-red-400 text-white text-base font-bold py-2 px-4 rounded-lg"
+							onClick={handleClick}>
 							펀딩 만들기
 						</button>
 					</div>
-
-				
-
 				</div>
 			</div>
 		</>
