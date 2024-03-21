@@ -49,7 +49,7 @@ pipeline {
                     }
 
                     sh 'docker build -t be ./BE'
-                    def dockerCmd = "docker run -e DB_PASSWORD=${env.DB_PASSWORD} -e DB_URL=${env.DB_URL} -e DB_USERNAME=${env.DB_USERNAME} -e EC2_PUBLIC_IP=${env.EC2_PUBLIC_IP} -e JWT_SECRET=${env.JWT_SECRET} -e KAKAO_CLIENT_ID=${env.KAKAO_CLIENT_ID} -e KAKAO_CLIENT_SECRET=${env.KAKAO_CLIENT_SECRET} -e REDIS_PASSWORD=${env.REDIS_PASSWORD} -e REDIS_PORT=${env.REDIS_PORT} -d --name be -p 8081:8081 be"
+                    def dockerCmd = "docker run -e DB_PASSWORD=${env.DB_PASSWORD} -e DB_URL=${env.DB_URL} -e DB_USERNAME=${env.DB_USERNAME} -e EC2_PUBLIC_IP=${env.EC2_PUBLIC_IP} -e JWT_SECRET=${env.JWT_SECRET} -e KAKAO_CLIENT_ID=${env.KAKAO_CLIENT_ID} -e KAKAO_CLIENT_SECRET=${env.KAKAO_CLIENT_SECRET} -e REDIS_PASSWORD=${env.REDIS_PASSWORD} -e REDIS_PORT=${env.REDIS_PORT} -e BASE_URL=${env.BASE_URL} -d --name be -p 8081:8081 be"
                     sh dockerCmd 
                 }
             }
