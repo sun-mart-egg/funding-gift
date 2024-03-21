@@ -159,10 +159,10 @@ function Product() {
     <>
 
       {/* 배경 임시로 회색으로 설정 -> 나중에 이미지 혹은 단일 색으로 채울 것(웹 기준) */}
-      <div className="flex items-center bg-gray-100 justify-center min-h-screen font-cusFont2">
+      {/* <div className="flex items-center bg-gray-100 justify-center min-h-screen font-cusFont2"> */}
 
         {/* 화면 - 패딩은 모바일 기준이므로 요소들이 너무 구석에 가지 않도록 설정 */}
-        <div className="flex-start w-[500px] max-w-[500px] h-100vh min-h-[600px] p-2 bg-white flex flex-col items-center justify-start">
+        <div className="main-layer font-cusFont2 font-bold">
           {/* <Header /> */}
           {/* 버튼 영역 */}
           <div className="flex justify-center ml-[1%] w-[90.5%] h-[10%]">
@@ -292,7 +292,7 @@ function Product() {
           </div>
           {/* <Footer /> */}
         </div>
-      </div>
+      {/* </div> */}
 
     </>
 
