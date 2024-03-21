@@ -2,8 +2,6 @@ server:
   port: 8081
 
 spring:
-  profiles:
-    default: local
   datasource:
     url: ${DB_URL}?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
     username: ${DB_USERNAME}
@@ -20,9 +18,12 @@ spring:
     database-platform: org.hibernate.dialect.MariaDBDialect
     properties:
       hibernate:
+        ddl-auto: update
         format_sql: true
 
 redis:
   host: ${EC2_PUBLIC_IP}
   port: ${REDIS_PORT}
   password: ${REDIS_PASSWORD}
+
+base-url: ${BASE_URL}
