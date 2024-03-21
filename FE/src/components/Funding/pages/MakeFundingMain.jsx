@@ -1,8 +1,10 @@
 import { FaHeart } from "react-icons/fa6";
 import { FaCartShopping } from "react-icons/fa6";
 import backgroundURL from "../../../../public/imgs/background.PNG";
+import { useNavigate } from "react-router-dom";
 
 function MakeFundingMain() {
+  const navigate = useNavigate();
   return (
     <div
       className="flex h-screen w-full items-center justify-center"
@@ -32,6 +34,7 @@ function MakeFundingMain() {
             <p className="text-[10px]">위시에서 고르기</p>
           </button>
           <button
+            onClick={() => navigate("/product")}
             style={{ flexBasis: "50%" }}
             className=" mx-2 flex flex-col  items-center justify-center rounded-lg bg-cusColor4 text-white"
           >
