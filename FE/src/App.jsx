@@ -17,12 +17,16 @@ import MakeFundingDetail from "./components/Funding/pages/MakeFundingDetail.jsx"
 import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx";
 import Login from "./components/Login/Login.jsx"
 
+import MainLayout from "./components/UI/MainLayout.jsx";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
+          <Route element={<MainLayout />}>
+            <Route path="/login" element={<Login />} />
+          </Route>
 
           <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/" element={<MyFunding />} />
@@ -33,7 +37,6 @@ function App() {
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/brand/:brandId" element={<BrandStore />} />
           <Route path="/wishlist/:userId" element={<Wishlist />} />
-          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import egg from "/imgs/egg3.jpg";
 import Footer from "../../UI/Footer";
-import Header from "../../UI/Header";
+import Header from "../../UI/MainHeader";
 
 function MakeFundingDetail() {
   // 현재 보여줄 컨텐츠 인덱스를 상태로 관리
