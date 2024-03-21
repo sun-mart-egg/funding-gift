@@ -12,7 +12,9 @@ pipeline {
         
         stage('front_build'){
             steps{
-                sh 'git checkout fe'
+                 script {
+                    git credentialsId: 'gitlab', url: 'https://lab.ssafy.com/s10-fintech-finance-sub2/S10P22D201.git', branch: "fe"
+                }
                 sh 'docker stop fe'
                 sh 'docker rm fe'
                 sh 'docker rmi fe'
@@ -23,7 +25,9 @@ pipeline {
 
         stage('back_build'){
             steps{
-                sh 'git checkout be'
+                script {
+                    git credentialsId: 'gitlab', url: 'https://lab.ssafy.com/s10-fintech-finance-sub2/S10P22D201.git', branch: "be"
+                }
                 sh 'docker stop be'
                 sh 'docker rm be'
                 sh 'docker rmi be'
