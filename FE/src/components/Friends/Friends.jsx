@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import refreshIcon from './refreshIcon.png'
-import searchIcon from './searchIcon.png'
-import searchIconTrue from './searchIconTrue.png'
-import filterIcon from './filterIcon.png'
-import filterIconTrue from './filterIconTrue.png'
+import refreshIcon from '/imgs/refreshIcon.png'
+import searchIcon from '/imgs/searchIcon.png'
+import searchIconTrue from '/imgs/searchIconTrue.png'
+import filterIcon from '/imgs/filterIcon.png'
+import filterIconTrue from '/imgs/filterIconTrue.png'
 
 function Friends() {
     const [isSearch, setIsSearch] = useState(false)
