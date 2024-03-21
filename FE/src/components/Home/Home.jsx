@@ -7,7 +7,7 @@ import FishIcon from "/icons/size-192.png"
 function Home() {
   return (
     <div className="main-layer item font-cusFont2">
-
+  
       <div className="w-full">
         <SearchBar />
       </div>
