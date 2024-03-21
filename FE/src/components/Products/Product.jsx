@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 
-import Header from '../UI/Header'
+import Header from '../UI/MainHeader'
 import Footer from '../UI/Footer';
 
 import Categories1 from '../../../public/imgs/product_categories1.png'
