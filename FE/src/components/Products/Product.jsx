@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
 
 import Header from '../UI/Header'
 import Footer from '../UI/Footer';
@@ -160,8 +162,8 @@ function Product() {
       <div className="flex items-center bg-gray-100 justify-center min-h-screen font-cusFont2">
 
         {/* 화면 - 패딩은 모바일 기준이므로 요소들이 너무 구석에 가지 않도록 설정 */}
-        <div className="flex-start w-[400px] h-[600px] min-h-[600px] p-2 bg-white flex flex-col items-center justify-start">
-          <Header />
+        <div className="flex-start w-[500px] max-w-[500px] h-100vh min-h-[600px] p-2 bg-white flex flex-col items-center justify-start">
+          {/* <Header /> */}
           {/* 버튼 영역 */}
           <div className="flex justify-center ml-[1%] w-[90.5%] h-[10%]">
             {/* 카테고리 버튼이 7개 있으므로, 내용만 바꿔서 7번 반복할 것*/}
@@ -263,7 +265,9 @@ function Product() {
               <div key={product.id} className="flex-col w-[45%] h-[58.5%] text-[12px] rounded-md m-2">
                 {/* 이미지 영역 */}
                 <div className="w-[100%] h-[70%]">
-                  <img src={product.image} alt="" className="w-full h-full border rounded-md border-gray-300 shadow" />
+                  <Link to={`/product/${product.id}`}>
+                    <img src={product.image} alt="" className="w-full h-full border rounded-md border-gray-300 shadow" />
+                  </Link>
                 </div>
                 {/* Area2 */}
                 <div className="w-[100%] h-[30%] flex flex-col justify-center pl-2 p-[10px] m-[1px]">
@@ -286,7 +290,7 @@ function Product() {
             ))}
 
           </div>
-          <Footer />
+          {/* <Footer /> */}
         </div>
       </div>
 

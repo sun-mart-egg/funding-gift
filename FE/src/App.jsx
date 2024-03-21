@@ -15,19 +15,25 @@ import ParticipatePage from "./components/Funding/pages/ParticipatePage.jsx";
 import Paypage from "./components/Funding/pages/Paypage.jsx";
 import MakeFundingDetail from "./components/Funding/pages/MakeFundingDetail.jsx";
 import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx";
+import Login from "./components/Login/Login.jsx"
+
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<MakeFundingDetail />} />
+
+          <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
+          <Route path="/" element={<MyFunding />} />
+          <Route path="/make-funding-main" element={<MakeFundingMain />} />
           <Route path="/participate" element={<ParticipatePage />} />
           <Route path="/pay" element={<Paypage />} />
           <Route path="/product" element={<Product />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/brand/:brandId" element={<BrandStore />} />
           <Route path="/wishlist/:userId" element={<Wishlist />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </BrowserRouter>
     </>
