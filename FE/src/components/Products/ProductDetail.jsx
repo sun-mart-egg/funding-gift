@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import SampleImage from '../../../public/imgs/product_sample.png'
 
 import Star from '../../../public/imgs/star.png'
+import Heart from '../../../public/imgs/heart.png'
 import Down from '../../../public/imgs/down.png'
 import SampleReview from '../../../public/imgs/samplereview.jpg'
 import ActivatedSmile from '../../../public/imgs/smile_activated.png'
@@ -42,7 +43,7 @@ function ProductDetail() {
 		},
 		{
 			id: 2,
-			profileImage: '../../../public/imgs/profile2.png',
+			profileImage: '../../../public/imgs/basic.jpg',
 			rating: 5,
 			name: '홍보2',
 			images: [],
@@ -51,7 +52,7 @@ function ProductDetail() {
 		},
 		{
 			id: 3,
-			profileImage: '../../../public/imgs/profile2.png',
+			profileImage: '../../../public/imgs/basic.jpg',
 			rating: 5,
 			name: '홍보1',
 			images: [],
@@ -66,7 +67,7 @@ function ProductDetail() {
 			<div className="flex items-center bg-gray-100 overflow-y-auto justify-center h-screen font-cusFont2 overflow-x-hidden">
 
 				{/* 화면 - 패딩은 모바일 기준이므로 요소들이 너무 구석에 가지 않도록 설정 */}
-				<div className="flex-start overflow-y-auto h-screen w-[500px] max-w-[500px] h-100vh min-h-[600px] bg-white flex flex-col items-center justify-start overflow-x-hidden">
+				<div className="flex-start overflow-y-auto h-screen max-w-[500px] min-h-[600px] bg-white flex flex-col items-center justify-start overflow-x-hidden">
 
 					{/* 상단바 자리 (브랜드 버튼) */}
 					<div></div>
@@ -75,7 +76,7 @@ function ProductDetail() {
 					<div className="mt-[70px]">
 
 						{/* 이미지 들어갈 영역 */}
-						<div className="w-[485px] h-[400px] flex justify-center border-b-[2px] border-b-cusColor3">
+						<div className="w-[100%] h-[400px] flex justify-center border-b-[2px] border-b-cusColor3">
 							<img src={SampleImage} alt="" className="max-w-full max-h-full" />
 						</div>
 
@@ -86,16 +87,16 @@ function ProductDetail() {
 							<div>
 
 								{/* 상품 명 */}
-								<p className='mb-[5px]'>상품 명이 들어갈 자리입니다.</p>
+								<p className='mb-[5px] text-lg text-bold'>상품 명이 들어갈 자리입니다.</p>
 
 								{/* 별점 정보 */}
 								<div className='flex mb-[5px]'>
-									<img src={Star} alt="" className="w-[18px] h-[18px]" />
-									<span className="ml-1">3.7 (3)</span>
+									<img src={Star} alt="" className="w-[4%] aspect-auto object-contain" />
+									<span className="ml-1 text-base-bold">3.7 (3)</span>
 								</div>
 
 								{/* 가격 정보 */}
-								<div>760,000원</div>
+								<div className="text-base-bold">760,000원</div>
 
 							</div>
 
@@ -104,18 +105,18 @@ function ProductDetail() {
 							{/*후기 수, 정렬순서 토글, 필터 */}
 							<div className="flex items-center justify-between w-[100%] h-[50px] mt-2">
 								<div>
-									<span className="text-[14px]">선물 후기 (3)</span>
+									<span className="text-base">선물 후기 (3)</span>
 								</div>
-								<div className="relative">
-									<button className="text-[14px] rounded-md flex items-center justify-center" onClick={toggleListVisibility}>
+								<div className="relative w-[40%] text-right">
+									<button className="text-base rounded-md flex w-[100%]  text-right items-center justify-end" onClick={toggleListVisibility}>
 										{selectedFilter}
-										<img src={Down} alt="" className="h-[14px] w-[12px] ml-[5px] invert" />
+										<img src={Down} alt="" className="h-[14px] w-[10%] ml-[5px] invert" />
 									</button>
 									{toggleListVisible && (
-										<div className="absolute w-[120px] top-full right-0 bg-white p-2 px-[15px] text-center border border-gray-300 rounded-md text-[15px]">
-											<p className={`${selectedFilter === '최신 순' ? 'bg-cusColor3 text-white' : ''}`} onClick={() => handleFilterChange('최신 순')}>최신 순</p>
-											<p className={`${selectedFilter === '추천 순' ? 'bg-cusColor3 text-white' : ''}`} onClick={() => handleFilterChange('추천 순')}>추천 순</p>
-											<p className={`${selectedFilter === '별점 높은 순' ? 'bg-cusColor3 text-white' : ''}`} onClick={() => handleFilterChange('별점 높은 순')}>별점 높은 순</p>
+										<div className="absolute w-[120%] top-full right-0 bg-white p-2 px-[3%] text-center border border-gray-300 rounded-md text-xs">
+											<p className={`${selectedFilter === '최신 순' ? 'bg-cusColor3 text-white' : ''} mb-1`} onClick={() => handleFilterChange('최신 순')}>최신 순</p>
+											<p className={`${selectedFilter === '추천 순' ? 'bg-cusColor3 text-white' : ''} mb-1`} onClick={() => handleFilterChange('추천 순')}>추천 순</p>
+											<p className={`${selectedFilter === '별점 높은 순' ? 'bg-cusColor3 text-white' : ''} mb-1`} onClick={() => handleFilterChange('별점 높은 순')}>별점 높은 순</p>
 											<p className={`${selectedFilter === '별점 낮은 순' ? 'bg-cusColor3 text-white' : ''}`} onClick={() => handleFilterChange('별점 낮은 순')}>별점 낮은 순</p>
 										</div>
 									)}
@@ -129,16 +130,16 @@ function ProductDetail() {
 
 										{/* 리뷰 프로필 이미지, 별점, 이름 */}
 										<div className="flex items-center mb-2">
-											<div className="w-[60px] h-[60px] rounded-full overflow-hidden bg-black mr-[15px]">
+											<div className="w-[18%] aspect-square rounded-full overflow-hidden bg-black mr-[3%]">
 												<img
 													src={review.profileImage}
 													alt={review.name}
 													className="w-full h-full object-cover rounded-full"
 												/>
 											</div>
-											<div>
+											<div className="w-[100%]">
 												<div className="flex items-center">
-													<img src={Star} alt="" className="w-[18px] h-[18px] pb-1" />
+													<img src={Star} alt="" className="w-[7%] aspect-auto object-contain pb-1" />
 													<span className="ml-1">{review.rating} / 5</span>
 												</div>
 												<div>{review.name}</div>
@@ -159,17 +160,17 @@ function ProductDetail() {
 
 										{/* 리뷰 내용 */}
 										<div className="w-[100%] h-[100px] ml-7-1 border-[2px] p-2 rounded-md mb-2">
-											<p>{review.content}</p>
+											<p className="text-xs">{review.content}</p>
 										</div>
 
 										{/* 도움돼요 버튼 */}
-										<div className="ml-auto">
+										<div className="ml-auto w-full flex justify-end text-xs">
 											<button
-												className={`w-[150px] h-[40px] border-[3px] rounded-md flex items-center justify-center ${smileStates[review.id] ? 'border-cusColor3 text-cusColor3' : ''}`}
+												className={`w-[30%] h-[40px] border-[3px] rounded-md flex items-center justify-center ${smileStates[review.id] ? 'border-cusColor3 text-cusColor3' : ''}`}
 												onClick={() => handleSmileClick(review.id)}
 											>
-												<img className="mt-[5px] mr-1" src={smileStates[review.id] ? ActivatedSmile : DeactivatedSmile} alt="Smile" />
-												<p className={`${smileStates[review.id] ? 'text-cusColor3' : 'text-gray-400'}`}>도움돼요 {review.helpfulCount}</p>
+												<img className="mt-[8px] w-[25%] mr-1" src={smileStates[review.id] ? ActivatedSmile : DeactivatedSmile} alt="Smile" />
+												<p className={`${smileStates[review.id] ? 'text-cusColor3' : 'text-gray-400'} text-xs`}>도움돼요 {review.helpfulCount}</p>
 											</button>
 										</div>
 									</div>
@@ -177,13 +178,20 @@ function ProductDetail() {
 							</div>
 						</div>
 					</div>
-
+					<div className="min-h-[70px]">
+					</div>
 					{/* 하단 고정 버튼 */}
-					<div className="fixed bottom-0 m-4">
-						<button className="bg-cusColor3 w-[300px] h-[50px] hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
+					<div className="fixed bottom-0 w-[97%] max-w-[500px] h-[50px] bg-white flex justify-center items-center">
+						<button className="absolute left-[8%] mr-[20px]">
+							<img src={Heart} alt="" className="w-[27px]" />
+						</button>
+						<button className="bg-cusColor3  w-[50%] h-[80%] hover:bg-red-400 text-white text-base font-bold py-2 px-4 rounded-lg">
 							펀딩 만들기
 						</button>
 					</div>
+
+				
+
 				</div>
 			</div>
 		</>

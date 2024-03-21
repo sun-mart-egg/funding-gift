@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+
 
 import Header from '../UI/Header'
 import Footer from '../UI/Footer';
@@ -263,7 +265,9 @@ function Product() {
               <div key={product.id} className="flex-col w-[45%] h-[58.5%] text-[12px] rounded-md m-2">
                 {/* 이미지 영역 */}
                 <div className="w-[100%] h-[70%]">
-                  <img src={product.image} alt="" className="w-full h-full border rounded-md border-gray-300 shadow" />
+                  <Link to={`/product/${product.id}`}>
+                    <img src={product.image} alt="" className="w-full h-full border rounded-md border-gray-300 shadow" />
+                  </Link>
                 </div>
                 {/* Area2 */}
                 <div className="w-[100%] h-[30%] flex flex-col justify-center pl-2 p-[10px] m-[1px]">
