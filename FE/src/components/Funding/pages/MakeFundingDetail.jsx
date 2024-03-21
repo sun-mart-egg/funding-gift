@@ -1,10 +1,11 @@
-import { useState } from "react";
+import React, { useState, useRef, forwardRef } from "react";
 import { useNavigate } from "react-router-dom"; // useNavigate 사용
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import egg from "/imgs/egg3.jpg";
 import Footer from "../../UI/Footer";
 import Header from "../../UI/Header";
+import anniversaryData from "../data";
 
 function MakeFundingDetail() {
   // 현재 보여줄 컨텐츠 인덱스를 상태로 관리
@@ -22,8 +23,19 @@ function MakeFundingDetail() {
     account: "",
   });
 
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const CustomInput = forwardRef(({ value, onClick }, ref) => (
+    <button
+      onClick={() => setShowDatePicker(true)}
+      ref={ref}
+      className="calendar-button"
+    >
+      선택
+    </button>
+  ));
 
+  const navigate = useNavigate(); // useNavigate 훅 사용
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const ref = useRef(null); // DatePicker에 대한 ref를 생성합니다.
   // 다음 컨텐츠를 보여주는 함수
   const handleNext = () => {
     if (contentIndex < 4) {
@@ -90,11 +102,6 @@ function MakeFundingDetail() {
       case 1:
         return (
           <div className="text-md flex flex-col  justify-center">
-            <div id="card-title">
-              <p className="mb-10 text-center font-cusFont2 text-lg">
-                펀딩정보
-              </p>
-            </div>
             <div id="card-content">
               <div id="is-bestfriend" className="mb-6 flex">
                 <p className="mr-4 ">친한친구에게만 공개하기</p>
@@ -114,7 +121,7 @@ function MakeFundingDetail() {
                   value={formData.title}
                   placeholder="펀딩 제목을 입력해 주세요."
                   onChange={handleInputChange}
-                  className="mt-2 h-7 w-full rounded-md border  border-gray-500 p-2 text-xs placeholder:text-xs"
+                  className="mt-2 h-7 w-full rounded-md border  border-gray-400 p-2 text-xs placeholder:text-xs"
                 />
               </div>
               <div id="funding-detail">
@@ -125,7 +132,7 @@ function MakeFundingDetail() {
                   value={formData.intro}
                   onChange={handleInputChange}
                   placeholder="펀딩에 대해 소개해 주세요."
-                  className="mt-2  w-full rounded-md border  border-gray-500 p-2 text-xs placeholder:text-xs"
+                  className="mt-2 w-full rounded-md border  border-gray-400 p-2 text-xs placeholder:text-xs"
                 />
               </div>
             </div>
@@ -133,44 +140,67 @@ function MakeFundingDetail() {
         );
       case 2:
         return (
-          <div>
-            <h1>펀딩 디테일 정보</h1>
-            <div className="flex">
-              <p>기념일</p> <button className="bg-blue-400">선택</button>
+          <div className="text-md flex flex-col  justify-center">
+            <div id="card-content">
+              <div id="anniversary" className="mb-6 ">
+                <div className=" flex justify-between">
+                  <p>기념일</p>
+                  <button
+                    className="common-btn h-6 bg-gray-500 text-xs"
+                    onClick={() => navigate("/anniversary-list")}
+                  >
+                    변경
+                  </button>
+                </div>
+                <div className="mt-2 text-xs">
+                  <p>시은이 생일</p>
+                  <p>2024.4.22</p>
+                </div>
+              </div>
+
+              <div id="funding-date" className="mb-6">
+                <div className="flex justify-between">
+                  <p>펀딩 기간</p>
+                  <DatePicker
+                    ref={ref}
+                    selected={formData.startDate}
+                    onChange={handleDateChange}
+                    onClickOutside={() => setShowDatePicker(false)}
+                    open={showDatePicker}
+                    selectsRange={true}
+                    startDate={formData.startDate}
+                    endDate={formData.endDate}
+                    dateFormat="yyyy/MM/dd"
+                    customInput={<CustomInput />}
+                    className="p-2"
+                  />
+                </div>
+                <div className="mt-2 flex w-full justify-between rounded-md border  border-gray-400 ">
+                  <p className=" w-[80%] p-2 text-xs">
+                    {formData.startDate && formData.endDate
+                      ? `${getFormattedDate(formData.startDate)} ~ ${getFormattedDate(formData.endDate)}`
+                      : "기간을 입력하세요"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <p>최소금액</p>
+                <input
+                  type="text"
+                  name="minMoney"
+                  value={formData.minMoney}
+                  placeholder="최소 금액을 입력해주세요."
+                  className="mt-2 h-7 w-full rounded-md border  border-gray-400 p-2 text-xs placeholder:text-xs"
+                  onChange={handleInputChange}
+                />
+              </div>
             </div>
-
-            <input
-              type="text"
-              name="anniversary"
-              value={formData.anniversary}
-              onChange={handleInputChange}
-            />
-            <p>펀딩 기간:</p>
-            <p>
-              {getFormattedDate(formData.startDate)} ~{" "}
-              {getFormattedDate(formData.endDate)}
-            </p>
-
-            <DatePicker
-              selectsRange
-              startDate={formData.startDate}
-              endDate={formData.endDate}
-              onChange={handleDateChange}
-              dateFormat="yyyy/MM/dd"
-            />
-            <p>최소금액</p>
-            <input
-              type="text"
-              name="minMoney"
-              value={formData.minMoney}
-              onChange={handleInputChange}
-            />
           </div>
         );
       case 3:
         return (
           <div>
-            <h1>사용자 정보</h1>
             <div className="flex">
               <p>주소</p>
               <button className="bg-blue-400">선택</button>
@@ -228,9 +258,23 @@ function MakeFundingDetail() {
     >
       <div
         id="makeCard"
-        className="mb-10 flex h-3/5 w-[75%] flex-col items-center justify-center rounded-xl bg-white p-4 shadow-md"
+        className="flex w-[75%] flex-col items-center justify-start rounded-xl bg-white p-4 shadow-md"
+        style={{ height: "60%" }} // makeCard의 높이 조정
       >
-        <div id="contentSection">{renderContent()}</div>
+        <div id="card-title" className="w-full">
+          <p className="mb-10 text-center font-cusFont2 text-lg">
+            {contentIndex === 1
+              ? "펀딩정보"
+              : contentIndex === 2
+                ? "펀딩 디테일 정보"
+                : contentIndex === 3
+                  ? "사용자 정보"
+                  : ""}
+          </p>
+        </div>
+        <div id="contentSection" className="w-full overflow-auto">
+          {renderContent()}
+        </div>
       </div>
       <div
         id="buttonSection"
