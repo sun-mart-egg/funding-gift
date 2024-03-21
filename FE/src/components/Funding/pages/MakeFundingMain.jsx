@@ -5,7 +5,7 @@ import backgroundURL from "../../../../public/imgs/background.PNG";
 function MakeFundingMain() {
   return (
     <div
-      className="flex h-screen items-center justify-center"
+      className="flex h-screen w-full items-center justify-center"
       style={{
         backgroundImage: `url(${backgroundURL})`,
         backgroundSize: "cover",

@@ -19,7 +19,7 @@ function MyFunding() {
   };
 
   return (
-    <div className="font-cusFont3">
+    <div className="relative min-h-screen font-cusFont3">
       <div id="profileSection" className="m-2 flex justify-between p-2">
         <div id="leftSection" className="flex items-center space-x-4">
           <img
@@ -79,7 +79,7 @@ function MyFunding() {
       </div>
       <button
         onClick={handleCreateFundingClick}
-        className="hover:bg-cusColor3-dark fixed bottom-4 right-4 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-cusColor3 text-white shadow-lg"
+        className="hover:bg-cusColor3-dark fixed bottom-20 right-4 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-cusColor3 text-white shadow-lg"
       >
         <AiOutlinePlus size="20" />
         <p className="text-xs">펀딩만들기</p>
