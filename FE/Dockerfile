@@ -1,28 +1,3 @@
-<<<<<<< HEAD
-FROM node:20.10.0
-
-WORKDIR /app
-COPY . .
-RUN npm install
-
-RUN npm run build
-
-EXPOSE 5173
-# CMD ["serve", "-l","5173","-s", "dist"]
-ENTRYPOINT ["npm", "run","dev"]
-=======
-# FROM node:20.10.0
-
-# WORKDIR /app
-# COPY . .
-# RUN npm install
-
-# RUN npm run build
-
-# EXPOSE 5173
-# # CMD ["serve", "-l","5173","-s", "dist"]
-# ENTRYPOINT ["npm", "run","dev"]
-
 # 1단계: 애플리케이션 빌드
 FROM node:20.10.0 as builder
 WORKDIR /app
@@ -50,4 +25,4 @@ EXPOSE 5173
 
 # 애플리케이션 실행
 ENTRYPOINT ["serve", "-l", "5173", "-s", "dist"]
->>>>>>> 3aa985730b66a6be136fb25c607f8e3a2fdc94e4
+
