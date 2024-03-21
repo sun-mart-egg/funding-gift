@@ -16,6 +16,7 @@ import Paypage from "./components/Funding/pages/Paypage.jsx";
 import MakeFundingDetail from "./components/Funding/pages/MakeFundingDetail.jsx";
 import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx";
 import Login from "./components/Login/Login.jsx"
+import Home from "./components/Home/Home.jsx"
 
 import MainLayout from "./components/UI/MainLayout.jsx";
 
@@ -26,7 +27,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<MainLayout />}>
-          <Route path="/" element={<MyFunding />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/" element={<MyFunding />} />
             <Route path="/login" element={<Login />} />
             <Route path="/product" element={<Product />} />
           </Route>
