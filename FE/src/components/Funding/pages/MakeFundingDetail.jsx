@@ -2,6 +2,9 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom"; // useNavigate 사용
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import egg from "/imgs/egg3.jpg";
+import Footer from "../../UI/Footer";
+import Header from "../../UI/Header";
 
 function MakeFundingDetail() {
   // 현재 보여줄 컨텐츠 인덱스를 상태로 관리
@@ -70,12 +73,15 @@ function MakeFundingDetail() {
     switch (contentIndex) {
       case 0:
         return (
-          <div>
-            <div id="imgSection" className="mb-8 text-center">
-              <img src="src\components\Funding\assets\egg3.jpg" alt="" />
+          <div className="flex flex-col items-center justify-center text-center font-cusFont3">
+            <div
+              id="imgSection"
+              className="mb-8 flex w-2/3 items-center justify-center text-center"
+            >
+              <img src={egg} alt="" className="mx-auto" />
             </div>
             <div id="itemInfo">
-              <p> 에어팟 맥스</p>
+              <p className="p-2 font-cusFont2 text-xl"> 에어팟 맥스</p>
               <p>760,000</p>
               <p>로 선물은 만들어 볼까요?</p>
             </div>
@@ -83,29 +89,36 @@ function MakeFundingDetail() {
         );
       case 1:
         return (
-          <div>
-            <h1>펀딩정보</h1>
-            <p>친한친구 에게만 보여주기</p>
-            <input
-              type="checkbox"
-              name="bestFriend"
-              checked={formData.bestFriend}
-              onChange={handleInputChange}
-            />
-            <p>펀딩 제목:</p>
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleInputChange}
-            />
-            <p>펀딩 소개:</p>
-            <textarea
-              type="text"
-              name="intro"
-              value={formData.intro}
-              onChange={handleInputChange}
-            />
+          <div className="flex flex-col justify-center  ">
+            <div>
+              <p className="text-center font-cusFont2 text-lg">펀딩정보</p>
+            </div>
+            <div className="">
+              <div className="flex">
+                <p>친한친구 에게만 보여주기</p>
+                <input
+                  type="checkbox"
+                  name="bestFriend"
+                  checked={formData.bestFriend}
+                  onChange={handleInputChange}
+                  className="p-4"
+                />
+              </div>
+              <p>펀딩 제목:</p>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+              />
+              <p>펀딩 소개:</p>
+              <textarea
+                type="text"
+                name="intro"
+                value={formData.intro}
+                onChange={handleInputChange}
+              />
+            </div>
           </div>
         );
       case 2:
@@ -198,44 +211,49 @@ function MakeFundingDetail() {
   };
   return (
     <div
-      className="flex h-screen flex-col items-center justify-center"
+      className="flex h-screen flex-col items-center justify-evenly"
       style={{
         background: "linear-gradient(to bottom, #E5EEFF, #FFFFFF)", // 세로 그라디언트 정의
       }}
     >
       <div
         id="makeCard"
-        className="flex h-3/5 w-2/3 flex-col justify-around rounded-xl bg-white p-4"
+        className="mb-10 flex h-3/5 w-2/3 flex-col items-center justify-center rounded-xl bg-white p-4 shadow-md"
       >
         <div id="contentSection">{renderContent()}</div>
       </div>
-      <div id="buttonSection" className="flex w-full justify-around">
-        {contentIndex > 0 ? (
-          <>
-            <button
-              onClick={handlePrev}
-              style={{ flexBasis: "40%" }}
-              className="rounded-lg bg-cusColor3"
-            >
-              이전
-            </button>
+      <div
+        id="buttonSection"
+        className="absolute bottom-0 w-full justify-around pb-5"
+      >
+        <div className="flex justify-center space-x-4">
+          {contentIndex > 0 ? (
+            <>
+              <button
+                onClick={handlePrev}
+                style={{ width: "calc(40% - 10px)" }} // 버튼 너비 조정
+                className="rounded-lg border border-cusColor3 bg-white "
+              >
+                이전
+              </button>
+              <button
+                onClick={handleNext}
+                style={{ width: "calc(40% - 10px)" }} // 버튼 너비 조정
+                className="rounded-lg bg-cusColor3 p-2 text-white"
+              >
+                다음
+              </button>
+            </>
+          ) : (
             <button
               onClick={handleNext}
-              style={{ flexBasis: "40%" }}
-              className="rounded-lg bg-cusColor4"
+              style={{ width: "calc(66% )" }} // 버튼 너비 조정
+              className="rounded-lg bg-cusColor3 p-2 text-white"
             >
               다음
             </button>
-          </>
-        ) : (
-          <button
-            onClick={handleNext}
-            style={{ flexBasis: "40%" }}
-            className="rounded-lg bg-cusColor4"
-          >
-            다음
-          </button>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
