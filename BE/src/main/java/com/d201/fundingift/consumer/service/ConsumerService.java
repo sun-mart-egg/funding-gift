@@ -1,32 +1,26 @@
 package com.d201.fundingift.consumer.service;
 
 import com.d201.fundingift._common.exception.CustomException;
-import com.d201.fundingift._common.exception.HttpException;
 import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
-import com.d201.fundingift.consumer.dto.response.ConsumerInfoResponseDto;
+import com.d201.fundingift.consumer.dto.response.GetConsumerMyInfoResponse;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.d201.fundingift._common.response.ErrorType.USER_NOT_FOUND;
+
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class ConsumerService {
-    private final ConsumerRepository consumerRepository;
 
-    @Autowired
-    public ConsumerService(ConsumerRepository consumerRepository) {
-        this.consumerRepository = consumerRepository;
-    }
+    private final ConsumerRepository consumerRepository;
 
     // 회원가입
     @Transactional
@@ -51,10 +45,10 @@ public class ConsumerService {
     }
 
     // 내 정보 조회
-    public Consumer getMyInfo(Authentication authentication) {
-        if (authentication == null || authentication.getPrincipal() == null) {
-            throw new HttpException ("User not authenticated", HttpStatus.UNAUTHORIZED);
-        }
+    public GetConsumerMyInfoResponse getConsumerMyInfo(Authentication authentication) {
+//        if (authentication == null || authentication.getPrincipal() == null) {
+//            throw new CustomException(USER_UNAUTHORIZED);
+//        }
 
         String email;
         if (authentication.getPrincipal() instanceof OAuth2UserPrincipal) {
@@ -62,17 +56,20 @@ public class ConsumerService {
         } else if (authentication.getPrincipal() instanceof UserDetails) {
             email = ((UserDetails) authentication.getPrincipal()).getUsername();
         } else {
-            throw new HttpException("User not found", HttpStatus.NOT_FOUND);
+            throw new CustomException(USER_NOT_FOUND);
         }
 
-        return findByEmail(email)
-                .orElseThrow(() -> new HttpException("User not found", HttpStatus.NOT_FOUND));
+        Consumer c = findByEmail(email)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        return GetConsumerMyInfoResponse.from(c);
+
     }
 
     // 소비자 프로필 조회
-    public Consumer getConsumerProfile(Long consumerId) {
-        // consumerId를 사용하여 소비자 프로필 조회 로직 구현
-        return null;
+    public Consumer getConsumerInfoById(Long consumerId) {
+        Optional<Consumer> consumerOptional = consumerRepository.findById(consumerId);
+        return consumerOptional.orElseThrow(() -> new RuntimeException("Consumer not found with id: " + consumerId));
     }
 
 

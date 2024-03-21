@@ -10,7 +10,8 @@ import org.springframework.http.HttpHeaders;
 @Configuration
 @OpenAPIDefinition(info = @Info(title = "😺 생선가게 API"))
 @SecurityScheme(
-        name = HttpHeaders.AUTHORIZATION,
+        name = "Bearer Auth",
+        //name = HttpHeaders.AUTHORIZATION,
         type = SecuritySchemeType.HTTP,
         bearerFormat = "JWT",
         scheme = "bearer"

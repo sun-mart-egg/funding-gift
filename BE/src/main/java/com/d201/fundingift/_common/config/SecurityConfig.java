@@ -47,9 +47,9 @@ public class SecurityConfig {
                 )
                 // 요청에 대한 권한 설정
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers(antMatcher("/api/user/**")).authenticated()
-                        .requestMatchers(antMatcher("/h2-console/**")).permitAll()
-                        .requestMatchers(antMatcher("/swagger-ui/")).permitAll()
+//                        .requestMatchers(antMatcher("/api/consumers/**")).authenticated()
+//                        .requestMatchers(antMatcher("/h2-console/**")).permitAll()
+//                        .requestMatchers(antMatcher("/swagger-ui/")).permitAll()
                         .anyRequest().permitAll()
                 )
                 // OAuth2 로그인 설정
