@@ -38,26 +38,29 @@
 /* 공통 버튼양식, 전체적인 레이어 등등... */
 @layer components {
     .main-layer {
-        @apply flex flex-col items-center w-[360px] h-[640px] bg-white relative
+        /* 열방향, 가운데정렬, 최대너비500, 너비반응형, 배경흰색 */
+        @apply flex flex-col justify-center items-center 
+        max-w-[500px] w-full h-screen bg-white
     }
 
-    .header-layer {
-        @apply flex flex-row justify-between w-[360px] h-[64px] shadow-lg bg-white absolute top-0 z-10
+    .header {
+        @apply flex flex-row items-center 
+        bg-white shadow-lg absolute top-0
+        max-w-[500px] w-full
+        max-h-[60px] h-full
     }
 
-    .footer-layer {
-        @apply flex flex-row justify-around items-center w-[360px] h-[64px] border-t-2 bg-white absolute bottom-0 z-10
+    .footer {
+        /* 행방향, 가운데정렬, 배경흰색, absolute 바닥고정, 윗부분 회색 border */
+        @apply flex flex-row items-center justify-between
+        bg-white absolute bottom-0 px-10 border-gray-400
+        max-w-[500px] w-full
+        h-[80px] border-t-[1px] 
     }
 
     .common-btn {
-        @apply w-[285px] h-[48px] font-cusFont2 text-white rounded-lg bg-cusColor3
-    }
-
-    .login-font {
-        @apply text-gray-400 font-cusFont3 text-base
-    }
-
-    .fav-btn {
-        @apply w-[100px] h-[100px] border border-gray-500 rounded-[10px]
+        /* 가운데정렬, 테투리둥글게, 나눔스퀘어, 글꼴흰색, 배경주황색 */
+        @apply flex flex-row justify-center items-center
+        bg-cusColor3 rounded-lg font-cusFont3 text-white
     }
 }
