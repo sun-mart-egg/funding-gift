@@ -20,11 +20,11 @@ import ParticipatePage from "./components/Funding/pages/ParticipatePage.jsx";
 import Paypage from "./components/Funding/pages/Paypage.jsx";
 import MakeFundingDetail from "./components/Funding/pages/MakeFundingDetail.jsx";
 import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx";
-import Home from "./components/Home/Home.jsx"
+import Home from "./components/Home/Home.jsx";
+import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
 
 
 function App() {
-
   return (
     <div className="main-layer">
       <BrowserRouter>
@@ -42,11 +42,13 @@ function App() {
 
           <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/make-funding-main" element={<MakeFundingMain />} />
+          <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/participate" element={<ParticipatePage />} />
           <Route path="/pay" element={<Paypage />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/brand/:brandId" element={<BrandStore />} />
           <Route path="/wishlist/:userId" element={<Wishlist />} />
+          <Route path="/my-funding-detail" element={<MyFundingDetail />} />
         </Routes>
       </BrowserRouter>
     </div>
