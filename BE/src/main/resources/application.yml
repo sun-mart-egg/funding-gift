@@ -34,7 +34,7 @@ spring:
               - profile_nickname
               - profile_image
               - account_email
-            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            redirect-uri: "https://j10d201.p.ssafy.io/{action}/oauth2/code/{registrationId}"
             client-name: Kakao
         provider:
           kakao:
