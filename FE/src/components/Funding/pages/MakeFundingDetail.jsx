@@ -1,10 +1,10 @@
-import { useState } from "react";
+import React, { useState, useRef, forwardRef } from "react";
 import { useNavigate } from "react-router-dom"; // useNavigate 사용
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import egg from "/imgs/egg3.jpg";
 import Footer from "../../UI/Footer";
-import Header from "../../UI/MainHeader";
+import anniversaryData from "../data";
 
 function MakeFundingDetail() {
   // 현재 보여줄 컨텐츠 인덱스를 상태로 관리
@@ -22,8 +22,19 @@ function MakeFundingDetail() {
     account: "",
   });
 
-  const navigate = useNavigate(); // useNavigate 훅 사용
+  const CustomInput = forwardRef(({ value, onClick }, ref) => (
+    <button
+      onClick={() => setShowDatePicker(true)}
+      ref={ref}
+      className="calendar-button common-btn h-6 bg-gray-500 text-xs"
+    >
+      선택
+    </button>
+  ));
 
+  const navigate = useNavigate(); // useNavigate 훅 사용
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const ref = useRef(null); // DatePicker에 대한 ref를 생성합니다.
   // 다음 컨텐츠를 보여주는 함수
   const handleNext = () => {
     if (contentIndex < 4) {
@@ -89,13 +100,10 @@ function MakeFundingDetail() {
         );
       case 1:
         return (
-          <div className="flex flex-col justify-center  ">
-            <div>
-              <p className="text-center font-cusFont2 text-lg">펀딩정보</p>
-            </div>
-            <div className="">
-              <div className="flex">
-                <p>친한친구 에게만 보여주기</p>
+          <div className="text-md flex flex-col  justify-center">
+            <div id="card-content">
+              <div id="is-bestfriend" className="mb-6 flex">
+                <p className="mr-4 ">친한친구에게만 공개하기</p>
                 <input
                   type="checkbox"
                   name="bestFriend"
@@ -104,87 +112,128 @@ function MakeFundingDetail() {
                   className="p-4"
                 />
               </div>
-              <p>펀딩 제목:</p>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-              />
-              <p>펀딩 소개:</p>
-              <textarea
-                type="text"
-                name="intro"
-                value={formData.intro}
-                onChange={handleInputChange}
-              />
+              <div id="funding-title" className="mb-6">
+                <p>펀딩 제목</p>
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  placeholder="펀딩 제목을 입력해 주세요."
+                  onChange={handleInputChange}
+                  className="mt-2 h-7 w-full rounded-md border  border-gray-400 p-2 text-xs placeholder:text-xs"
+                />
+              </div>
+              <div id="funding-detail">
+                <p>펀딩 소개</p>
+                <textarea
+                  type="text"
+                  name="intro"
+                  value={formData.intro}
+                  onChange={handleInputChange}
+                  placeholder="펀딩에 대해 소개해 주세요."
+                  className="mt-2 w-full rounded-md border  border-gray-400 p-2 text-xs placeholder:text-xs"
+                />
+              </div>
             </div>
           </div>
         );
       case 2:
         return (
-          <div>
-            <h1>펀딩 디테일 정보</h1>
-            <div className="flex">
-              <p>기념일</p> <button className="bg-blue-400">선택</button>
+          <div className="text-md flex flex-col  justify-center">
+            <div id="card-content">
+              <div id="anniversary" className="mb-6 ">
+                <div className=" flex justify-between">
+                  <p>기념일</p>
+                  <button
+                    className="common-btn h-6 bg-gray-500 text-xs"
+                    onClick={() => navigate("/anniversary-list")}
+                  >
+                    변경
+                  </button>
+                </div>
+                <div className="mt-2 text-xs">
+                  <p>시은이 생일</p>
+                  <p>2024.4.22</p>
+                </div>
+              </div>
+
+              <div id="funding-date" className="mb-6">
+                <div className="flex justify-between">
+                  <p>펀딩 기간</p>
+                  <DatePicker
+                    ref={ref}
+                    selected={formData.startDate}
+                    onChange={handleDateChange}
+                    onClickOutside={() => setShowDatePicker(false)}
+                    open={showDatePicker}
+                    selectsRange={true}
+                    startDate={formData.startDate}
+                    endDate={formData.endDate}
+                    dateFormat="yyyy/MM/dd"
+                    customInput={<CustomInput />}
+                    className="p-2"
+                  />
+                </div>
+                <div className="mt-2 flex w-full justify-between rounded-md border  border-gray-400 ">
+                  <p className=" w-[80%] p-2 text-xs">
+                    {formData.startDate && formData.endDate
+                      ? `${getFormattedDate(formData.startDate)} ~ ${getFormattedDate(formData.endDate)}`
+                      : "기간을 입력하세요"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <p>최소금액</p>
+                <input
+                  type="text"
+                  name="minMoney"
+                  value={formData.minMoney}
+                  placeholder="최소 금액을 입력해주세요."
+                  className="mt-2 h-7 w-full rounded-md border  border-gray-400 p-2 text-xs placeholder:text-xs"
+                  onChange={handleInputChange}
+                />
+              </div>
             </div>
-
-            <input
-              type="text"
-              name="anniversary"
-              value={formData.anniversary}
-              onChange={handleInputChange}
-            />
-            <p>펀딩 기간:</p>
-            <p>
-              {getFormattedDate(formData.startDate)} ~{" "}
-              {getFormattedDate(formData.endDate)}
-            </p>
-
-            <DatePicker
-              selectsRange
-              startDate={formData.startDate}
-              endDate={formData.endDate}
-              onChange={handleDateChange}
-              dateFormat="yyyy/MM/dd"
-            />
-            <p>최소금액</p>
-            <input
-              type="text"
-              name="minMoney"
-              value={formData.minMoney}
-              onChange={handleInputChange}
-            />
           </div>
         );
       case 3:
         return (
-          <div>
-            <h1>사용자 정보</h1>
-            <div className="flex">
-              <p>주소</p>
-              <button className="bg-blue-400">선택</button>
-            </div>
+          <div className="text-md flex flex-col  justify-center">
+            <div id="card-content ">
+              <div id="address" className="mb-6 ">
+                <div className=" flex justify-between">
+                  <p>주소</p>
+                  <button
+                    className="common-btn h-6 bg-gray-500 text-xs"
+                    onClick={() => navigate("/anniversary-list")}
+                  >
+                    선택
+                  </button>
+                </div>
+                <div className="mt-4 h-[80px] rounded-md border border-gray-400 text-xs">
+                  주소정보 보여주는 곳
+                </div>
+              </div>
 
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleInputChange}
-            />
-            <div className="flex">
-              <p>환불계좌</p>
-              <button className="bg-blue-400">선택</button>
+              <div id="account" className="">
+                <div className="flex justify-between">
+                  <p>환불 계좌</p>
+                  <button
+                    className="common-btn h-6 bg-gray-500 text-xs"
+                    onClick={() => navigate("/anniversary-list")}
+                  >
+                    선택
+                  </button>
+                </div>
+                <div className="mt-4 h-[50px] rounded-md border border-gray-400 text-xs">
+                  계좌 정보 보여주는 곳
+                </div>
+              </div>
             </div>
-
-            <input
-              type="text"
-              name="account"
-              value={formData.account}
-              onChange={handleInputChange}
-            />
           </div>
         );
+
       case 4:
         return (
           <div>
@@ -211,16 +260,32 @@ function MakeFundingDetail() {
   };
   return (
     <div
-      className="sub-layer"
+      className="sub-layer font-cusFont3 "
       style={{
         background: "linear-gradient(to bottom, #E5EEFF, #FFFFFF)", // 세로 그라디언트 정의
       }}
     >
       <div
         id="makeCard"
-        className="mb-10 flex h-3/5 w-2/3 flex-col items-center justify-center rounded-xl bg-white p-4 shadow-md"
+        className="mt-20 flex w-[75%] flex-col items-center justify-start rounded-xl bg-white p-4 shadow-md"
+        style={{ height: "68%" }} // makeCard의 높이 조정
       >
-        <div id="contentSection">{renderContent()}</div>
+        <div id="card-title" className="w-full">
+          <p className="mb-10 text-center font-cusFont2 text-lg">
+            {contentIndex === 1
+              ? "펀딩정보"
+              : contentIndex === 2
+                ? "펀딩 디테일 정보"
+                : contentIndex === 3
+                  ? "사용자 정보"
+                  : contentIndex === 4
+                    ? "펀딩 정보 확인"
+                    : ""}
+          </p>
+        </div>
+        <div id="contentSection" className="w-full overflow-auto">
+          {renderContent()}
+        </div>
       </div>
       <div
         id="buttonSection"
@@ -232,14 +297,14 @@ function MakeFundingDetail() {
               <button
                 onClick={handlePrev}
                 style={{ width: "calc(40% - 10px)" }} // 버튼 너비 조정
-                className="rounded-lg border border-cusColor3 bg-white "
+                className="common-btn border-cus border border-cusColor3 bg-white text-black "
               >
                 이전
               </button>
               <button
                 onClick={handleNext}
                 style={{ width: "calc(40% - 10px)" }} // 버튼 너비 조정
-                className="rounded-lg bg-cusColor3 p-2 text-white"
+                className="common-btn"
               >
                 다음
               </button>
@@ -248,7 +313,7 @@ function MakeFundingDetail() {
             <button
               onClick={handleNext}
               style={{ width: "calc(66% )" }} // 버튼 너비 조정
-              className="rounded-lg bg-cusColor3 p-2 text-white"
+              className="common-btn"
             >
               다음
             </button>
