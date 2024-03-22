@@ -15,7 +15,7 @@ public class GetProductCategoryResponse {
     @Schema(description = "카테고리 ID", example = "1")
     private int categoryId;
 
-    @Schema(description = "카테고리 이름", example = "패션")
+    @Schema(description = " 카테고리 이름", example = "패션")
     private String categoryName;
 
     @Builder
