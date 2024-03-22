@@ -35,19 +35,26 @@
   src: url(/fonts/Yeongdo.ttf);
 }
 
+#root {
+  @apply bg-cusColor4;
+}
+
 /* 공통 버튼양식, 전체적인 레이어 등등... */
 @layer components {
   .main-layer {
     /* 열방향, 가운데정렬, 최대너비500, 너비반응형, 배경흰색 */
-    @apply flex h-screen w-full max-w-[500px] 
-            flex-col items-center justify-center bg-white;
+    @apply relative mt-20 flex h-full max-w-[500px] flex-col items-center justify-center overflow-hidden bg-white pb-20;
+  }
+  .sub-layer {
+    /* 열방향, 가운데정렬, 최대너비500, 너비반응형, 배경흰색 */
+    @apply relative flex h-screen max-w-[500px] flex-col items-center justify-center bg-white  pb-20;
   }
 
   .header {
-    @apply flex h-full max-h-[60px] 
-        w-full max-w-[500px] 
-        flex-row items-center
-        bg-white shadow-lg;
+    @apply absolute top-0 z-10 flex h-full 
+        max-h-[60px] w-full 
+        max-w-[500px] flex-row
+        items-center bg-white shadow-lg;
   }
 
   .footer {

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 function Login() {
   return (
-    <>
+    <div className="sub-layer">
       <img src={LoginLogo} alt="login" />
       <p className="signup-font m-5">소셜 계정으로 로그인</p>
       <img src={KakaoLogin} alt="login" className=" mt-7" />
@@ -14,11 +14,11 @@ function Login() {
         판매자 계정으로 로그인
       </button>
       <Link to={"/signup"}>
-        <p className="m-5 underline font-cusFont2 text-cusColor1">
+        <p className="m-5 font-cusFont2 text-cusColor1 underline">
           아직 회원이 아니신가요?
         </p>
       </Link>
-    </>
+    </div>
   );
 }
 
