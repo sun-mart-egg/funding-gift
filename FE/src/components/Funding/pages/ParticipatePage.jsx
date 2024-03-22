@@ -47,7 +47,7 @@ function ParticipatePage() {
   };
 
   return (
-    <div className="relative min-h-screen">
+    <div className="main-layer">
       <div
         id="page"
         className="flex flex-col items-center justify-center overflow-auto pb-16"
