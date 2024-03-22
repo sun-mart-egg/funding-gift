@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
 @Component
 public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
-    public static final String OAUTH2_AUTHORIZTION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
+    public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
     public static final String REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri";
     public static final String MODE_PARAM_COOKIE_NAME = "mode";
     public static final int COOKIE_EXPIE_SECONDS = 100;
@@ -21,7 +21,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
 
-        return CookieUtils.getCookie(request, OAUTH2_AUTHORIZTION_REQUEST_COOKIE_NAME)
+        return CookieUtils.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
                 .map(cookie -> CookieUtils.deserialize(cookie, OAuth2AuthorizationRequest.class))
                 .orElse(null);
     }
@@ -34,7 +34,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
         }
 
         CookieUtils.addCookie(response,
-                OAUTH2_AUTHORIZTION_REQUEST_COOKIE_NAME,
+                OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME,
                 CookieUtils.serialize(authorizationRequest),
                 COOKIE_EXPIE_SECONDS);
 
@@ -63,7 +63,7 @@ public class HttpCookieOAuth2AuthorizationRequestRepository implements Authoriza
 
     public void removeAuthorizationRequestCookies(HttpServletRequest request, HttpServletResponse response) {
 
-        CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZTION_REQUEST_COOKIE_NAME);
+        CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
         CookieUtils.deleteCookie(request, response, REDIRECT_URI_PARAM_COOKIE_NAME);
         CookieUtils.deleteCookie(request, response, MODE_PARAM_COOKIE_NAME);
     }

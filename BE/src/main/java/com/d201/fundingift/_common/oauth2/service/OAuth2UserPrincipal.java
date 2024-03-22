@@ -63,7 +63,7 @@ public class OAuth2UserPrincipal implements OAuth2User, UserDetails {
 
     @Override
     public String getName() {
-        return userInfo.getEmail();
+        return userInfo.getId(); // Id를 기반으로 JWT 토큰 생성 예정.
     }
 }
 /**

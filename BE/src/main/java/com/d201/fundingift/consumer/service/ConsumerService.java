@@ -2,6 +2,7 @@ package com.d201.fundingift.consumer.service;
 
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
+import com.d201.fundingift.consumer.dto.response.GetConsumerInfoByIdResponse;
 import com.d201.fundingift.consumer.dto.response.GetConsumerMyInfoResponse;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
@@ -14,9 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 import static com.d201.fundingift._common.response.ErrorType.USER_NOT_FOUND;
+import static com.d201.fundingift._common.response.ErrorType.USER_UNAUTHORIZED;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ConsumerService {
 
@@ -40,38 +42,35 @@ public class ConsumerService {
     public Optional<Consumer> findBySocialId(String socialId) {
         return consumerRepository.findBySocialId(socialId);
     }
-    public Optional<Consumer> findByEmail(String email) {
-        return consumerRepository.findByEmail(email);
+
+    private Consumer findById(Long id) {
+        return consumerRepository.findById(id)
+                .orElseThrow((() -> new CustomException(USER_NOT_FOUND)));
     }
 
     // 내 정보 조회
     public GetConsumerMyInfoResponse getConsumerMyInfo(Authentication authentication) {
-//        if (authentication == null || authentication.getPrincipal() == null) {
-//            throw new CustomException(USER_UNAUTHORIZED);
-//        }
+        if (authentication == null || authentication.getPrincipal() == null) {
+            throw new CustomException(USER_UNAUTHORIZED);
+        }
 
-        String email;
+        String id;
         if (authentication.getPrincipal() instanceof OAuth2UserPrincipal) {
-            email = ((OAuth2UserPrincipal) authentication.getPrincipal()).getUserInfo().getEmail();
+            id = ((OAuth2UserPrincipal) authentication.getPrincipal()).getUserInfo().getId();
         } else if (authentication.getPrincipal() instanceof UserDetails) {
-            email = ((UserDetails) authentication.getPrincipal()).getUsername();
+            id = ((UserDetails) authentication.getPrincipal()).getUsername();
         } else {
             throw new CustomException(USER_NOT_FOUND);
         }
 
-        Consumer c = findByEmail(email)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-
-        return GetConsumerMyInfoResponse.from(c);
-
+        return GetConsumerMyInfoResponse.from(findById(Long.parseLong(id)));
     }
 
     // 소비자 프로필 조회
-    public Consumer getConsumerInfoById(Long consumerId) {
-        Optional<Consumer> consumerOptional = consumerRepository.findById(consumerId);
-        return consumerOptional.orElseThrow(() -> new RuntimeException("Consumer not found with id: " + consumerId));
+    public GetConsumerInfoByIdResponse getConsumerInfoById(Long consumerId) {
+        return GetConsumerInfoByIdResponse.from(consumerRepository.findById(consumerId)
+                .orElseThrow((() -> new CustomException(USER_NOT_FOUND))));
     }
-
 
     // 친구 목록 생성 (회원가입 시)
     // 실제 서비스에서는 회원가입 로직과 연동되어야 합니다.

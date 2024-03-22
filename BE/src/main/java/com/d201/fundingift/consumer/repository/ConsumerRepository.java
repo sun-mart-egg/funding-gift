@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
     Optional<Consumer> findBySocialId(String socialId);
     Optional<Consumer> findByEmail(String email);
+    Optional<Consumer> findById(Long id);
 }

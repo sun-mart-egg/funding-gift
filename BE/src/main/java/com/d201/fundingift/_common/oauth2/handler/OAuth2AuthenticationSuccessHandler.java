@@ -88,14 +88,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             Optional<Consumer> findMember = consumerService.findBySocialId(socialId);
 
             // 가입 안 된 상태일 경우 -> 회원등록
-            // 가입 된 상태일 경우 -> 로그인
             if(findMember.isEmpty()){
-                // [회원등록]
-                String accessToken = jwtUtil.createToken(authentication);
-                //String refreshToken = "test_refresh_token";
-
                 // DB에 저장.
                 Long consumerId = consumerService.saveOAuth2User(principal);
+
+                // 액세스 토큰 생성
+                // TODO: 리프레시 토큰 발급
+                // TODO: 리프레시 토큰 DB 저장
+                String accessToken = jwtUtil.createToken(consumerId.toString());
+                //String refreshToken = "test_refresh_token";
 
                 // 회원가입 페이지로 리다이렉트(예정)
                 return UriComponentsBuilder.fromUriString(targetUrl)
@@ -104,8 +105,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                         .queryParam("nextPage","sign-in")
                         .build().toUriString();
             } else {
-                // [로그인]
-                String accessToken = jwtUtil.createToken(authentication);
+                // 가입 된 상태일 경우 -> 로그인
+                Long consumerId = findMember.get().getId();
+                String accessToken = jwtUtil.createToken(consumerId.toString());
 
                 // 메인 페이지로 리다이렉트
                 return UriComponentsBuilder.fromUriString(targetUrl)

@@ -6,16 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-@Schema(name = "GetConsumerMyResponse", description = "소비자 내 정보 조회 응답")
+@Schema(name = "GetConsumerMyInfoResponse", description = "소비자 내 정보 조회 응답")
 @Getter
 @ToString
 public class GetConsumerMyInfoResponse {
 
     @Schema(description = "소비자 ID", example = "1", required = true)
     private final Long id;
-
-    @Schema(description = "소셜 ID", example = "3386578453")
-    private final String socialId;
 
     @Schema(description = "이메일 주소", example = "user@example.com")
     private final String email;
@@ -40,9 +37,8 @@ public class GetConsumerMyInfoResponse {
 
 
     @Builder
-    private GetConsumerMyInfoResponse(Long id, String socialId, String email, String name, String profileImageUrl, String phoneNumber, String birthyear, String birthday, String gender) {
+    private GetConsumerMyInfoResponse(Long id, String email, String name, String profileImageUrl, String phoneNumber, String birthyear, String birthday, String gender) {
         this.id = id;
-        this.socialId = socialId;
         this.email = email;
         this.name = name;
         this.profileImageUrl = profileImageUrl;
@@ -53,10 +49,9 @@ public class GetConsumerMyInfoResponse {
     }
 
     // 직접 값을 전달하여 ConsumerInfoResponseDto 인스턴스를 생성
-    public static GetConsumerMyInfoResponse of(Long id, String socialId, String email, String name, String profileImageUrl, String phoneNumber, String birthyear, String birthday, String gender) {
+    public static GetConsumerMyInfoResponse of(Long id, String email, String name, String profileImageUrl, String phoneNumber, String birthyear, String birthday, String gender) {
         return builder()
                 .id(id)
-                .socialId(socialId)
                 .email(email)
                 .name(name)
                 .profileImageUrl(profileImageUrl)
@@ -71,7 +66,6 @@ public class GetConsumerMyInfoResponse {
     public static GetConsumerMyInfoResponse from(Consumer consumer) {
         return builder()
                 .id(consumer.getId())
-                .socialId(consumer.getSocialId())
                 .email(consumer.getEmail())
                 .name(consumer.getName())
                 .profileImageUrl(consumer.getProfileImageUrl())

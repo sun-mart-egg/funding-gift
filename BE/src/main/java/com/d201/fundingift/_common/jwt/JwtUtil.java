@@ -58,13 +58,13 @@ public class JwtUtil {
         return false;
     }
 
-    public String createToken(Authentication authentication) {
+    public String createToken(String consumerId) {
 
         Date date = new Date();
         Date expiryDate = new Date(date.getTime() + ACCESS_TOKEN_EXPIRE_TIME_IN_MILLISECONDS);
 
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(consumerId)
                 .setIssuedAt(date)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS512)

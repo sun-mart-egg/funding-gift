@@ -50,5 +50,7 @@ redis:
   port: ${REDIS_PORT}
   password: ${REDIS_PASSWORD}
 
+base-url: ${BASE_URL}
+
 jwt:
   secret: ${JWT_SECRET}
