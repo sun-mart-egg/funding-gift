@@ -26,7 +26,7 @@ function MakeFundingDetail() {
     <button
       onClick={() => setShowDatePicker(true)}
       ref={ref}
-      className="calendar-button"
+      className="calendar-button common-btn h-6 bg-gray-500 text-xs"
     >
       선택
     </button>
@@ -199,31 +199,41 @@ function MakeFundingDetail() {
         );
       case 3:
         return (
-          <div>
-            <div className="flex">
-              <p>주소</p>
-              <button className="bg-blue-400">선택</button>
-            </div>
+          <div className="text-md flex flex-col  justify-center">
+            <div id="card-content ">
+              <div id="address" className="mb-6 ">
+                <div className=" flex justify-between">
+                  <p>주소</p>
+                  <button
+                    className="common-btn h-6 bg-gray-500 text-xs"
+                    onClick={() => navigate("/anniversary-list")}
+                  >
+                    선택
+                  </button>
+                </div>
+                <div className="mt-4 h-[80px] rounded-md border border-gray-400 text-xs">
+                  주소정보 보여주는 곳
+                </div>
+              </div>
 
-            <input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleInputChange}
-            />
-            <div className="flex">
-              <p>환불계좌</p>
-              <button className="bg-blue-400">선택</button>
+              <div id="account" className="">
+                <div className="flex justify-between">
+                  <p>환불 계좌</p>
+                  <button
+                    className="common-btn h-6 bg-gray-500 text-xs"
+                    onClick={() => navigate("/anniversary-list")}
+                  >
+                    선택
+                  </button>
+                </div>
+                <div className="mt-4 h-[50px] rounded-md border border-gray-400 text-xs">
+                  계좌 정보 보여주는 곳
+                </div>
+              </div>
             </div>
-
-            <input
-              type="text"
-              name="account"
-              value={formData.account}
-              onChange={handleInputChange}
-            />
           </div>
         );
+
       case 4:
         return (
           <div>
@@ -250,15 +260,15 @@ function MakeFundingDetail() {
   };
   return (
     <div
-      className="sub-layer"
+      className="sub-layer font-cusFont3 "
       style={{
         background: "linear-gradient(to bottom, #E5EEFF, #FFFFFF)", // 세로 그라디언트 정의
       }}
     >
       <div
         id="makeCard"
-        className="flex w-[75%] flex-col items-center justify-start rounded-xl bg-white p-4 shadow-md"
-        style={{ height: "60%" }} // makeCard의 높이 조정
+        className="mt-20 flex w-[75%] flex-col items-center justify-start rounded-xl bg-white p-4 shadow-md"
+        style={{ height: "68%" }} // makeCard의 높이 조정
       >
         <div id="card-title" className="w-full">
           <p className="mb-10 text-center font-cusFont2 text-lg">
@@ -268,7 +278,9 @@ function MakeFundingDetail() {
                 ? "펀딩 디테일 정보"
                 : contentIndex === 3
                   ? "사용자 정보"
-                  : ""}
+                  : contentIndex === 4
+                    ? "펀딩 정보 확인"
+                    : ""}
           </p>
         </div>
         <div id="contentSection" className="w-full overflow-auto">

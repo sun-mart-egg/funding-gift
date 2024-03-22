@@ -41,6 +41,7 @@ function App() {
           <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
+          <Route path="/anniversary-list" element={<AnniversaryListPage />} />
         </Route>
 
         <Route path="/participate" element={<ParticipatePage />} />
