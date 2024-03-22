@@ -44,13 +44,13 @@ function App() {
           <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/anniversary-list" element={<AnniversaryListPage />} />
+          <Route path="/wishlist/:userId" element={<Wishlist />} />
         </Route>
 
         <Route path="/participate" element={<ParticipatePage />} />
         <Route path="/pay" element={<Paypage />} />
 
         <Route path="/brand/:brandId" element={<BrandStore />} />
-        <Route path="/wishlist/:userId" element={<Wishlist />} />
       </Routes>
     </BrowserRouter>
   );

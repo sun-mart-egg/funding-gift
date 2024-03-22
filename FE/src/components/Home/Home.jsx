@@ -12,7 +12,7 @@ function Home() {
 
   return (
     <div className="main-layer font-cusFont2">
-      <div className="w-full">
+      <div>
         <SearchBar />
       </div>
 
