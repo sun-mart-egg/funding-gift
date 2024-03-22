@@ -2,14 +2,16 @@ import React from "react";
 import SearchBar from "../UI/SearchBar";
 import { useNavigate } from "react-router-dom";
 
-import CatIcon from "/imgs/cat_icon.png";
-import FishIcon from "/icons/size-192.png";
+import CatIcon from "/imgs/cat.PNG";
+import FishIcon from "/imgs/fish.PNG";
+
+import ScrollToTop from "../UI/ScrollToTop";
 
 function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="main-layer">
+    <div className="main-layer font-cusFont2">
       <div className="w-full">
         <SearchBar />
       </div>
@@ -21,18 +23,16 @@ function Home() {
       <div className="flex w-[95%]">
         <div
           onClick={() => navigate("/make-funding-main")}
-          className="mr-[1.5%] mt-[15px] h-[100px] w-[50%] rounded-md bg-cusColor4 p-5 text-center"
+          className="relative mr-[1.5%] mt-[15px] h-[100px] w-[50%] rounded-md bg-cusColor4 p-5 text-center"
         >
-          <img src={CatIcon} alt="" className="mx-auto -mt-[15px] w-[38%]" />
-          <p className="text-xs">펀딩 만들러 가기</p>
+          <img src={CatIcon} alt="" className="absolute top-[5%] left-1/2 transform -translate-x-1/2 w-[68px] h-[70.5px]" />
+          <p className="text-xs absolute left-0 right-0 bottom-2 w-full">펀딩 만들러 가기</p>
         </div>
-        <div className="relative ml-[1.5%] mt-[15px] h-[100px] w-[50%] rounded-md bg-cusColor3 p-5 text-center">
-          <img
-            src={FishIcon}
-            alt=""
-            className="m-auto -mb-[20px] -mt-[25px] w-[55%]"
-          />
-          <p className="text-xs">펀딩 참여하러 가기</p>
+        <div
+          className="relative ml-[1.5%] mt-[15px] h-[100px] w-[50%] rounded-md bg-cusColor3 p-5 text-center"
+        >
+          <img src={FishIcon} alt="" className="absolute top-[5%] left-1/2 transform -translate-x-1/2 w-[92px] h-[71px]" />
+          <p className="text-xs absolute left-0 right-0 bottom-2 w-full">펀딩 참여하러 가기</p>
         </div>
       </div>
 
@@ -51,6 +51,7 @@ function Home() {
           <p className="">추천 상품이 들어갈 예정입니다!</p>
         </div>
       </div>
+      <ScrollToTop />
     </div>
   );
 }
