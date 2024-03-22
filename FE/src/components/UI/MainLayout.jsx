@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 function MainLayout() {
-  const [activeIcon, setActiveIcon] = useState("home");
 
   return (
     <>
