@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./components/UI/MainLayout.jsx";
 import SubLayout from "./components/UI/SubLayout.jsx";
 
-import Login from "./components/Login/Login.jsx"
+import Login from "./components/Login/Login.jsx";
 import Signup from "./components/Login/Signup.jsx";
 
 import MyFunding from "./components/Funding/pages/MyFunding";
@@ -23,33 +23,37 @@ import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx"
 import Home from "./components/Home/Home.jsx";
 import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
 
-
 function App() {
   return (
     <div className="main-layer">
       <BrowserRouter>
         <Routes>
           <Route element={<MainLayout />}>
-            
             <Route path="/" element={<Home />} />
             <Route path="/my-funding" element={<MyFunding />} />
             <Route path="/product" element={<Product />} />
+            <Route path="/make-funding-main" element={<MakeFundingMain />} />
           </Route>
 
           <Route element={<SubLayout />}>
             <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />}/>
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/my-funding-detail" element={<MyFundingDetail />} />
+            <Route
+              path="/make-funding-detail"
+              element={<MakeFundingDetail />}
+            />
+            <Route
+              path="/make-funding-finish"
+              element={<MakeFundingFinish />}
+            />
           </Route>
 
-          <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
-          <Route path="/make-funding-main" element={<MakeFundingMain />} />
-          <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/participate" element={<ParticipatePage />} />
           <Route path="/pay" element={<Paypage />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/brand/:brandId" element={<BrandStore />} />
           <Route path="/wishlist/:userId" element={<Wishlist />} />
-          <Route path="/my-funding-detail" element={<MyFundingDetail />} />
         </Routes>
       </BrowserRouter>
     </div>
