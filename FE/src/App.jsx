@@ -30,8 +30,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<MainLayout />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/" element={<MyFunding />} />
+            
+            <Route path="/" element={<Home />} />
+            <Route path="/my-funding" element={<MyFunding />} />
             <Route path="/product" element={<Product />} />
           </Route>
 
