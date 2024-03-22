@@ -68,7 +68,8 @@
   .common-btn {
     /* 가운데정렬, 테투리둥글게, 나눔스퀘어, 글꼴흰색, 배경주황색 */
     @apply flex flex-row items-center justify-center
-        rounded-lg bg-cusColor3 font-cusFont3 text-white;
+        rounded-lg bg-cusColor3 p-2 font-cusFont3
+        text-white;
   }
 
   /* 회원, 친구목록 관련 */
