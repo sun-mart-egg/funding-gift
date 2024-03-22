@@ -25,7 +25,7 @@ public class Product extends BaseTime {
     @Column(name = "product_id", nullable = false)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
