@@ -7,11 +7,11 @@ function MainLayout() {
 
   return (
     <>
-      <MainHeader setActiveIcon={setActiveIcon} />
+      <MainHeader />
 
       <Outlet />
 
-      <Footer activeIcon={activeIcon} setActiveIcon={setActiveIcon} />
+      <Footer />
     </>
   );
 }
