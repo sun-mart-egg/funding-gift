@@ -6,48 +6,55 @@
 
 /* 글꼴 */
 @font-face {
-  font-family: "cusFont1";
+  font-family: "산토끼";
   src: url(/fonts/HSSantokki-Regular.ttf);
 }
 
 @font-face {
-  font-family: "cusFont2";
+  font-family: "나눔스퀘어bold";
   src: url(/fonts/NanumSquare_acB.ttf);
 }
 
 @font-face {
-  font-family: "cusFont3";
+  font-family: "나눔스퀘어regular";
   src: url(/fonts/NanumSquare_acR.ttf);
 }
 
 @font-face {
-  font-family: "cusFont4";
+  font-family: "온글잎시우";
   src: url(/fonts/Ownglyph_2022_UWY_Si_Woo-Rg.ttf);
 }
 
 @font-face {
-  font-family: "cusFont5";
+  font-family: "호빵";
   src: url(/fonts/SDSamliphopangcheTTFBasic.ttf);
 }
 
 @font-face {
-  font-family: "cusFont6";
+  font-family: "영도";
   src: url(/fonts/Yeongdo.ttf);
+}
+
+#root {
+  @apply bg-cusColor4;
 }
 
 /* 공통 버튼양식, 전체적인 레이어 등등... */
 @layer components {
   .main-layer {
     /* 열방향, 가운데정렬, 최대너비500, 너비반응형, 배경흰색 */
-    @apply flex h-screen w-full max-w-[500px] 
-        flex-col items-center justify-center bg-white;
+    @apply relative mt-20 flex h-full max-w-[500px] flex-col items-center justify-center overflow-hidden bg-white pb-20;
+  }
+  .sub-layer {
+    /* 열방향, 가운데정렬, 최대너비500, 너비반응형, 배경흰색 */
+    @apply relative flex h-screen max-w-[500px] flex-col items-center justify-center bg-white  pb-20;
   }
 
   .header {
-    @apply flex h-full max-h-[60px] 
-        w-full max-w-[500px] 
-        flex-row items-center
-        bg-white shadow-lg;
+    @apply absolute top-0 z-10 flex h-full 
+        max-h-[60px] w-full 
+        max-w-[500px] flex-row
+        items-center bg-white shadow-lg;
   }
 
   .footer {
@@ -63,5 +70,14 @@
     @apply flex flex-row items-center justify-center
         rounded-lg bg-cusColor3 p-2 font-cusFont3
         text-white;
+  }
+
+  /* 회원, 친구목록 관련 */
+  .signup-font {
+    @apply font-cusFont3 text-gray-400;
+  }
+
+  .fav-btn {
+    @apply h-full max-h-[100px] w-full max-w-[100px] rounded border-[3px] bg-white;
   }
 }

@@ -250,7 +250,7 @@ function MakeFundingDetail() {
   };
   return (
     <div
-      className="flex h-screen flex-col items-center justify-evenly"
+      className="sub-layer"
       style={{
         background: "linear-gradient(to bottom, #E5EEFF, #FFFFFF)", // 세로 그라디언트 정의
       }}

@@ -10,7 +10,7 @@ function MakeFundingFinish() {
     navigate("/my-funding");
   };
   return (
-    <div className="h-screen flex-col items-center justify-center bg-slate-300">
+    <div className="sub-layer">
       <div
         id="makeCard"
         className="flex h-3/5 w-2/3 flex-col justify-around rounded-xl bg-white p-4"
@@ -18,7 +18,12 @@ function MakeFundingFinish() {
         <div id="contentSection">펀딩 성공적으로 만들었음 ㅊㅋㅊㅋ</div>
       </div>
       <div id="buttonSection" className="flex w-full justify-around">
-        <button className="rounded-lg bg-cusColor3">홈화면으로</button>
+        <button
+          onClick={() => navigate("/")}
+          className="rounded-lg bg-cusColor3"
+        >
+          홈화면으로
+        </button>
         <button onClick={navigateMypage} className="rounded-lg bg-cusColor4">
           내 펀딩화면으로{" "}
         </button>

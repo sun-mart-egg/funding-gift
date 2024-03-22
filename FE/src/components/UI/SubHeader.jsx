@@ -9,7 +9,7 @@ function SubHeader() {
     }
 
     return (
-        <div className="items-center p-4 header-layer">
+        <header className="header justify-between p-1">
             <button>
                 <img src={BackBtn} alt="뒤로가기" onClick={handleBack} />
             </button>
@@ -18,7 +18,7 @@ function SubHeader() {
                 <img src={Logo} alt="메인로고" />
             </Link>
             <div className="w-[20px] h-[20px] bg-transparent"></div>
-        </div>
+        </header>
     )
 }
 
