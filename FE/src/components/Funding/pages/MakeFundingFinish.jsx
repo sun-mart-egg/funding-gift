@@ -10,7 +10,7 @@ function MakeFundingFinish() {
     navigate("/my-funding");
   };
   return (
-    <div className="h-screen w-full flex-col items-center justify-center bg-slate-300">
+    <div className="sub-layer">
       <div
         id="makeCard"
         className="flex h-3/5 w-2/3 flex-col justify-around rounded-xl bg-white p-4"
