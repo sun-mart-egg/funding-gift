@@ -279,8 +279,11 @@ function Wishlist() {
             </div>
           ))}
         </div>
+        
+        {/* 상품 목록 불러올 예정 */}
+        <div>
 
-
+        </div>
 
         
         
