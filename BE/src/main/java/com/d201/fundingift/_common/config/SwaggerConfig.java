@@ -7,12 +7,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.springframework.context.annotation.Bean;
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
-import java.util.List;
 @Configuration
 @OpenAPIDefinition(
+        servers = @Server(url = "${base-url}", description = "server base url"),
         info = @Info(
                 title = "😺 생선가게 API",
                 description = "토큰이 필요한 API는 발급된 accessToken을 Header에 담아서 보내주세요. \n" +
@@ -32,8 +33,10 @@ import java.util.List;
         bearerFormat = "JWT"
 )
 public class SwaggerConfig {
+
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI();
     }
+
 }
