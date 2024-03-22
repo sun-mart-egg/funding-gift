@@ -9,7 +9,7 @@ function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center pt-4 font-cusFont2">
+    <div className="main-layer">
       <div className="w-full">
         <SearchBar />
       </div>

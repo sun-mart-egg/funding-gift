@@ -23,7 +23,7 @@ function Footer() {
   };
 
   return (
-    <footer className="fixed bottom-0 left-0  flex w-full max-w-[500px] items-center justify-between border-t border-gray-400 bg-white px-10">
+    <footer className="fixed bottom-0  flex w-full max-w-[500px] items-center justify-between border-t border-gray-400 bg-white px-10">
       <img
         src={getIconStatus("/") ? HomeActivated : Home}
         alt="Home"

@@ -19,8 +19,8 @@ function MyFunding() {
   };
 
   return (
-    <div className="relative min-h-screen font-cusFont3">
-      <div id="profileSection" className="m-2 flex justify-between p-2">
+    <div className="main-layer ">
+      <div id="profileSection" className="m-2 flex w-full justify-between p-2">
         <div id="leftSection" className="flex items-center space-x-4">
           <img
             src="src\components\Funding\assets\egg3.jpg"
@@ -47,7 +47,7 @@ function MyFunding() {
           </div>
         </div>
       </div>
-      <div id="buttonSection" className="flex justify-between  ">
+      <div id="buttonSection" className="flex w-full justify-between  ">
         <button
           onClick={handleClickButton}
           name="myFunding"

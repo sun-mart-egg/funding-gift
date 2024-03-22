@@ -12,7 +12,7 @@ function Paypage() {
   };
 
   return (
-    <div>
+    <div className="main-layer">
       <p>펀딩 정보</p>
       <div id="fundingInfo" className="border border-black">
         <div id="left">

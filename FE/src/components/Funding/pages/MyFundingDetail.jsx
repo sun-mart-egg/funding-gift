@@ -56,7 +56,7 @@ function MyFundingDetail() {
   };
 
   return (
-    <div>
+    <div className="main-layer">
       <div
         id="page"
         className="flex h-screen flex-col items-center justify-center overflow-auto"

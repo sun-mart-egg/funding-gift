@@ -25,38 +25,31 @@ import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
 
 function App() {
   return (
-    <div className="main-layer">
-      <BrowserRouter>
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/my-funding" element={<MyFunding />} />
-            <Route path="/product" element={<Product />} />
-            <Route path="/make-funding-main" element={<MakeFundingMain />} />
-          </Route>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/my-funding" element={<MyFunding />} />
+          <Route path="/product" element={<Product />} />
+        </Route>
 
-          <Route element={<SubLayout />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/my-funding-detail" element={<MyFundingDetail />} />
-            <Route
-              path="/make-funding-detail"
-              element={<MakeFundingDetail />}
-            />
-            <Route
-              path="/make-funding-finish"
-              element={<MakeFundingFinish />}
-            />
-          </Route>
-
-          <Route path="/participate" element={<ParticipatePage />} />
-          <Route path="/pay" element={<Paypage />} />
+        <Route element={<SubLayout />}>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/make-funding-main" element={<MakeFundingMain />} />
+          <Route path="/my-funding-detail" element={<MyFundingDetail />} />
+          <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
+          <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
-          <Route path="/brand/:brandId" element={<BrandStore />} />
-          <Route path="/wishlist/:userId" element={<Wishlist />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+        </Route>
+
+        <Route path="/participate" element={<ParticipatePage />} />
+        <Route path="/pay" element={<Paypage />} />
+
+        <Route path="/brand/:brandId" element={<BrandStore />} />
+        <Route path="/wishlist/:userId" element={<Wishlist />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
