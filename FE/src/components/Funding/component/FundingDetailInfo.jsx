@@ -10,10 +10,10 @@ function FundingDetailInfo({
   progress,
 }) {
   return (
-    <div className="flex flex-col items-center justify-center ">
+    <div className=" flex flex-col items-center justify-center">
       <div id="fundingTitle">
         <p>{friendName}님의 </p>
-        <h1>{title}</h1>
+        <p className="font-cusFont1 text-[30px]">{title}</p>
       </div>
       <div id="fundingInfoSection" className="flex items-center p-4">
         <div id="fundingImg">

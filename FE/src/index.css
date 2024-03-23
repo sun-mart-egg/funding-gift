@@ -57,6 +57,13 @@
         items-center bg-white shadow-lg;
   }
 
+  .sub-header {
+    @apply fixed top-0 z-10 flex h-full 
+        max-h-[60px] w-full 
+        max-w-[500px] flex-row
+        items-center bg-white shadow-lg;
+  }
+
   .footer {
     /* 행방향, 가운데정렬, 배경흰색, absolute 바닥고정, 윗부분 회색 border */
     @apply absolute bottom-0 flex h-[80px]

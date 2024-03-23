@@ -45,6 +45,18 @@ function MyFundingDetail() {
       detail: "메세지 내용 테스트임 5",
       reply: null,
     },
+    {
+      name: "박종혁",
+      title: "시은아 생일 축하해4",
+      detail: "메세지 내용 테스트임 5",
+      reply: null,
+    },
+    {
+      name: "박종혁",
+      title: "시은아 생일 축하해4",
+      detail: "메세지 내용 테스트임 5",
+      reply: null,
+    },
   ];
 
   const [isBottomSheetOpen, setIsBottomSheetOpen, selectId] = useState(false);
@@ -56,10 +68,10 @@ function MyFundingDetail() {
   };
 
   return (
-    <div className="main-layer">
+    <div className="sub-layer">
       <div
         id="page"
-        className="flex h-screen flex-col items-center justify-center overflow-auto"
+        className="flex h-screen flex-col items-center justify-center "
       >
         <FundingDetailInfo
           title={data.title}
