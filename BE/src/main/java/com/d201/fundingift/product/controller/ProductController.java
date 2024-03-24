@@ -43,6 +43,20 @@ public class ProductController {
         return ResponseUtils.ok(productService.getCategories(), GET_PRODUCT_CATEGORIES_SUCCESS);
     }
 
+    @Operation(summary = "카테고리 별 상품 목록 조회",
+            description = """
+                        카테고리 별 상품 목록을 조회합니다.
+                        Query Parameter로 category-id, page, size, sort 넣어주세요.
+                        - page: 페이지 번호 (0부터 시작)
+                        - size: 한 페이지에 불러올 데이터의 개수
+                        - sort: 정렬 조건 (0: 기본 순, 1: 리뷰 많은 순, 2: 평점 높은 순, 3: 가격 높은 순, 4: 가격 낮은 순)
+                         """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+
+    })
     @GetMapping("")
     public SuccessResponse<List<GetProductResponse>> getProducts(@RequestParam(required = true, name = "category-id") Integer categoryId,
                                                                  @RequestParam(required = true, name = "page") Integer page,
