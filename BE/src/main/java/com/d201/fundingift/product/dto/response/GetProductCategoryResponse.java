@@ -1,7 +1,6 @@
 package com.d201.fundingift.product.dto.response;
 
 import com.d201.fundingift.product.entity.ProductCategory;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +14,7 @@ public class GetProductCategoryResponse {
     @Schema(description = "카테고리 ID", example = "1")
     private int categoryId;
 
-    @Schema(description = "카테고리 이름", example = "패션")
+    @Schema(description = " 카테고리 이름", example = "패션")
     private String categoryName;
 
     @Builder
