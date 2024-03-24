@@ -72,12 +72,29 @@ public class Product extends BaseTime {
         this.productCategory = productCategory;
     }
 
-    public void updateReview(Integer star) {
+    // 리뷰 생성 시
+    public void insertReview(Integer star) {
         // 평균
         reviewAvg = (reviewAvg * reviewCnt + star) / (reviewCnt + 1);
         reviewAvg = Math.round(reviewAvg * 100) / 100.0; // 소수점 둘째자리에서 반올림
         // 개수
         reviewCnt += 1;
+    }
+
+    // 리뷰 수정 시
+    public void updateReview(Integer star) {
+        // 평균
+        reviewAvg = (reviewAvg * reviewCnt - star) / (reviewCnt - 1);
+        reviewAvg = Math.round(reviewAvg * 100) / 100.0; // 소수점 둘째자리에서 반올림
+    }
+
+    // 리뷰 삭제 시
+    public void deleteReview(Integer star) {
+        // 평균
+        reviewAvg = (reviewAvg * reviewCnt - star) / (reviewCnt - 1);
+        reviewAvg = Math.round(reviewAvg * 100) / 100.0; // 소수점 둘째자리에서 반올림
+        // 개수
+        reviewCnt -= 1;
     }
 
 }
