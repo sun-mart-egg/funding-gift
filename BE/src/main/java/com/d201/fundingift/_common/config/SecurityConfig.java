@@ -8,7 +8,6 @@ import com.d201.fundingift._common.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -48,6 +47,7 @@ public class SecurityConfig {
                 // 요청에 대한 권한 설정
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(antMatcher("/api/consumers/**")).authenticated()
+                        .requestMatchers(antMatcher("/api/funding/**")).authenticated()
                         .requestMatchers(antMatcher("/h2-console/**")).permitAll()
                         .requestMatchers(antMatcher("/swagger-ui/")).permitAll()
                         .anyRequest().permitAll()

@@ -3,6 +3,7 @@ package com.d201.fundingift.funding.entity;
 import com.d201.fundingift._common.entity.BaseTime;
 import com.d201.fundingift.attendance.entity.Attendance;
 import com.d201.fundingift.consumer.entity.Consumer;
+import com.d201.fundingift.funding.dto.request.PostFundingRequest;
 import com.d201.fundingift.funding.entity.status.FundingStatus;
 import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.entity.ProductOption;
@@ -13,7 +14,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +31,7 @@ public class Funding extends BaseTime {
     private Long id;
 
     @Column(nullable = false)
+    @ColumnDefault("0")
     private Integer sumPrice;
 
     @Column(nullable = false)
@@ -43,10 +44,10 @@ public class Funding extends BaseTime {
     private LocalDate anniversaryDate;
 
     @Column(nullable = false)
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
     @Column(nullable = false)
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     @Column(nullable = false, length = 20)
     private String title;
@@ -59,6 +60,12 @@ public class Funding extends BaseTime {
 
     @Column(nullable = false, length = 50)
     private String accountNo;
+
+    @Column(nullable = false, length = 10)
+    private String name;
+
+    @Column(nullable = true, length = 20)
+    private String phoneNumber;
 
     @Column(nullable = false, length = 50)
     private String defaultAddr;
@@ -98,7 +105,7 @@ public class Funding extends BaseTime {
     private List<Attendance> attendances = new ArrayList<>();
 
     @Builder
-    private Funding(Integer sumPrice, Integer minPrice, Integer targetPrice, LocalDate anniversaryDate, LocalDateTime startDate, LocalDateTime endDate, String title, String content, String accountBank, String accountNo, String defaultAddr, String detailAddr, String zipCode, FundingStatus fundingStatus, Boolean isPrivate, Consumer consumer, AnniversaryCategory anniversaryCategory, Product product, ProductOption productOption) {
+    private Funding(Integer sumPrice, Integer minPrice, Integer targetPrice, LocalDate anniversaryDate, LocalDate startDate, LocalDate endDate, String title, String content, String accountBank, String accountNo, String name, String phoneNumber, String defaultAddr, String detailAddr, String zipCode, FundingStatus fundingStatus, Boolean isPrivate, Consumer consumer, AnniversaryCategory anniversaryCategory, Product product, ProductOption productOption, List<Attendance> attendances) {
         this.sumPrice = sumPrice;
         this.minPrice = minPrice;
         this.targetPrice = targetPrice;
@@ -109,6 +116,8 @@ public class Funding extends BaseTime {
         this.content = content;
         this.accountBank = accountBank;
         this.accountNo = accountNo;
+        this.name = name;
+        this.phoneNumber = phoneNumber;
         this.defaultAddr = defaultAddr;
         this.detailAddr = detailAddr;
         this.zipCode = zipCode;
@@ -118,6 +127,32 @@ public class Funding extends BaseTime {
         this.anniversaryCategory = anniversaryCategory;
         this.product = product;
         this.productOption = productOption;
+        this.attendances = attendances;
     }
 
+    public static Funding from(PostFundingRequest postFundingRequest
+            , Consumer consumer, AnniversaryCategory anniversaryCategory, Product product, ProductOption productOption) {
+        return Funding.builder()
+                .minPrice(postFundingRequest.getMinPrice())
+                .targetPrice(postFundingRequest.getTargetPrice())
+                .anniversaryDate(postFundingRequest.getAnniversaryDate())
+                .startDate(postFundingRequest.getStartDate())
+                .endDate(postFundingRequest.getEndDate())
+                .title(postFundingRequest.getTitle())
+                .content(postFundingRequest.getContent())
+                .accountBank(postFundingRequest.getAccountBank())
+                .accountNo(postFundingRequest.getAccountNo())
+                .name(postFundingRequest.getName())
+                .phoneNumber(postFundingRequest.getPhoneNumber())
+                .defaultAddr(postFundingRequest.getDefaultAddr())
+                .detailAddr(postFundingRequest.getDetailAddr())
+                .zipCode(postFundingRequest.getZipCode())
+                .isPrivate(postFundingRequest.getIsPrivate())
+                .consumer(consumer)
+                .anniversaryCategory(anniversaryCategory)
+                .product(product)
+                .productOption(productOption)
+                .build();
+
+    }
 }
