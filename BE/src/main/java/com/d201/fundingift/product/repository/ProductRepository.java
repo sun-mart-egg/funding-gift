@@ -7,7 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    @Query("select p from Product p " +
+            "where p.id = :productId and p.status = 'ACTIVE' and p.deletedAt is null")
+    Optional<Product> findById(@Param("productId") Long productId);
 
     // 상품 리스트 조회 - 기본 순
     @Query("select p from Product p " +

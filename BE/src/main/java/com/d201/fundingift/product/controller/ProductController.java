@@ -4,6 +4,7 @@ import com.d201.fundingift._common.response.ErrorResponse;
 import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift.product.dto.response.GetProductCategoryResponse;
+import com.d201.fundingift.product.dto.response.GetProductDetailResponse;
 import com.d201.fundingift.product.dto.response.GetProductResponse;
 import com.d201.fundingift.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,15 +15,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.d201.fundingift._common.response.SuccessType.GET_PRODUCTS_BY_CATEGORY_SUCCESS;
-import static com.d201.fundingift._common.response.SuccessType.GET_PRODUCT_CATEGORIES_SUCCESS;
+import static com.d201.fundingift._common.response.SuccessType.*;
 
 @Tag(name = "products", description = "상품 관련 API")
 @Slf4j
@@ -75,4 +72,9 @@ public class ProductController {
         return ResponseUtils.ok(productService.getProducts(categoryId, page, size, sort), GET_PRODUCTS_BY_CATEGORY_SUCCESS);
     }
 
+    @GetMapping("/{product-id}")
+    public SuccessResponse<GetProductDetailResponse> getProductDetail(@PathVariable(required = true, name = "product-id") Long productId) {
+        log.info("[ProductController.getProductDetail]");
+        return ResponseUtils.ok(productService.getProductDetail(productId), GET_PRODUCT_DETAIL_SUCCESS);
+    }
 }
