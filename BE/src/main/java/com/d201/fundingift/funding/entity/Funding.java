@@ -14,7 +14,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +105,8 @@ public class Funding extends BaseTime {
     private List<Attendance> attendances = new ArrayList<>();
 
     @Builder
-    private Funding(Integer minPrice, Integer targetPrice, LocalDate anniversaryDate, LocalDate startDate, LocalDate endDate, String title, String content, String accountBank, String accountNo, String name, String phoneNumber, String defaultAddr, String detailAddr, String zipCode, FundingStatus fundingStatus, Boolean isPrivate, Consumer consumer, AnniversaryCategory anniversaryCategory, Product product, ProductOption productOption, List<Attendance> attendances) {
+    private Funding(Integer sumPrice, Integer minPrice, Integer targetPrice, LocalDate anniversaryDate, LocalDate startDate, LocalDate endDate, String title, String content, String accountBank, String accountNo, String name, String phoneNumber, String defaultAddr, String detailAddr, String zipCode, FundingStatus fundingStatus, Boolean isPrivate, Consumer consumer, AnniversaryCategory anniversaryCategory, Product product, ProductOption productOption, List<Attendance> attendances) {
+        this.sumPrice = sumPrice;
         this.minPrice = minPrice;
         this.targetPrice = targetPrice;
         this.anniversaryDate = anniversaryDate;
