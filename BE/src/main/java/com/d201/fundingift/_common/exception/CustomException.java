@@ -10,8 +10,4 @@ public class CustomException extends RuntimeException{
 
     private final ErrorType errorType;
 
-    @Override
-    public String getMessage() {
-        return errorType.getMsg();
-    }
 }
