@@ -1,12 +1,9 @@
 package com.d201.fundingift.funding.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Getter
 @Schema(name = "FundingCreateRequestDto", description = "펀딩을 생성할 때 필요한 정보들 입니다.")
@@ -21,7 +18,7 @@ public class PostFundingRequest {
     @Schema(description = "기념일 날짜", example = "2024-12-12")
     private LocalDate anniversaryDate;
 
-    @Schema(description = "펀딩시작 날짜", example = "2024-12-8")
+    @Schema(description = "펀딩시작 날짜", example = "2024-12-08")
     private LocalDate startDate;
 
     @Schema(description = "펀딩종료 날짜", example = "2024-12-14")
@@ -57,11 +54,8 @@ public class PostFundingRequest {
     @Schema(description = "공개 여부", example = "true")
     private Boolean isPrivate;
 
-    @Schema(description = "펀딩 생성자 고유번호", example = "1")
-    private Long consumerId;
-
     @Schema(description = "기념일 종류", example = "1")
-    private Long anniversaryCategoryId;
+    private Integer anniversaryCategoryId;
 
     @Schema(description = "제품 고유번호", example = "1")
     private Long productId;

@@ -2,8 +2,8 @@ package com.d201.fundingift.funding.service;
 
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
+import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.entity.Consumer;
-import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import com.d201.fundingift.funding.dto.request.PostFundingRequest;
 import com.d201.fundingift.funding.entity.AnniversaryCategory;
 import com.d201.fundingift.funding.entity.Funding;
@@ -25,7 +25,7 @@ import java.time.LocalDate;
 public class FundingService {
 
     private final FundingRepository fundingRepository;
-    private final ConsumerRepository consumerRepository;
+    private final SecurityUtil  securityUtil;
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final AnniversaryCategoryRepository anniversaryCategoryRepository;
@@ -34,21 +34,37 @@ public class FundingService {
     @Transactional
     public void postFunding(PostFundingRequest postFundingRequest) {
 
-        Consumer consumer = consumerRepository.findById(postFundingRequest.getConsumerId())
-                .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
+        Consumer consumer = getConsumer();
 
-        Product product = productRepository.findById(postFundingRequest.getProductId())
-                .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_NOT_FOUND));
+        Product product = getProduct(postFundingRequest);
 
-        ProductOption productOption = productOptionRepository.findById(postFundingRequest.getProductOptionId())
-                .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_OPTION_NOT_FOUND));
+        ProductOption productOption = getProductOption(postFundingRequest);
 
-        AnniversaryCategory anniversaryCategory = anniversaryCategoryRepository.findById(postFundingRequest.getAnniversaryCategoryId())
-                .orElseThrow(() -> new CustomException(ErrorType.ANNIVERSARY_CATEGORY_NOT_FOUND));
+        AnniversaryCategory anniversaryCategory = getAnniversaryCategory(postFundingRequest);
 
         isOver7Days(postFundingRequest.getStartDate(), postFundingRequest.getEndDate());
 
         fundingRepository.save(Funding.from(postFundingRequest, consumer, anniversaryCategory, product, productOption));
+    }
+
+    private AnniversaryCategory getAnniversaryCategory(PostFundingRequest postFundingRequest) {
+        AnniversaryCategory anniversaryCategory = anniversaryCategoryRepository.findById(postFundingRequest.getAnniversaryCategoryId())
+                .orElseThrow(() -> new CustomException(ErrorType.ANNIVERSARY_CATEGORY_NOT_FOUND));
+        return anniversaryCategory;
+    }
+
+    private ProductOption getProductOption(PostFundingRequest postFundingRequest) {
+        return productOptionRepository.findById(postFundingRequest.getProductOptionId())
+                .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_OPTION_NOT_FOUND));
+    }
+
+    private Product getProduct(PostFundingRequest postFundingRequest) {
+        return productRepository.findById(postFundingRequest.getProductId())
+                .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_NOT_FOUND));
+    }
+
+    private Consumer getConsumer() {
+        return securityUtil.getConsumer();
     }
 
     public void isOver7Days(LocalDate start, LocalDate end) {
