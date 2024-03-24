@@ -47,13 +47,7 @@ public class ProductController {
     }
 
     @Operation(summary = "카테고리 별 상품 목록 조회",
-            description = """
-                        카테고리 별 상품 목록을 조회합니다.
-                        Query Parameter로 category-id, page, size, sort 넣어주세요.
-                        - page: 페이지 번호 (0부터 시작)
-                        - size: 한 페이지에 불러올 데이터의 개수
-                        - sort: 정렬 조건 (0: 기본 순, 1: 리뷰 많은 순, 2: 평점 높은 순, 3: 가격 높은 순, 4: 가격 낮은 순)
-                         """)
+            description = "카테고리 별 상품 목록을 조회합니다. Query Parameter로 category-id, page, size, sort 넣어주세요.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "성공",
@@ -65,10 +59,18 @@ public class ProductController {
                     ))
     })
     @GetMapping("")
-    public SuccessResponse<List<GetProductResponse>> getProducts(@RequestParam(required = true, name = "category-id") Integer categoryId,
-                                                                 @RequestParam(required = true, name = "page") Integer page,
-                                                                 @RequestParam(required = true, name = "size") Integer size,
-                                                                 @RequestParam(required = true, name = "sort") Integer sort) {
+    public SuccessResponse<List<GetProductResponse>> getProducts
+            (@Schema(description = "카테고리 ID", example = "1") @RequestParam(required = true, name = "category-id") Integer categoryId,
+             @Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam(required = true, name = "page") Integer page,
+             @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam(required = true, name = "size") Integer size,
+             @Schema(description = """
+                                    정렬 조건
+                                    - 0: 기본 순
+                                    - 1: 리뷰 많은 순
+                                    - 2: 평점 높은 순
+                                    - 3: 가격 높은 순
+                                    - 4: 가격 낮은 순
+                                    """, example = "0") @RequestParam(required = true, name = "sort") Integer sort) {
         log.info("[ProductController.getProducts]");
         return ResponseUtils.ok(productService.getProducts(categoryId, page, size, sort), GET_PRODUCTS_BY_CATEGORY_SUCCESS);
     }
