@@ -25,7 +25,7 @@ public class Product extends BaseTime {
     @Column(name = "product_id", nullable = false)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
@@ -33,6 +33,17 @@ public class Product extends BaseTime {
 
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String description;
+
+    @Column(nullable = false)
+    private String image;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Double reviewAvg;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Integer reviewCnt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -43,9 +54,6 @@ public class Product extends BaseTime {
     private List<ProductOption> productOptions = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductOption> productImages = new ArrayList<>();
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -53,12 +61,40 @@ public class Product extends BaseTime {
     private ProductCategory productCategory;
 
     @Builder
-    private Product(String name, Integer price, String description, ProductStatus status, ProductCategory productCategory) {
+    private Product(String name, Integer price, String description, String image, Double reviewAvg, Integer reviewCnt, ProductStatus status, ProductCategory productCategory) {
         this.name = name;
         this.price = price;
         this.description = description;
+        this.image = image;
+        this.reviewAvg = reviewAvg;
+        this.reviewCnt = reviewCnt;
         this.status = status;
         this.productCategory = productCategory;
+    }
+
+    // 리뷰 생성 시
+    public void insertReview(Integer star) {
+        // 평균
+        reviewAvg = (reviewAvg * reviewCnt + star) / (reviewCnt + 1);
+        reviewAvg = Math.round(reviewAvg * 100) / 100.0; // 소수점 둘째자리에서 반올림
+        // 개수
+        reviewCnt += 1;
+    }
+
+    // 리뷰 수정 시
+    public void updateReview(Integer oldStar, Integer newStar) {
+        // 평균
+        reviewAvg = (reviewAvg * reviewCnt - oldStar + newStar) / reviewCnt;
+        reviewAvg = Math.round(reviewAvg * 100) / 100.0; // 소수점 둘째자리에서 반올림
+    }
+
+    // 리뷰 삭제 시
+    public void deleteReview(Integer star) {
+        // 평균
+        reviewAvg = (reviewAvg * reviewCnt - star) / (reviewCnt - 1);
+        reviewAvg = Math.round(reviewAvg * 100) / 100.0; // 소수점 둘째자리에서 반올림
+        // 개수
+        reviewCnt -= 1;
     }
 
 }

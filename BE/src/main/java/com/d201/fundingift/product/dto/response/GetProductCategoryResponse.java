@@ -1,7 +1,6 @@
 package com.d201.fundingift.product.dto.response;
 
 import com.d201.fundingift.product.entity.ProductCategory;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
