@@ -11,6 +11,8 @@ import com.d201.fundingift.funding.repository.AnniversaryCategoryRepository;
 import com.d201.fundingift.funding.repository.FundingRepository;
 import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.entity.ProductOption;
+import com.d201.fundingift.product.repository.ProductOptionRepository;
+import com.d201.fundingift.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,13 +37,13 @@ public class FundingService {
         Consumer consumer = consumerRepository.findById(postFundingRequest.getConsumerId())
                 .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
 
-        Product product = productRepository.findByIdAndDeletedAtIsNull(postFundingRequest.getProductId())
+        Product product = productRepository.findById(postFundingRequest.getProductId())
                 .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_NOT_FOUND));
 
-        ProductOption productOption = productOptionRepository.findByIdAndDeletedAtIsNull(postFundingRequest.getProductOptionId())
+        ProductOption productOption = productOptionRepository.findById(postFundingRequest.getProductOptionId())
                 .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_OPTION_NOT_FOUND));
 
-        AnniversaryCategory anniversaryCategory = anniversaryCategoryRepository.findByIdAndDeletedAtIsNull(postFundingRequest.getAnniversaryCategoryId())
+        AnniversaryCategory anniversaryCategory = anniversaryCategoryRepository.findById(postFundingRequest.getAnniversaryCategoryId())
                 .orElseThrow(() -> new CustomException(ErrorType.ANNIVERSARY_CATEGORY_NOT_FOUND));
 
         isOver7Days(postFundingRequest.getStartDate(), postFundingRequest.getEndDate());
