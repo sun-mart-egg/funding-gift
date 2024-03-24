@@ -1,11 +1,14 @@
 package com.d201.fundingift.product.controller;
 
+import com.d201.fundingift._common.response.ErrorResponse;
 import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift.product.dto.response.GetProductCategoryResponse;
 import com.d201.fundingift.product.dto.response.GetProductResponse;
 import com.d201.fundingift.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -55,7 +58,11 @@ public class ProductController {
             @ApiResponse(responseCode = "200",
                     description = "성공",
                     useReturnTypeSchema = true),
-
+            @ApiResponse(responseCode = "400",
+                    description = "잘못된 category-id / 잘못된 sort",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
     })
     @GetMapping("")
     public SuccessResponse<List<GetProductResponse>> getProducts(@RequestParam(required = true, name = "category-id") Integer categoryId,
