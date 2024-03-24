@@ -3,6 +3,7 @@ package com.d201.fundingift.friend.controller;
 import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift._common.response.SuccessType;
+import com.d201.fundingift.friend.dto.FriendDto;
 import com.d201.fundingift.friend.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -37,11 +38,13 @@ public class FriendController {
     })
     @GetMapping("/kakao")
     public SuccessResponse<String> getKakaoFriends(Authentication authentication) {
-        String friends = friendService.getKakaoFriends(authentication);
-        log.info(friends);
+        List<FriendDto> friends = friendService.getKakaoFriends(authentication);
+        for(FriendDto f : friends){
+            log.info(f.getProfileNickname());
+        }
         // 친구 목록을 Redis에 저장하려면 여기에서 friendService.saveFriends를 호출합니다.
         // 예: friendService.saveFriends(userId, friendList);
-        return ResponseUtils.ok(friends, SuccessType.GET_KAKAO_FRIEND_INFO_SUCCESS);
+        return ResponseUtils.ok(friends.toString(), SuccessType.GET_KAKAO_FRIEND_INFO_SUCCESS);
     }
 
     @GetMapping("/{userId}")
