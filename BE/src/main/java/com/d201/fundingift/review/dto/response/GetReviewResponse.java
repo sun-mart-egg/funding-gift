@@ -1,6 +1,5 @@
 package com.d201.fundingift.review.dto.response;
 
-import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.review.entity.Review;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,11 +18,11 @@ public class GetReviewResponse {
     private String image1;
     private String image2;
     private String content;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String createdAt;
+    private String updatedAt;
 
     @Builder
-    private GetReviewResponse(Long reviewId, String optionName, String writer, Integer star, String image1, String image2, String content, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    private GetReviewResponse(Long reviewId, String optionName, String writer, Integer star, String image1, String image2, String content, String createdAt, String updatedAt) {
         this.reviewId = reviewId;
         this.optionName = optionName;
         this.writer = writer;
