@@ -2,6 +2,7 @@ import FundingDetailInfo from "../component/FundingDetailInfo";
 import CongratulateList from "../component/CongratulateList";
 import BottomSheet from "../component/BottomSheet";
 import React, { useState } from "react";
+import LargeButton from "../../UI/LargeButton";
 
 function MyFundingDetail() {
   const data = {
@@ -68,7 +69,7 @@ function MyFundingDetail() {
   };
 
   return (
-    <div className="sub-layer">
+    <div className="sub-layer mb-20 mt-44">
       <div
         id="page"
         className="flex h-screen flex-col items-center justify-center "
@@ -80,21 +81,22 @@ function MyFundingDetail() {
           progress={data.progress}
           price={data.price}
         />
-        <div id="messageSection" className="m-2 w-full flex-col">
-          <div id="subTitle" className="text-left">
-            <p>축하 받은 리스트</p>
-          </div>
-        </div>
+
         <CongratulateList
           listData={MessageList}
           onCardClick={toggleBottomSheet}
         />
       </div>
+
       <BottomSheet
         isOpen={isBottomSheetOpen}
         setIsOpen={setIsBottomSheetOpen}
         message={selectedMessage}
       ></BottomSheet>
+
+      <button className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white">
+        펀딩 취소하기
+      </button>
     </div>
   );
 }

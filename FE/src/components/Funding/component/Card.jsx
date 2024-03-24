@@ -13,7 +13,9 @@ function Card({ title, name, date, progress }) {
         <img src={Egg} alt="" className="size-3/4" />
       </div>
       <p className="product_title font-cusFont1 text-[14px]">{title}</p>
-      <ProgressBar progress={progress} />
+      <div className="h-[14px]">
+        <ProgressBar progress={progress} />
+      </div>
       <div className="pt-2">
         <p className="product_des pb-1 text-[10px]">{name}</p>
         <div className="product_mon  text-[10px]">{date}</div>
