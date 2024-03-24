@@ -82,9 +82,9 @@ public class Product extends BaseTime {
     }
 
     // 리뷰 수정 시
-    public void updateReview(Integer star) {
+    public void updateReview(Integer oldStar, Integer newStar) {
         // 평균
-        reviewAvg = (reviewAvg * reviewCnt - star) / (reviewCnt - 1);
+        reviewAvg = (reviewAvg * reviewCnt - oldStar + newStar) / reviewCnt;
         reviewAvg = Math.round(reviewAvg * 100) / 100.0; // 소수점 둘째자리에서 반올림
     }
 
