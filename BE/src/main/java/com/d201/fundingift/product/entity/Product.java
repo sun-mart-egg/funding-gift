@@ -34,6 +34,9 @@ public class Product extends BaseTime {
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String description;
 
+    @Column(nullable = false)
+    private String image;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @ColumnDefault("'NOT_CHECKED'")
@@ -41,9 +44,6 @@ public class Product extends BaseTime {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductOption> productOptions = new ArrayList<>();
-
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductOption> productImages = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
