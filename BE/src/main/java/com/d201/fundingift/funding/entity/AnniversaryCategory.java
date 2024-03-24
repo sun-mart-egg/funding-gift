@@ -15,7 +15,7 @@ public class AnniversaryCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "anniversary_category_id", nullable = false)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false, length = 10)
     private String name;

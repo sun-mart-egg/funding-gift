@@ -7,8 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductOptionRepository extends JpaRepository<ProductOption, Long> {
+
+    @Query("select po from ProductOption po " +
+            "where po.id = :productOptionId and po.status = 'ACTIVE' and po.deletedAt is null")
+    Optional<ProductOption> findById(@Param("productOptionId") Long productOptionId);
 
     @Query("select po from ProductOption po " +
             "where po.product = :product and po.status <> 'INACTIVE' and po.deletedAt is null")
