@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory, Integer> {
 
-    List<ProductCategory> findAll();
+    List<ProductCategory> findAllByDeletedAtIsNull();
     boolean existsByIdAndDeletedAtIsNull(Integer categoryId);
 
 }
