@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.d201.fundingift._common.response.ErrorType.CATEGORY_NOT_FOUND;
 import static com.d201.fundingift._common.response.ErrorType.SORT_NOT_FOUND;
 
 @Slf4j
@@ -31,6 +32,7 @@ public class ProductService {
     }
 
     public List<GetProductResponse> getProducts(Integer categoryId, Integer page, Integer size, Integer sort) {
+        validateCategoryId(categoryId);
         Pageable pageable = PageRequest.of(page, size);
 
         // 기본 순
@@ -69,6 +71,12 @@ public class ProductService {
         }
 
         throw new CustomException(SORT_NOT_FOUND);
+    }
+
+    private void validateCategoryId(Integer categoryId) {
+        if (!productCategoryRepository.existsById(categoryId)) {
+            throw new CustomException(CATEGORY_NOT_FOUND);
+        }
     }
 
 }
