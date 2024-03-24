@@ -3,6 +3,7 @@ package com.d201.fundingift.product.controller;
 import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift.product.dto.response.GetProductCategoryResponse;
+import com.d201.fundingift.product.dto.response.GetProductResponse;
 import com.d201.fundingift.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,10 +13,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.d201.fundingift._common.response.SuccessType.GET_PRODUCTS_BY_CATEGORY_SUCCESS;
 import static com.d201.fundingift._common.response.SuccessType.GET_PRODUCT_CATEGORIES_SUCCESS;
 
 @Tag(name = "products", description = "상품 관련 API")
@@ -38,6 +41,15 @@ public class ProductController {
     public SuccessResponse<List<GetProductCategoryResponse>> getCategories() {
         log.info("[ProductController.getCategories]");
         return ResponseUtils.ok(productService.getCategories(), GET_PRODUCT_CATEGORIES_SUCCESS);
+    }
+
+    @GetMapping("")
+    public SuccessResponse<List<GetProductResponse>> getProducts(@RequestParam(required = true, name = "category-id") Integer categoryId,
+                                                                 @RequestParam(required = true, name = "page") Integer page,
+                                                                 @RequestParam(required = true, name = "size") Integer size,
+                                                                 @RequestParam(required = true, name = "sort") Integer sort) {
+        log.info("[ProductController.getProducts]");
+        return ResponseUtils.ok(productService.getProducts(categoryId, page, size, sort), GET_PRODUCTS_BY_CATEGORY_SUCCESS);
     }
 
 }

@@ -10,6 +10,7 @@ public enum ErrorType {
     URL_NOT_FOUND(HttpStatus.BAD_REQUEST, "잘못된 URL 입니다."),
 
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "등록된 사용자가 없습니다."),
+    SORT_NOT_FOUND(HttpStatus.BAD_REQUEST, "정렬 조건을 찾을 수 없습니다."),
     ;
 
     private HttpStatus httpStatus;
