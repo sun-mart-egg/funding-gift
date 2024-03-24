@@ -34,7 +34,9 @@ spring:
               - profile_nickname
               - profile_image
               - account_email
-            redirect-uri: "https://j10d201.p.ssafy.io/{action}/oauth2/code/{registrationId}"
+              - friends
+            redirect-uri: "http://localhost:8081/{action}/oauth2/code/{registrationId}" # 로컬 테스트 용
+            # redirect-uri: "https://j10d201.p.ssafy.io/{action}/oauth2/code/{registrationId}" # 배포 테스트 용
             client-name: Kakao
         provider:
           kakao:
