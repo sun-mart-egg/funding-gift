@@ -74,7 +74,7 @@ public class ProductService {
     }
 
     private void validateCategoryId(Integer categoryId) {
-        if (!productCategoryRepository.existsById(categoryId)) {
+        if (!productCategoryRepository.existsByIdAndDeletedAtIsNull(categoryId)) {
             throw new CustomException(CATEGORY_NOT_FOUND);
         }
     }
