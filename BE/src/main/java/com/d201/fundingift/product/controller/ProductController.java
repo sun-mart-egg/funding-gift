@@ -4,6 +4,7 @@ import com.d201.fundingift._common.response.ErrorResponse;
 import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift.product.dto.response.GetProductCategoryResponse;
+import com.d201.fundingift.product.dto.response.GetProductDetailResponse;
 import com.d201.fundingift.product.dto.response.GetProductResponse;
 import com.d201.fundingift.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,15 +15,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.d201.fundingift._common.response.SuccessType.GET_PRODUCTS_BY_CATEGORY_SUCCESS;
-import static com.d201.fundingift._common.response.SuccessType.GET_PRODUCT_CATEGORIES_SUCCESS;
+import static com.d201.fundingift._common.response.SuccessType.*;
 
 @Tag(name = "products", description = "상품 관련 API")
 @Slf4j
@@ -35,11 +32,9 @@ public class ProductController {
 
     @Operation(summary = "상품 카테고리 목록 조회",
             description = "상품 카테고리 목록을 조회합니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "성공",
-                    useReturnTypeSchema = true)
-    })
+    @ApiResponse(responseCode = "200",
+                description = "성공",
+                useReturnTypeSchema = true)
     @GetMapping("/categories")
     public SuccessResponse<List<GetProductCategoryResponse>> getCategories() {
         log.info("[ProductController.getCategories]");
@@ -48,16 +43,12 @@ public class ProductController {
 
     @Operation(summary = "카테고리 별 상품 목록 조회",
             description = "카테고리 별 상품 목록을 조회합니다. Query Parameter로 category-id, page, size, sort 넣어주세요.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "성공",
-                    useReturnTypeSchema = true),
-            @ApiResponse(responseCode = "400",
-                    description = "잘못된 category-id / 잘못된 sort",
-                    content = @Content(
-                            schema = @Schema(implementation = ErrorResponse.class)
-                    ))
-    })
+    @ApiResponse(responseCode = "200",
+                description = "성공",
+                useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "400",
+                description = "잘못된 category-id / 잘못된 sort",
+                content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @GetMapping("")
     public SuccessResponse<List<GetProductResponse>> getProducts
             (@Schema(description = "카테고리 ID", example = "1") @RequestParam(required = true, name = "category-id") Integer categoryId,
@@ -73,6 +64,22 @@ public class ProductController {
                                     """, example = "0") @RequestParam(required = true, name = "sort") Integer sort) {
         log.info("[ProductController.getProducts]");
         return ResponseUtils.ok(productService.getProducts(categoryId, page, size, sort), GET_PRODUCTS_BY_CATEGORY_SUCCESS);
+    }
+
+    // 토큰 검사 추가 필요 (위시리스트 여부 확인)
+    @Operation(summary = "상품 상세 조회",
+            description = "상품의 디테일을 조회합니다. Path Variable로 product-id 넣어주세요.")
+    @ApiResponse(responseCode = "200",
+                description = "성공",
+                useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "400",
+                description = "잘못된 product-id",
+                content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @GetMapping("/{product-id}")
+    public SuccessResponse<GetProductDetailResponse> getProductDetail
+            (@Schema(description = "상품 ID", example = "1") @PathVariable(required = true, name = "product-id") Long productId) {
+        log.info("[ProductController.getProductDetail]");
+        return ResponseUtils.ok(productService.getProductDetail(productId), GET_PRODUCT_DETAIL_SUCCESS);
     }
 
 }
