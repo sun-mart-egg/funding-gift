@@ -37,6 +37,14 @@ public class Product extends BaseTime {
     @Column(nullable = false)
     private String image;
 
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Double reviewAvg;
+
+    @Column(nullable = false)
+    @ColumnDefault("0")
+    private Integer reviewCnt;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @ColumnDefault("'NOT_CHECKED'")
@@ -53,12 +61,23 @@ public class Product extends BaseTime {
     private ProductCategory productCategory;
 
     @Builder
-    private Product(String name, Integer price, String description, ProductStatus status, ProductCategory productCategory) {
+    private Product(String name, Integer price, String description, String image, Double reviewAvg, Integer reviewCnt, ProductStatus status, ProductCategory productCategory) {
         this.name = name;
         this.price = price;
         this.description = description;
+        this.image = image;
+        this.reviewAvg = reviewAvg;
+        this.reviewCnt = reviewCnt;
         this.status = status;
         this.productCategory = productCategory;
+    }
+
+    public void updateReview(Integer star) {
+        // 평균
+        reviewAvg = (reviewAvg * reviewCnt + star) / (reviewCnt + 1);
+        reviewAvg = Math.round(reviewAvg * 100) / 100.0; // 소수점 둘째자리에서 반올림
+        // 개수
+        reviewCnt += 1;
     }
 
 }
