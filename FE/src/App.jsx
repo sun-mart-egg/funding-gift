@@ -7,6 +7,8 @@ import Login from "./components/Login/Login.jsx";
 import Signup from "./components/Login/Signup.jsx";
 import SignupFinish from "./components/Login/SignupFinish.jsx"
 
+import Friends from "./components/Friends/Friends.jsx"
+
 import MyFunding from "./components/Funding/pages/MyFunding";
 import AccountListPage from "./components/Funding/pages/AccountListPage.jsx";
 import MakeFundingMain from "./components/Funding/pages/MakeFundingMain";
@@ -44,6 +46,7 @@ function App() {
           <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/anniversary-list" element={<AnniversaryListPage />} />
+          <Route path="/friends" element={<Friends />} />
         </Route>
 
         <Route path="/participate" element={<ParticipatePage />} />
