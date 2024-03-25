@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.d201.fundingift._common.response.ErrorType.PRODUCT_OPTION_MISMATCH;
 import static com.d201.fundingift._common.response.ErrorType.SORT_NOT_FOUND;
 
 @Slf4j
@@ -53,6 +54,7 @@ public class ReviewService {
 
         // 상품 옵션 있음
         ProductOption productOption = findProductOptionById(productOptionId);
+        validateProductOption(productOption, productId); // 상품 옵션이 상품과 매칭되는지 검사
 
         // 최신 순
         if (sort == 0) {
@@ -124,6 +126,12 @@ public class ReviewService {
     private ProductOption findProductOptionById(Long productOptionId) {
         return productOptionRepository.findById(productOptionId)
                 .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_OPTION_NOT_FOUND));
+    }
+
+    private void validateProductOption(ProductOption productOption, Long productId) {
+        if (productOption.getProduct().getId() != productId) {
+            throw new CustomException(PRODUCT_OPTION_MISMATCH);
+        }
     }
 
 }

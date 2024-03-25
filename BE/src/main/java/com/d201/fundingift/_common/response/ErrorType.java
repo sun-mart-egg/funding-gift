@@ -23,9 +23,11 @@ public enum ErrorType {
 
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 상품을 찾을 수 없습니다."),
     PRODUCT_OPTION_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 상품 옵션을 찾을 수 없습니다."),
+    PRODUCT_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 상품 카테고리를 찾을 수 없습니다."),
 
     SORT_NOT_FOUND(HttpStatus.BAD_REQUEST, "정렬 조건을 찾을 수 없습니다."),
-    CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 카테고리를 찾을 수 없습니다."),
+
+    PRODUCT_OPTION_MISMATCH(HttpStatus.BAD_REQUEST, "상품 옵션이 상품과 맞지 않습니다."),
     ;
 
     private HttpStatus httpStatus;
