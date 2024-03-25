@@ -1,11 +1,13 @@
 package com.d201.fundingift.review.dto.response;
 
+import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.review.entity.Review;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @ToString
 @Getter
@@ -13,6 +15,7 @@ public class GetReviewResponse {
 
     private Long reviewId;
     private String optionName;
+    private Boolean isMe;
     private String writer;
     private Integer star;
     private String image1;
@@ -22,9 +25,10 @@ public class GetReviewResponse {
     private String updatedAt;
 
     @Builder
-    private GetReviewResponse(Long reviewId, String optionName, String writer, Integer star, String image1, String image2, String content, String createdAt, String updatedAt) {
+    private GetReviewResponse(Long reviewId, String optionName, Boolean isMe, String writer, Integer star, String image1, String image2, String content, String createdAt, String updatedAt) {
         this.reviewId = reviewId;
         this.optionName = optionName;
+        this.isMe = isMe;
         this.writer = writer;
         this.star = star;
         this.image1 = image1;
@@ -34,11 +38,11 @@ public class GetReviewResponse {
         this.updatedAt = updatedAt;
     }
 
-    public static GetReviewResponse from(Review review) {
+    public static GetReviewResponse from(Review review, Consumer consumer) {
         return builder()
                 .reviewId(review.getId())
                 .optionName(review.getProductOption().getName())
-                .writer(review.getConsumer().getName())
+                .isMe(getIsMe(review.getConsumer(), consumer))
                 .star(review.getStar())
                 .image1(review.getImage1())
                 .image2(review.getImage2())
@@ -46,6 +50,13 @@ public class GetReviewResponse {
                 .createdAt(review.getCreatedAt())
                 .updatedAt(review.getUpdatedAt())
                 .build();
+    }
+
+    private static boolean getIsMe(Consumer writer, Consumer viewer) {
+        if (viewer == null) {
+            return false;
+        }
+        return writer == viewer;
     }
 
 }
