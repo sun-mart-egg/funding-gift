@@ -106,20 +106,18 @@ function FriendFundingDetail() {
         />
       </div>
       {myParticipate.price == null ? (
-
         <button
-          className="fixed bottom-0 left-28 bg-blue-500 py-3 text-white"
+          className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
           onClick={() => navigate("/participate")}
         >
           펀딩 참여하기
         </button>
       ) : (
         <button
-          className="fixed bottom-0 left-28 bg-blue-500 py-3 text-white"
+          className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
           onClick={() => navigate("/participate")}
         >
           펀딩 추가 참여하기{" "}
-
         </button>
       )}
 
