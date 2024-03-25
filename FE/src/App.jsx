@@ -4,6 +4,7 @@ import MainLayout from "./components/UI/MainLayout.jsx";
 import SubLayout from "./components/UI/SubLayout.jsx";
 
 import Login from "./components/Login/LoginPage.jsx";
+import LoginCallback from "./components/Login/LoginCallback.jsx"
 import Signup from "./components/Login/Signup.jsx";
 import SignupFinish from "./components/Login/SignupFinish.jsx"
 
@@ -56,6 +57,7 @@ function App() {
 
         <Route path="/brand/:brandId" element={<BrandStore />} />
         <Route path="/wishlist/:userId" element={<Wishlist />} />
+        <Route path="/loginCallback" element={<LoginCallback />} />
       </Routes>
     </BrowserRouter>
   );
