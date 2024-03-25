@@ -12,7 +12,7 @@ function Header() {
           <img src="/imgs/heart.png" alt="wish-button" />
         </button>
         <button>
-          <Link to={"/friends/calendar"}>
+          <Link to={"/calendar"}>
             <img src="/imgs/calendar.png" alt="calendar-button" />
           </Link>
         </button>
