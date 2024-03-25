@@ -35,6 +35,7 @@
   src: url(/fonts/Yeongdo.ttf);
 }
 
+
 #root {
   @apply bg-cusColor4;
 }

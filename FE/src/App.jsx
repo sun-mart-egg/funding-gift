@@ -50,14 +50,14 @@ function App() {
           <Route path="/anniversary-list" element={<AnniversaryListPage />} />
           <Route path="/calendar" element={<Calendar />}/>
           <Route path="/friends" element={<Friends />} />
+          <Route path="/wishlist/:userId" element={<Wishlist />} />
+          <Route path="/brand/:brandId" element={<BrandStore />} />
         </Route>
 
         <Route path="/participate" element={<ParticipatePage />} />
         <Route path="/pay" element={<Paypage />} />
-
-        <Route path="/brand/:brandId" element={<BrandStore />} />
-        <Route path="/wishlist/:userId" element={<Wishlist />} />
         <Route path="/loginCallback" element={<LoginCallback />} />
+
       </Routes>
     </BrowserRouter>
   );
