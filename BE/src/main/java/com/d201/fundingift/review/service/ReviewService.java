@@ -31,7 +31,7 @@ public class ReviewService {
 
         // 최신 순
         if (sort == 0) {
-            return reviewRepository.findAllSliceByProductIdOrderByCreatedAtDesc(product, pageable)
+            return reviewRepository.findAllSliceByProductOrderByCreatedAtDesc(product, pageable)
                     .stream().map(GetReviewResponse::from)
                     .collect(Collectors.toList());
         }
@@ -43,14 +43,14 @@ public class ReviewService {
 
         // 별점 높은 순
         if (sort == 2) {
-            return reviewRepository.findAllSliceByProductIdOrderByStarDesc(product, pageable)
+            return reviewRepository.findAllSliceByProductOrderByStarDesc(product, pageable)
                     .stream().map(GetReviewResponse::from)
                     .collect(Collectors.toList());
         }
 
         // 별점 낮은 순
         if (sort == 3) {
-            return reviewRepository.findAllSliceByProductIdOrderByStarAsc(product, pageable)
+            return reviewRepository.findAllSliceByProductOrderByStarAsc(product, pageable)
                     .stream().map(GetReviewResponse::from)
                     .collect(Collectors.toList());
         }

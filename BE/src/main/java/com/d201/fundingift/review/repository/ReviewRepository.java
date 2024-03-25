@@ -14,18 +14,18 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("select r from Review r " +
             "where r.product = :product and r.status = 'ACTIVE' and r.deletedAt is null " +
             "order by r.createdAt desc")
-    Slice<Review> findAllSliceByProductIdOrderByCreatedAtDesc(@Param("product") Product product, Pageable pageable);
+    Slice<Review> findAllSliceByProductOrderByCreatedAtDesc(@Param("product") Product product, Pageable pageable);
 
     // 상품 별 리뷰 리스트 조회 - 별점 높은 순
     @Query("select r from Review r " +
             "where r.product = :product and r.status = 'ACTIVE' and r.deletedAt is null " +
             "order by r.star desc")
-    Slice<Review> findAllSliceByProductIdOrderByStarDesc(@Param("product") Product product, Pageable pageable);
+    Slice<Review> findAllSliceByProductOrderByStarDesc(@Param("product") Product product, Pageable pageable);
 
     // 상품 별 리뷰 리스트 조회 - 별점 낮은 순
     @Query("select r from Review r " +
             "where r.product = :product and r.status = 'ACTIVE' and r.deletedAt is null " +
             "order by r.star asc")
-    Slice<Review> findAllSliceByProductIdOrderByStarAsc(@Param("product") Product product, Pageable pageable);
+    Slice<Review> findAllSliceByProductOrderByStarAsc(@Param("product") Product product, Pageable pageable);
 
 }
