@@ -6,7 +6,7 @@ function Card({ title, name, date, progress }) {
   const navigate = useNavigate();
   return (
     <div
-      onClick={() => navigate("/my-funding-detail")}
+      onClick={() => navigate("/friend-funding-detail")}
       className="m-2 w-[45%] rounded-lg border-2 bg-white p-4 shadow-md"
     >
       <div className="product_img_div flex justify-center pb-2">
