@@ -4,7 +4,7 @@ import KakaoLogin from "/imgs/kakaoLogin.png";
 import { Link } from "react-router-dom";
 
 function Login() {
-  const REACT_APP_KAKAO_URL = import.meta.env.VITE_KAKAO_SERVER_LOGIN
+  const REACT_APP_KAKAO_URL = import.meta.env.VITE_KAKAO_LOGIN
 
   const kakaoLoginHandler = () => {
     // window.location.href = process.env.REACT_APP_KAKAO_URL;
