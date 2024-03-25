@@ -38,7 +38,7 @@ function App() {
         </Route>
 
         <Route element={<SubLayout />}>
-          <Route path="/login" element={<Login />} />
+          <Route path="/loginPage" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signupFin" element={<SignupFinish />} />
           <Route path="/make-funding-main" element={<MakeFundingMain />} />
