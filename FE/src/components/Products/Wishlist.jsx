@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 
-import Categories1 from "../../../public/imgs/product_categories1.png";
-import Categories2 from "../../../public/imgs/product_categories2.png";
-import Categories3 from "../../../public/imgs/product_categories3.png";
-import Categories4 from "../../../public/imgs/product_categories4.png";
-import Categories5 from "../../../public/imgs/product_categories5.png";
-import Categories6 from "../../../public/imgs/product_categories6.png";
-import Categories7 from "../../../public/imgs/product_categories7.png";
-
-import ProductSample from "../../../public/imgs/product_sample.png";
-import Star from "../../../public/imgs/star.png";
-import Down from "../../../public/imgs/down.png";
+import Categories1 from "/imgs/product_categories1.png";
+import Categories2 from "/imgs/product_categories2.png";
+import Categories3 from "/imgs/product_categories3.png";
+import Categories4 from "/imgs/product_categories4.png";
+import Categories5 from "/imgs/product_categories5.png";
+import Categories6 from "/imgs/product_categories6.png";
+import Categories7 from "/imgs/product_categories7.png";
 
 import ScrollToTop from "../UI/ScrollToTop2";
 

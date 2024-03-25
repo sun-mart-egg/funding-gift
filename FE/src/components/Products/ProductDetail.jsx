@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import SampleImage from "../../../public/imgs/product_sample.png";
+import SampleImage from "/imgs/product_sample.png";
 
-import Star from "../../../public/imgs/star.png";
-import Heart from "../../../public/imgs/heart.png";
-import Down from "../../../public/imgs/down.png";
-import SampleReview from "../../../public/imgs/samplereview.jpg";
-import ActivatedSmile from "../../../public/imgs/smile_activated.png";
-import DeactivatedSmile from "../../../public/imgs/smile_deactivated.png";
+import Star from "/imgs/star.png";
+import Heart from "/imgs/heart.png";
+import Down from "/imgs/down.png";
+import SampleReview from "/imgs/samplereview.jpg";
+import ActivatedSmile from "/imgs/smile_activated.png";
+import DeactivatedSmile from "/imgs/smile_deactivated.png";
 
 function ProductDetail() {
   const navigate = useNavigate();
