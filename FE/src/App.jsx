@@ -56,6 +56,7 @@ function App() {
 
         <Route path="/participate" element={<ParticipatePage />} />
         <Route path="/pay" element={<Paypage />} />
+        <Route path="/loginCallback" element={<LoginCallback />} />
 
       </Routes>
     </BrowserRouter>
