@@ -11,7 +11,7 @@ function FundingDetailInfo({
 }) {
   return (
     <div className=" flex flex-col items-center justify-center ">
-      <div id="fundingTitle " className="mb-4 ">
+      <div id="fundingTitle " className="mb-4 flex flex-col items-center ">
         {friendName == null ? "" : <p>{friendName}님의 </p>}
         <p className="font-cusFont1 text-[30px]">{title}</p>
       </div>
@@ -34,7 +34,7 @@ function FundingDetailInfo({
           <p className="pt-2 text-[12px]">{detail}</p>
         </div>
       </div>
-      <div className="m-4 h-[25px] w-[85%]">
+      <div className="m-8 h-[20px] w-[85%]">
         <ProgressBar progress={progress} />
       </div>
     </div>
