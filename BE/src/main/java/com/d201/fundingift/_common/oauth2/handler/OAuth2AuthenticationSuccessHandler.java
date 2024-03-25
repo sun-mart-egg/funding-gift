@@ -13,12 +13,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static com.d201.fundingift._common.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.MODE_PARAM_COOKIE_NAME;
@@ -89,10 +91,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
             // 가입 안 된 상태일 경우 -> 회원등록
             if(findMember.isEmpty()){
-                // DB에 저장.
                 Long consumerId = consumerService.saveOAuth2User(principal);
 
-                // 액세스 토큰 생성
+                // Redis에 소비자ID, 카카오 액세스 토큰 저장.
+                consumerService.saveAccessToken(consumerId, principal.getUserInfo().getAccessToken());
+
+                // 서비스 액세스 토큰 생성
                 // TODO: 리프레시 토큰 발급
                 // TODO: 리프레시 토큰 DB 저장
                 String accessToken = jwtUtil.createToken(consumerId.toString());
@@ -102,7 +106,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 return UriComponentsBuilder.fromUriString(targetUrl)
                         .queryParam("access-token", accessToken)
                         .queryParam("consumer-id",consumerId)
-                        .queryParam("nextPage","sign-in")
+                        .queryParam("next-page","sign-in")
                         .build().toUriString();
             } else {
                 // 가입 된 상태일 경우 -> 로그인
@@ -111,9 +115,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
                 // 메인 페이지로 리다이렉트
                 return UriComponentsBuilder.fromUriString(targetUrl)
-                        .queryParam("access_token", accessToken)
+                        .queryParam("access-token", accessToken)
                         .queryParam("consumer-id",findMember.get().getId())
-                        .queryParam("nextPage","main")
+                        .queryParam("next-page","main")
                         .build().toUriString();
             }
 

@@ -7,6 +7,8 @@ import com.d201.fundingift.consumer.dto.response.GetConsumerMyInfoResponse;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,8 @@ import static com.d201.fundingift._common.response.ErrorType.USER_UNAUTHORIZED;
 public class ConsumerService {
 
     private final ConsumerRepository consumerRepository;
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     // 회원가입
     @Transactional
@@ -80,4 +84,12 @@ public class ConsumerService {
         // 페이지네이션, 정렬, 즐겨찾기 필터 등을 적용하여 친구 목록 조회 로직 구현
         return null;
     }
+
+        public void saveAccessToken(Long consumerId, String accessToken) {
+            redisTemplate.opsForValue().set("accessToken:" + consumerId, accessToken);
+        }
+
+        public String getAccessToken(String consumerId) {
+            return redisTemplate.opsForValue().get("accessToken:" + consumerId);
+        }
 }
