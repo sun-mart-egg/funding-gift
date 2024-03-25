@@ -34,7 +34,7 @@ function FundingDetailInfo({
           <p className="pt-2 text-[12px]">{detail}</p>
         </div>
       </div>
-      <div className="m-4 h-[25px] w-[85%]">
+      <div className="m-4 h-[25px] w-[80%]">
         <ProgressBar progress={progress} />
       </div>
     </div>

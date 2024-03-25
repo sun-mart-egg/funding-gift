@@ -50,7 +50,7 @@ function ParticipatePage() {
     <div className="main-layer">
       <div
         id="page"
-        className="flex flex-col items-center justify-center overflow-auto pb-16"
+        className="flex flex-col items-center justify-center overflow-auto pb-4"
       >
         <FundingDetailInfo
           friendName={data.frinedName}
@@ -61,29 +61,36 @@ function ParticipatePage() {
           price={data.price}
         />
       </div>
+
       <input
         type="number"
         placeholder="펀딩할 금액을 입력하세요."
-        className="w-full"
+        className="w-[80%] rounded-lg border border-gray-400 p-1"
         value={amount}
         onChange={handleInputChange}
       />
-      <p>
+
+      <p className="w-[80%] pt-2 text-right text-[12px]">
         최소 {data.min} / 최대 :{" "}
         {data.price - (data.price * data.progress) / 100}
       </p>
-      {error && <p className="text-red-500">{error}</p>}
-      <p>축하메세지 보내기</p>
-      <input placeholder="메세지 제목을 입력해 주세요" className="w-full" />
+      {error && <p className=" text-red-500">{error}</p>}
+      <p className="w-[80%] text-left font-cusFont2 text-[18px]">
+        축하메세지 보내기
+      </p>
+      <input
+        placeholder="메세지 제목을 입력해 주세요"
+        className="mt-3 w-[80%] rounded-lg border border-gray-400 p-1"
+      />
       <textarea
         placeholder="친구에게 축하 메세지를 전달해 보세요."
-        className="w-full"
+        className="mt-3 w-[80%] rounded-lg border border-gray-400 p-1"
       ></textarea>
       <button
-        className="fixed bottom-0 left-28 bg-blue-500 py-3 text-white"
         onClick={handleParticipate}
+        className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
       >
-        펀딩 참여하기
+        결제하기
       </button>
     </div>
   );

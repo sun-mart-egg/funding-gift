@@ -2,7 +2,10 @@ import FundingDetailInfo from "../component/FundingDetailInfo";
 import CongratulateList from "../component/CongratulateList";
 import BottomSheet from "../component/BottomSheet";
 import React, { useState } from "react";
+import { Route } from "react-router";
+import { useNavigate } from "react-router-dom";
 function FriendFundingDetail() {
+  const navigate = useNavigate();
   const data = {
     frinedName: "신시은",
     title: "EGG IS MY LIFE",
@@ -100,11 +103,17 @@ function FriendFundingDetail() {
         <CongratulateList listData={MessageList} />
       </div>
       {myParticipate.price == null ? (
-        <button className="fixed bottom-0 left-28 bg-blue-500 py-3 text-white">
+        <button
+          className="fixed bottom-0 left-28 bg-blue-500 py-3 text-white"
+          onClick={() => navigate("/participate")}
+        >
           펀딩 참여하기
         </button>
       ) : (
-        <button className="fixed bottom-0 left-28 bg-blue-500 py-3 text-white">
+        <button
+          className="fixed bottom-0 left-28 bg-blue-500 py-3 text-white"
+          onClick={() => navigate("/participate")}
+        >
           펀딩 추가 참여하기{" "}
         </button>
       )}
