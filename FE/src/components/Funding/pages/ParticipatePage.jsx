@@ -47,7 +47,7 @@ function ParticipatePage() {
   };
 
   return (
-    <div className="main-layer">
+    <div className="sub-layer">
       <div
         id="page"
         className="flex flex-col items-center justify-center overflow-auto pb-16"
