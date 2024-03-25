@@ -40,7 +40,7 @@ function ProductDetail() {
   const reviews = [
     {
       id: 1,
-      profileImage: "../../../public/imgs/egg3.jpg",
+      profileImage: "/imgs/egg3.jpg",
       rating: 1,
       name: "이민수",
       images: [SampleReview],
@@ -49,7 +49,7 @@ function ProductDetail() {
     },
     {
       id: 2,
-      profileImage: "../../../public/imgs/basic.jpg",
+      profileImage: "/imgs/basic.jpg",
       rating: 5,
       name: "홍보2",
       images: [],
@@ -59,7 +59,7 @@ function ProductDetail() {
     },
     {
       id: 3,
-      profileImage: "../../../public/imgs/basic.jpg",
+      profileImage: "/imgs/basic.jpg",
       rating: 5,
       name: "홍보1",
       images: [],
