@@ -31,7 +31,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @Operation(summary = "상품 별 리뷰 목록 조회",
-            description = "상품 별 리뷰 목록을 조회합니다. Query Parameter로 product-id, page, size, sort 넣어주세요.")
+            description = "상품 별 리뷰 목록을 조회합니다. Query Parameter로 product-id, product-option-id, page, size, sort 넣어주세요.")
     @ApiResponse(responseCode = "200",
             description = "성공",
             useReturnTypeSchema = true)
@@ -41,17 +41,17 @@ public class ReviewController {
     @GetMapping("")
     public SuccessResponse<List<GetReviewResponse>> getReviews
             (@Schema(description = "상품 ID", example = "1") @RequestParam(required = true, name = "product-id") Long productId,
+             @Schema(description = "상품 옵션 ID", example = "1") @RequestParam(required = false, name = "product-option-id") Long productOptionId,
              @Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam(required = true, name = "page") Integer page,
              @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam(required = true, name = "size") Integer size,
              @Schema(description = """
                                     정렬 조건
                                     - 0: 최신 순
-                                    - 1: 추천 순 (아직 구현 X)
-                                    - 2: 별점 높은 순
-                                    - 3: 별점 낮은 순
+                                    - 1: 별점 높은 순
+                                    - 2: 별점 낮은 순
                                     """, example = "0") @RequestParam(required = true, name = "sort") Integer sort) {
         log.info("[ReviewController.getReviews]");
-        return ResponseUtils.ok(reviewService.getReviews(productId, page, size, sort), GET_REVIEWS_BY_PRODUCT_SUCCESS);
+        return ResponseUtils.ok(reviewService.getReviews(productId, productOptionId, page, size, sort), GET_REVIEWS_BY_PRODUCT_SUCCESS);
     }
 
 }

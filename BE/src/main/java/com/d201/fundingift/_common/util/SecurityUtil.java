@@ -23,4 +23,14 @@ public class SecurityUtil {
                 .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
     }
 
+    public Consumer getConsumerOrNull() {
+        Long consumerId;
+        try {
+            consumerId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+        return consumerRepository.findById(consumerId).orElse(null);
+    }
+
 }
