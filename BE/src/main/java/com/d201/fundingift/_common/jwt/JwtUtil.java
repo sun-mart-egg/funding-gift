@@ -82,4 +82,12 @@ public class JwtUtil {
 
         return new UsernamePasswordAuthenticationToken(user, "", Collections.emptyList());
     }
+
+    // 토큰으로 부터 consumerID 추출.
+    public String extractUserId(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            return authentication.getName();
+        }
+        return null;
+    }
 }
