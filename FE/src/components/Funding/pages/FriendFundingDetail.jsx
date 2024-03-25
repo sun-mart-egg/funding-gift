@@ -99,7 +99,7 @@ function FriendFundingDetail() {
 
         <CongratulateList
           listData={MessageList}
-          onClick={() => alert("메세지 내용을 볼 수 없습니다.")}
+          onClick={"메세지 내용을 볼 수 없습니다."}
         />
       </div>
       {myParticipate.price == null ? (
