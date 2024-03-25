@@ -23,7 +23,9 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private static final long ACCESS_TOKEN_EXPIRE_TIME_IN_MILLISECONDS = 1000 * 60 * 30; // 30min
+    //private static final long ACCESS_TOKEN_EXPIRE_TIME_IN_MILLISECONDS = 1000 * 60 * 30; // 30min
+    private static final long ACCESS_TOKEN_EXPIRE_TIME_IN_MILLISECONDS = 1000 * 60 * 3000; // 3000min 개발용
+    
     @Value("${jwt.secret}")
     private String secret;
     private Key key;
@@ -81,5 +83,13 @@ public class JwtUtil {
         UserDetails user = new User(claims.getSubject(), "", Collections.emptyList());
 
         return new UsernamePasswordAuthenticationToken(user, "", Collections.emptyList());
+    }
+
+    // 토큰으로 부터 consumerID 추출.
+    public String extractUserId(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            return authentication.getName();
+        }
+        return null;
     }
 }

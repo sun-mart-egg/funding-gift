@@ -29,7 +29,8 @@ public class ConsumerController {
 
     // 현재 인증된 사용자의 정보 조회
     @Operation(summary = "소비자 내 정보 조회",
-            description = "내 정보를 조회합니다. `Token`")
+            description = "내 정보를 조회합니다. `Token`"
+    )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "성공",
@@ -42,7 +43,8 @@ public class ConsumerController {
     }
 
     @Operation(summary = "소비자 ID 조회",
-            description = "소비자의 정보를 ID를 통해 조회합니다. `Token`")
+            description = "소비자의 정보를 ID를 통해 조회합니다. `Token`"
+   )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "성공",

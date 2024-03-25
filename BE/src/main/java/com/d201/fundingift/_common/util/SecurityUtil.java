@@ -34,3 +34,9 @@ public class SecurityUtil {
     }
 
 }
+/*
+* Todo
+*  예외처리. 부탁.
+*  consumerId만 뽑는 메소드. 필요.
+*
+*/
