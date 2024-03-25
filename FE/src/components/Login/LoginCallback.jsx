@@ -8,16 +8,16 @@ function LoginCallback() {
     useEffect(() => {
         async function getTokens() {
             const accessToken = await searchParams.get("access-token")
-            const memberId = await searchParams.get("member-id")
+            const consumerId = await searchParams.get("consumer-id")
 
             // 토큰값이 null 값이면
             // localStorage에 accessToken, memberId를 위에 get으로 얻은걸로 할당
             // 상세주소 입력하는 signup 페이지로 이동
             if (accessToken === null) {
-                localStorage.setItem("accessToken", accessToken)
-                localStorage.setItem("memberId", memberId)
+                localStorage.setItem("access-token", accessToken)
+                localStorage.setItem("consumer-id", consumerId)
                 console.log("토큰 : ", accessToken)
-                console.log("멤버 ID : ", memberId)
+                console.log("멤버 ID : ", consumerId)
                 navigate("/signup")
             }
             // 토큰이 있는 경우 == 이미 로그인을 한 경우
