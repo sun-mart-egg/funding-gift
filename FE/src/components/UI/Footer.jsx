@@ -19,7 +19,7 @@ function Footer() {
                       : location.pathname;
   let additionalLeft = 0;
 
-  if (currentPath === '/product') {
+  if (currentPath === ('/product'|| '/product/')) {
     additionalLeft = 1.5;
   }
 
