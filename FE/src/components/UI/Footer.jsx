@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Home from "/imgs/footer_home.png";
@@ -9,45 +9,66 @@ import Fund from "/imgs/footer_fund.png";
 import FundActivated from "/imgs/footer_fund_activated.png";
 import Profile from "/imgs/footer_profile.png";
 import ProfileActivated from "/imgs/footer_profile_activated.png";
+import CatPaw from '/imgs/cat_paw.png';
 
 function Footer() {
   const navigate = useNavigate();
-  const currentPath = window.location.pathname; // 현재 경로 가져오기
+  const currentPath = window.location.pathname;
+  let additionalLeft = 0;
+
+  if (currentPath === '/product') {
+    additionalLeft = 1.5;
+  }
+
+  const [catPawPosition, setCatPawPosition] = useState({ left: 0, bottom: 0, opacity: 0 });
 
   const getIconStatus = (iconName) => {
-    return currentPath === iconName ? true : false;
+    return currentPath === iconName;
   };
 
+  const updateCatPawPosition = () => {
+    const paths = ['/', '/product', '/fund', '/my-funding'];
+    const currentIconIndex = paths.indexOf(currentPath);
+    if (currentIconIndex !== -1) {
+      const currentIcon = document.querySelectorAll('.footer-icon')[currentIconIndex];
+      const iconRect = currentIcon.getBoundingClientRect();
+      setCatPawPosition({
+        left: iconRect.left + (iconRect.width / 2) - 20 + additionalLeft, // Adjust based on cat paw icon size
+        bottom: 0, // Adjust based on footer height
+        opacity: 1
+      });
+    }
+  };
+
+  useEffect(() => {
+    updateCatPawPosition();
+    window.addEventListener('resize', updateCatPawPosition);
+    return () => {
+      window.removeEventListener('resize', updateCatPawPosition);
+    };
+  }, [currentPath]);
+
   const handleIconClick = (path) => {
-    navigate(path); // 페이지 이동
+    navigate(path);
   };
 
   return (
-    <footer className="fixed bottom-0  flex w-full max-w-[500px] items-center justify-between border-t border-gray-400 bg-white px-10">
-      <img
-        src={getIconStatus("/") ? HomeActivated : Home}
-        alt="Home"
-        className={` ${getIconStatus("/") ? "h-[65px] w-[45px]" : "h-[40px] w-[30px]"}`}
-        onClick={() => handleIconClick("/")}
-      />
-      <img
-        src={getIconStatus("/product") ? ShopActivated : Shop}
-        alt="Shop"
-        className={`${getIconStatus("/product") ? "h-[65px] w-[45px]" : "h-[35px] w-[30px]"}`}
-        onClick={() => handleIconClick("/product")}
-      />
-      <img
-        src={getIconStatus("/fund") ? FundActivated : Fund}
-        alt="Fund"
-        className={`${getIconStatus("/fund") ? "h-[65px] w-[45px]" : "h-[35px] w-[27px]"}`}
-        onClick={() => handleIconClick("/fund")}
-      />
-      <img
-        src={getIconStatus("/my-funding") ? ProfileActivated : Profile}
-        alt="Profile"
-        className={`${getIconStatus("/my-funding") ? "h-[65px] w-[45px]" : "h-[35px] w-[27px]"}`}
-        onClick={() => handleIconClick("/my-funding")}
-      />
+    <footer className="font-cusFont2 text-center fixed bottom-0 pt-[10px] shadow-top flex w-full max-w-[500px] items-center justify-between bg-white px-10">
+      {['/', '/product', '/fund', '/my-funding'].map((path, index) => (
+        <div key={index} className="footer-icon" onClick={() => handleIconClick(path)}>
+          <img
+            src={
+              getIconStatus(path)
+                ? [HomeActivated, ShopActivated, FundActivated, ProfileActivated][index]
+                : [Home, Shop, Fund, Profile][index]
+            }
+            alt={["Home", "Shop", "Fund", "Profile"][index]}
+            className={getIconStatus(path) ? "mb-[25px] h-[40px] w-[40px]" : "h-[25px] w-[25px]"}
+          />
+          {!getIconStatus(path) && <span className="text-[10px]">{["홈", "쇼핑", "펀딩", "프로필"][index]}</span>}
+        </div>
+      ))}
+      <img src={CatPaw} className="h-[25px] w-[40px]" style={{ position: 'absolute', ...catPawPosition, transition: 'left 0.5s ease, bottom 0.5s ease, opacity 0.5s ease' }} />
     </footer>
   );
 }

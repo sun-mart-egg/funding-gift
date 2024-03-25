@@ -4,6 +4,7 @@ import MainLayout from "./components/UI/MainLayout.jsx";
 import SubLayout from "./components/UI/SubLayout.jsx";
 
 import Login from "./components/Login/LoginPage.jsx";
+import LoginCallback from "./components/Login/LoginCallback.jsx"
 import Signup from "./components/Login/Signup.jsx";
 import SignupFinish from "./components/Login/SignupFinish.jsx";
 
@@ -51,10 +52,12 @@ function App() {
           <Route path="/friends" element={<Friends />} />
           <Route path="/participate" element={<ParticipatePage />} />
           <Route path="/pay" element={<Paypage />} />
+          <Route path="/wishlist/:userId" element={<Wishlist />} />
+          <Route path="/brand/:brandId" element={<BrandStore />} />
         </Route>
 
-        <Route path="/brand/:brandId" element={<BrandStore />} />
-        <Route path="/wishlist/:userId" element={<Wishlist />} />
+        <Route path="/loginCallback" element={<LoginCallback />} />
+
       </Routes>
     </BrowserRouter>
   );
