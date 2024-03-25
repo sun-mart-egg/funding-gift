@@ -2,6 +2,7 @@ import FundingDetailInfo from "../component/FundingDetailInfo";
 import CongratulateList from "../component/CongratulateList";
 import BottomSheet from "../component/BottomSheet";
 import React, { useState } from "react";
+import LargeButton from "../../UI/LargeButton";
 
 function MyFundingDetail() {
   const data = {
@@ -18,7 +19,13 @@ function MyFundingDetail() {
       name: "박창준",
       title: "시은아 생일 축하해",
       detail:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nunc erat, tincidunt nec efficitur nec, porta vitae ipsum. Nunc cursus pretium sapien non tristique. Donec feugiat nec erat ut ultricies. Mauris eleifend id erat id finibus. Sed suscipit justo nisi, id tincidunt lectus porttitor et. Proin id viverra felis, pulvinar ullamcorper lectus. Quisque lacinia euismod laoreet. Aenean ornare metus varius pellentesque egestas. Vivamus faucibus libero eu ornare pretium. Duis porta laoreet erat id condimentum.Ut ligula felis, suscipit quis velit non, aliquam viverra tellus. Etiam id commodo urna. Morbi dictum quam et turpis rutrum, ac ornare turpis dapibus. Morbi consectetur ex vel ante commodo, sit amet mattis risus gravida. Mauris gravida sit amet libero at commodo. Sed sagittis elit tristique auctor blandit. Quisque purus urna, imperdiet id cursus et, consequat at nisl. Duis egestas augue vitae enim dictum semper. Quisque a efficitur erat. In non purus sit amet nunc rhoncus consectetur eget sed nisl. Sed id ligula dui. Aenean viverra fringilla quam, in scelerisque dolor malesuada et. Donec tortor lorem, vulputate vitae molestie ac, feugiat in lorem. Duis auctor et orci at pellentesque. Donec tempus leo nec dignissim consequatIn id suscipit enim. Nullam fringilla condimentum pretium. In congue interdum eros, ac pellentesque metus consequat in. Vivamus imperdiet, magna id facilisis dictum, orci eros scelerisque quam, vel hendrerit ligula arcu quis massa. Vivamus eget ligula non quam bibendum consectetur vel tincidunt orci. Fusce nibh nisi, tempus sit amet vehicula at, varius at ipsum. Curabitur lacinia euismod urna, sed scelerisque tellus ultrices at. Sed eu pharetra mauris, eget elementum mi. Nulla vestibulum erat id nisi ullamcorper, non consectetur libero tempus. Integer tortor massa, varius quis mi porta, maximus sagittis ante. Quisque interdum eros sit amet justo vestibulum lacinia.Aliquam feugiat massa magna, a efficitur enim rhoncus ac. Vestibulum tristique orci at molestie laoreet. In ullamcorper lectus et nisl fermentum vestibulum. Praesent sagittis sed odio id commodo. Duis nisl libero, maximus lobortis elit luctus, pharetra accumsan ipsum. Donec molestie sem ac massa elementum, ut maximus urna ultrices. Mauris dapibus urna quis erat accumsan, sed imperdiet purus mattis.Donec non nisi fermentum, laoreet dolor eu, placerat lorem. Donec iaculis eleifend mollis. Phasellus vel suscipit eros. Maecenas eget nibh erat. In hac habitasse platea dictumst. In nec arcu in purus finibus rutrum in ut sapien. Vivamus vulputate tellus in tortor vulputate convallis. Nulla facilisi. Pellentesque non eros id libero pellentesque iaculis. Donec nec faucibus erat. Quisque sed libero risus. Maecenas in lorem non urna placerat vehicula ac non nulla. Etiam vitae scelerisque orci. Vivamus pharetra finibus nunc at luctus.",
+        "이 편지는 영국에서 최초로 시작되어 일년에 한바퀴를 돌면서 받는 사람에게 행운을 주었고 지금은 당신에게로 옮겨진 이 편지는 4일 안에 당신 곁을 떠나야 합니다. 이 편지를 포함해서 7통을 행운이 필요한 사람에게 보내 주셔야 합니다. 복사를 해도 좋습니다. 혹 미신이라 하실지 모르지만 사실입니다.영국에서 HGXWCH이라는 사람은 1930년에 이 편지를 받았습니다. 그는 비서에게 복사해서 보내라고 했습니다. 며칠 뒤에 복권이 당첨되어 20억을 받았습니다. 어떤 이는 이 편지를 받았으나 96시간 이내 자신의 손에서 떠나야 한다는 사실을 잊었습니다. 그는 곧 사직되었습니다. 나중에야 이 사실을 알고 7통의 편지를 보냈는데 다시 좋은 직장을 얻었습니다. 미국의 케네디 대통령은 이 편지를 받았지만 그냥 버렸습니다. 결국 9일 후 그는 암살당했습니다. 기억해 주세요. 이 편지를 보내면 7년의 행운이 있을 것이고 그렇지 않으면 3년의 불행이 있을 것입니다. 그리고 이 편지를 버리거나 낙서를 해서는 절대로 안됩니다. 7통입니다. 이 편지를 받은 사람은 행운이 깃들것입니다. 힘들겠지만 좋은게 좋다고 생각하세요. 7년의 행운을 빌면서....",
+      reply: "ㄳㄳ",
+    },
+    {
+      name: "임수빈",
+      title: "시은아 생일 축하해1",
+      detail: "메세지 내용 테스트임 2",
       reply: "ㄳㄳ",
     },
     {
@@ -42,7 +49,50 @@ function MyFundingDetail() {
     {
       name: "박종혁",
       title: "시은아 생일 축하해4",
-      detail: "메세지 내용 테스트임 5",
+      detail:
+        " 메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5",
+      reply: null,
+    },
+    {
+      name: "박종혁",
+      title: "시은아 생일 축하해4",
+      detail:
+        " 메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5",
+      reply: null,
+    },
+    {
+      name: "박종혁",
+      title: "시은아 생일 축하해4",
+      detail:
+        " 메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5",
+      reply: null,
+    },
+    {
+      name: "박종혁",
+      title: "시은아 생일 축하해4",
+      detail:
+        " 메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5",
+      reply: null,
+    },
+    {
+      name: "박종혁",
+      title: "시은아 생일 축하해4",
+      detail:
+        " 메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5",
+      reply: null,
+    },
+    {
+      name: "박종혁",
+      title: "시은아 생일 축하해4",
+      detail:
+        " 메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5",
+      reply: null,
+    },
+    {
+      name: "박종혁",
+      title: "시은아 생일 축하해4",
+      detail:
+        " 메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5메세지 내용 테스트임 5",
       reply: null,
     },
   ];
@@ -56,10 +106,10 @@ function MyFundingDetail() {
   };
 
   return (
-    <div className="main-layer">
+    <div className="sub-layer font-cusFont3">
       <div
         id="page"
-        className="flex h-screen flex-col items-center justify-center overflow-auto"
+        className="absolute top-20 flex flex-col items-center justify-start pb-20"
       >
         <FundingDetailInfo
           title={data.title}
@@ -68,21 +118,22 @@ function MyFundingDetail() {
           progress={data.progress}
           price={data.price}
         />
-        <div id="messageSection" className="m-2 w-full flex-col">
-          <div id="subTitle" className="text-left">
-            <p>축하 받은 리스트</p>
-          </div>
-        </div>
+
         <CongratulateList
           listData={MessageList}
           onCardClick={toggleBottomSheet}
         />
       </div>
+
       <BottomSheet
         isOpen={isBottomSheetOpen}
         setIsOpen={setIsBottomSheetOpen}
         message={selectedMessage}
       ></BottomSheet>
+
+      <button className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white">
+        펀딩 취소하기
+      </button>
     </div>
   );
 }

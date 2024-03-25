@@ -12,7 +12,7 @@ function Home() {
 
   return (
     <div className="main-layer font-cusFont2">
-      <div>
+      <div className="w-full">
         <SearchBar />
       </div>
 
@@ -51,7 +51,8 @@ function Home() {
           <p className="">추천 상품이 들어갈 예정입니다!</p>
         </div>
       </div>
-      <ScrollToTop />
+
+      <ScrollToTop className="bottom-[25px]" />
     </div>
   );
 }
