@@ -106,7 +106,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 return UriComponentsBuilder.fromUriString(targetUrl)
                         .queryParam("access-token", accessToken)
                         .queryParam("consumer-id",consumerId)
-                        .queryParam("nextPage","sign-in")
+                        .queryParam("next-page","sign-in")
                         .build().toUriString();
             } else {
                 // 가입 된 상태일 경우 -> 로그인
@@ -115,9 +115,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
                 // 메인 페이지로 리다이렉트
                 return UriComponentsBuilder.fromUriString(targetUrl)
-                        .queryParam("access_token", accessToken)
+                        .queryParam("access-token", accessToken)
                         .queryParam("consumer-id",findMember.get().getId())
-                        .queryParam("nextPage","main")
+                        .queryParam("next-page","main")
                         .build().toUriString();
             }
 

@@ -22,5 +22,10 @@ public class SecurityUtil {
         return consumerRepository.findById(consumerId)
                 .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
     }
-
 }
+/*
+* Todo
+*  예외처리. 부탁.
+*  consumerId만 뽑는 메소드. 필요.
+*
+*/

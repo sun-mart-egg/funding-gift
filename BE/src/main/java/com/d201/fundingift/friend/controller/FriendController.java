@@ -54,9 +54,9 @@ public class FriendController {
     @Operation(summary = "친구 목록 조회",
             description = "ID에 해당하는 소비자의 친구정보를 조회합니다. `Token`"
     )
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<Friend>> getFriends(@PathVariable Long userId) {
-        List<Friend> friends = friendService.getFriends(userId);
-        return ResponseEntity.ok(friends);
+    @GetMapping("/{consumer-id}")
+    public SuccessResponse<List<Friend>> getFriends(@PathVariable("consumer-id") Long consumerId) {
+        List<Friend> friends = friendService.getFriends(consumerId);
+        return ResponseUtils.ok(friends,SuccessType.GET_CONSUMER_INFO_SUCCESS);
     }
 }
