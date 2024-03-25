@@ -12,7 +12,7 @@ export default defineConfig({
       //   enabled: true
       // },
       workbox: {
-        globPatterns: ["**/*.{js,jsx,html,ico,png,svg}"],
+        globPatterns: ["**/*.{js,jsx,ico,png,svg}"],
       },
       manifest: {
         name: "생선가게",
