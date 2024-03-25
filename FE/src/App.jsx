@@ -44,6 +44,10 @@ function App() {
           <Route path="/signupFin" element={<SignupFinish />} />
           <Route path="/make-funding-main" element={<MakeFundingMain />} />
           <Route path="/my-funding-detail" element={<MyFundingDetail />} />
+          <Route
+            path="/friend-funding-detail"
+            element={<FriendFundingDetail />}
+          />
           <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
