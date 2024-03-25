@@ -39,7 +39,7 @@ function App() {
         </Route>
 
         <Route element={<SubLayout />}>
-          <Route path="/loginPage" element={<Login />} />
+          <Route path="/login-page" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signupFin" element={<SignupFinish />} />
           <Route path="/make-funding-main" element={<MakeFundingMain />} />
@@ -60,7 +60,7 @@ function App() {
           <Route path="/brand/:brandId" element={<BrandStore />} />
         </Route>
 
-        <Route path="/loginCallback" element={<LoginCallback />} />
+        <Route path="/login-callback" element={<LoginCallback />} />
 
       </Routes>
     </BrowserRouter>
