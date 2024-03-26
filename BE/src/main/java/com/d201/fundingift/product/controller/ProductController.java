@@ -2,6 +2,7 @@ package com.d201.fundingift.product.controller;
 
 import com.d201.fundingift._common.response.ErrorResponse;
 import com.d201.fundingift._common.response.ResponseUtils;
+import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift.product.dto.response.GetProductCategoryResponse;
 import com.d201.fundingift.product.dto.response.GetProductDetailResponse;
@@ -49,7 +50,7 @@ public class ProductController {
                 description = "잘못된 category-id / 잘못된 sort",
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @GetMapping("")
-    public SuccessResponse<List<GetProductResponse>> getProductsByCategory
+    public SuccessResponse<SliceList<GetProductResponse>> getProductsByCategory
             (@Schema(description = "카테고리 ID", example = "1") @RequestParam(required = true, name = "category-id") Integer categoryId,
              @Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam(required = true, name = "page") Integer page,
              @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam(required = true, name = "size") Integer size,
