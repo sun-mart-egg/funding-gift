@@ -1,7 +1,9 @@
 package com.d201.fundingift.consumer.service;
 
 import com.d201.fundingift._common.exception.CustomException;
+import com.d201.fundingift._common.jwt.JwtUtil;
 import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
+import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.dto.response.GetConsumerInfoByIdResponse;
 import com.d201.fundingift.consumer.dto.response.GetConsumerMyInfoResponse;
 import com.d201.fundingift.consumer.entity.Consumer;
@@ -9,10 +11,14 @@ import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -27,6 +33,9 @@ public class ConsumerService {
     private final ConsumerRepository consumerRepository;
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
+    private final SecurityUtil securityUtil;
+    private final JwtUtil jwtUtil;
+    private final RestTemplate restTemplate;
 
     // 회원가입
     @Transactional
@@ -85,11 +94,30 @@ public class ConsumerService {
         return null;
     }
 
-        public void saveAccessToken(Long consumerId, String accessToken) {
-            redisTemplate.opsForValue().set("accessToken:" + consumerId, accessToken);
-        }
+    public void logoutUser() {
+        String consumerId = securityUtil.getConsumerOrNull().getName();
+        String kakaoAccessToken = jwtUtil.getKakaoAccessToken(consumerId);
 
-        public String getAccessToken(String consumerId) {
-            return redisTemplate.opsForValue().get("accessToken:" + consumerId);
+        // 1. 로컬 로그아웃 처리: 토큰 무효화
+        // 레디스에서 해당 사용자의 액세스 토큰 및 리프레시 토큰 및 카카오 액세스 토큰 삭제
+        jwtUtil.deleteAccessToken(consumerId);
+        jwtUtil.deleteRefreshToken(consumerId);
+        jwtUtil.deleteKakaoAccessToken(consumerId);
+
+        // 2. 카카오 로그아웃 API 호출
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + kakaoAccessToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity("https://kapi.kakao.com/v1/user/logout", entity, String.class);
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            // 에러 처리
+            throw new RuntimeException("Failed to logout from Kakao");
         }
+    }
+
+    public void deleteConsumer(Long consumerId) {
+        consumerRepository.deleteById(consumerId);
+    }
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum SuccessType {
 
     LOGIN_SUCCESS("로그인에 성공하였습니다."),
+    LOGOUT_SUCCESS("로그아웃에 성공하였습니다."),
     GET_CONSUMER_INFO_SUCCESS("사용자 정보 조회에 성공하였습니다."),
     GET_KAKAO_FRIEND_INFO_SUCCESS("카카오 친구목록 조회에 성공하였습니다."),
     GET_FRIEND_INFO_SUCCESS("친구목록 조회에 성공하였습니다."),

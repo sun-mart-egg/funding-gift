@@ -44,7 +44,7 @@ public class FriendService {
 
         // 받아와서 입력 레디스
         // 카카오 액세스 토큰 (데이터베이스에서 조회하는 로직으로 변경 필요)
-        String kakaoAccessToken = consumerService.getAccessToken(consumerId);
+        String kakaoAccessToken = jwtUtil.getKakaoAccessToken(consumerId);
         // 카카오 API에 요청
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();

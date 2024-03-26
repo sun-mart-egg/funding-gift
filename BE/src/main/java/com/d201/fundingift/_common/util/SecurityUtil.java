@@ -5,6 +5,7 @@ import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -16,12 +17,6 @@ import org.springframework.stereotype.Component;
 public class SecurityUtil {
 
     private final ConsumerRepository consumerRepository;
-
-    public Consumer getConsumer() {
-        Long consumerId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
-        return consumerRepository.findById(consumerId)
-                .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
-    }
 
     public Consumer getConsumerOrNull() {
         Long consumerId;

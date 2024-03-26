@@ -13,14 +13,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import static com.d201.fundingift._common.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.MODE_PARAM_COOKIE_NAME;
@@ -93,14 +91,15 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             if(findMember.isEmpty()){
                 Long consumerId = consumerService.saveOAuth2User(principal);
 
-                // Redis에 소비자ID, 카카오 액세스 토큰 저장.
-                consumerService.saveAccessToken(consumerId, principal.getUserInfo().getAccessToken());
-
-                // 서비스 액세스 토큰 생성
-                // TODO: 리프레시 토큰 발급
-                // TODO: 리프레시 토큰 DB 저장
+                // Access, Refresh 토큰 생성.
                 String accessToken = jwtUtil.createToken(consumerId.toString());
-                //String refreshToken = "test_refresh_token";
+                String refreshToken = jwtUtil.createRefreshToken(consumerId.toString());
+
+                // Redis 에 Access, Refresh 토큰 저장.
+                jwtUtil.saveTokens(consumerId,accessToken,refreshToken);
+
+                // Redis 에 kakaoAccess 토큰 저장.
+                jwtUtil.saveKakaoAccessToken(consumerId, principal.getUserInfo().getAccessToken());
 
                 // 회원가입 페이지로 리다이렉트(예정)
                 return UriComponentsBuilder.fromUriString(targetUrl)
@@ -113,8 +112,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 Long consumerId = findMember.get().getId();
                 String accessToken = jwtUtil.createToken(consumerId.toString());
 
-                // Redis에 소비자ID, 카카오 액세스 토큰 저장.
-                consumerService.saveAccessToken(consumerId, principal.getUserInfo().getAccessToken());
+                // Redis 에 카카오 액세스 토큰 저장.
+                jwtUtil.saveKakaoAccessToken(consumerId, principal.getUserInfo().getAccessToken());
 
                 // 메인 페이지로 리다이렉트
                 return UriComponentsBuilder.fromUriString(targetUrl)
@@ -126,13 +125,16 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
 
         } else if ("unlink".equalsIgnoreCase(mode)) {
-
+            // 회원 탈퇴
             String accessToken = principal.getUserInfo().getAccessToken();
             OAuth2Provider provider = principal.getUserInfo().getProvider();
+            String consumerId = principal.getName();
 
-            // TODO: DB 삭제
-            // TODO: 리프레시 토큰 삭제
+            consumerService.deleteConsumer(Long.valueOf(consumerId));
             oAuth2UserUnlinkManager.unlink(provider, accessToken);
+            jwtUtil.deleteAccessToken(consumerId);
+            jwtUtil.deleteRefreshToken(consumerId);
+            jwtUtil.deleteKakaoAccessToken(consumerId);
 
             return UriComponentsBuilder.fromUriString(targetUrl)
                     .build().toUriString();
