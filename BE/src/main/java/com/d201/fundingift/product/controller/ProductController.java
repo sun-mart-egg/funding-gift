@@ -42,7 +42,14 @@ public class ProductController {
     }
 
     @Operation(summary = "카테고리 별 상품 목록 조회",
-            description = "카테고리 별 상품 목록을 조회합니다. Query Parameter로 category-id, page, size, sort 넣어주세요.")
+            description = """
+                           카테고리 별 상품 목록을 조회합니다. Query Parameter로 category-id, page, size, sort 넣어주세요. 
+                           결과로 data, page, size, hasNext를 반환합니다.
+                           - data: 응답 데이터
+                           - page: 현재 페이지 번호
+                           - size: 현재 데이터 개수
+                           - hasNext: 다음 페이지 존재 여부
+                           """)
     @ApiResponse(responseCode = "200",
                 description = "성공",
                 useReturnTypeSchema = true)
@@ -66,11 +73,34 @@ public class ProductController {
         return ResponseUtils.ok(productService.getProductsByCategoryId(categoryId, page, size, sort), GET_PRODUCTS_BY_CATEGORY_SUCCESS);
     }
 
+    @Operation(summary = "키워드 별 상품 목록 조회",
+            description = """
+                           키워드 별 상품 목록을 조회합니다. Query Parameter로 keyword, page, size, sort 넣어주세요. 
+                           결과로 data, page, size, hasNext를 반환합니다.
+                           - data: 응답 데이터
+                           - page: 현재 페이지 번호
+                           - size: 현재 데이터 개수
+                           - hasNext: 다음 페이지 존재 여부
+                           """)
+    @ApiResponse(responseCode = "200",
+            description = "성공",
+            useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "400",
+            description = "잘못된 sort",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @GetMapping("/search")
-    public SuccessResponse<SliceList<GetProductResponse>> getProductsByKeyword(@RequestParam(required = true, name = "keyword") String keyword,
-                                                                         @RequestParam(required = true, name = "page") Integer page,
-                                                                         @RequestParam(required = true, name = "size") Integer size,
-                                                                         @RequestParam(required = true, name = "sort") Integer sort) {
+    public SuccessResponse<SliceList<GetProductResponse>> getProductsByKeyword
+            (@Schema(description = "검색 키워드", example = "반지") @RequestParam(required = true, name = "keyword") String keyword,
+             @Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam(required = true, name = "page") Integer page,
+             @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam(required = true, name = "size") Integer size,
+             @Schema(description = """
+                                    정렬 조건
+                                    - 0: 기본 순
+                                    - 1: 리뷰 많은 순
+                                    - 2: 평점 높은 순
+                                    - 3: 가격 높은 순
+                                    - 4: 가격 낮은 순
+                                    """, example = "0") @RequestParam(required = true, name = "sort") Integer sort) {
         log.info("[ProductController.getProductsByKeyword]");
         return ResponseUtils.ok(productService.getProductsByKeyword(keyword, page, size, sort), GET_PRODUCTS_BY_KEYWORD_SUCCESS);
     }
