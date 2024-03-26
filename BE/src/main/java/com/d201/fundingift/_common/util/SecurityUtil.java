@@ -18,21 +18,33 @@ public class SecurityUtil {
     private final ConsumerRepository consumerRepository;
 
     public Consumer getConsumer() {
-        Long consumerId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
-        return consumerRepository.findById(consumerId)
-                .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
+        return findConsumerById(getConsumerIdOrElseThrow());
     }
 
     public Consumer getConsumerOrNull() {
-        Long consumerId;
+        return findConsumerById(getConsumerIdOrElseNull());
+    }
+
+    private Long getConsumerIdOrElseThrow() {
         try {
-            consumerId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+            return Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+        } catch (NumberFormatException e) {
+            throw new CustomException(ErrorType.USER_UNAUTHORIZED);
+        }
+    }
+
+    private Long getConsumerIdOrElseNull() {
+        try {
+            return Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
         } catch (NumberFormatException e) {
             return null;
         }
-        return consumerRepository.findById(consumerId).orElse(null);
     }
 
+    private Consumer findConsumerById(Long consumerId) {
+        return consumerRepository.findById(consumerId)
+                .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
+    }
 }
 /*
 * Todo
