@@ -28,6 +28,9 @@ import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx"
 import Home from "./components/Home/Home.jsx";
 import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
 
+// 삭제 예정 
+import ProdcutTemp from "./components/Products/Producttemp.jsx"
+
 function App() {
   return (
     <BrowserRouter>
@@ -61,6 +64,9 @@ function App() {
         </Route>
 
         <Route path="/login-callback" element={<LoginCallback />} />
+
+        {/* 삭제 예정 */}
+        <Route path="/producttemp" element={<ProdcutTemp />} />
 
       </Routes>
     </BrowserRouter>
