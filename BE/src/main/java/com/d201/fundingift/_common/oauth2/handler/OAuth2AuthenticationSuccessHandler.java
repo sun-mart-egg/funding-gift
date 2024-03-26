@@ -113,6 +113,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 Long consumerId = findMember.get().getId();
                 String accessToken = jwtUtil.createToken(consumerId.toString());
 
+                // Redis에 소비자ID, 카카오 액세스 토큰 저장.
+                consumerService.saveAccessToken(consumerId, principal.getUserInfo().getAccessToken());
+
                 // 메인 페이지로 리다이렉트
                 return UriComponentsBuilder.fromUriString(targetUrl)
                         .queryParam("access-token", accessToken)
