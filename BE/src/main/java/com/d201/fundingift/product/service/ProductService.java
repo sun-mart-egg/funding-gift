@@ -46,42 +46,27 @@ public class ProductService {
 
         // 기본 순
         if (sort == 0) {
-            Slice<Product> products = productRepository.findAllSliceByProductCategoryId(categoryId, pageable);
-            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                                    pageable,
-                                    products.hasNext());
+            return getProductResponseSliceList(findByCategoryId(categoryId, pageable), pageable);
         }
 
         // 리뷰 많은 순
         if (sort == 1) {
-            Slice<Product> products = productRepository.findAllSliceByProductCategoryIdOrderByReviewCntDesc(categoryId, pageable);
-            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                                    pageable,
-                                    products.hasNext());
+            return getProductResponseSliceList(findByCategoryIdOrderByReviewCntDesc(categoryId, pageable), pageable);
         }
 
         // 평점 높은 순
         if (sort == 2) {
-            Slice<Product> products = productRepository.findAllSliceByProductCategoryIdOrderByReviewAvgDesc(categoryId, pageable);
-            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                                    pageable,
-                                    products.hasNext());
+            return getProductResponseSliceList(findByCategoryIdOrderByReviewAvgDesc(categoryId, pageable), pageable);
         }
 
         // 가격 높은 순
         if (sort == 3) {
-            Slice<Product> products = productRepository.findAllSliceByProductCategoryIdOrderByPriceDesc(categoryId, pageable);
-            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                                    pageable,
-                                    products.hasNext());
+            return getProductResponseSliceList(findByCategoryIdOrderByPriceDesc(categoryId, pageable), pageable);
         }
 
         // 가격 낮은 순
         if (sort == 4) {
-            Slice<Product> products = productRepository.findAllSliceByProductCategoryIdOrderByPriceAsc(categoryId, pageable);
-            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                                    pageable,
-                                    products.hasNext());
+            return getProductResponseSliceList(findByCategoryIdOrderByPriceAsc(categoryId, pageable), pageable);
         }
 
         throw new CustomException(SORT_NOT_FOUND);
@@ -93,42 +78,27 @@ public class ProductService {
 
         // 기본 순
         if (sort == 0) {
-            Slice<Product> products = productRepository.findAllSliceByKeyword(keyword, pageable);
-            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                    pageable,
-                    products.hasNext());
+            return getProductResponseSliceList(findByKeyword(keyword, pageable), pageable);
         }
 
         // 리뷰 많은 순
         if (sort == 1) {
-            Slice<Product> products = productRepository.findAllSliceByKeywordOrderByReviewAvgDesc(keyword, pageable);
-            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                    pageable,
-                    products.hasNext());
+            return getProductResponseSliceList(findByKeywordOrderByReviewCntDesc(keyword, pageable), pageable);
         }
 
         // 평점 높은 순
         if (sort == 2) {
-            Slice<Product> products = productRepository.findAllSliceByKeywordOrderByReviewCntDesc(keyword, pageable);
-            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                    pageable,
-                    products.hasNext());
+            return getProductResponseSliceList(findByKeywordOrderByReviewAvgDesc(keyword, pageable), pageable);
         }
 
         // 가격 높은 순
         if (sort == 3) {
-            Slice<Product> products = productRepository.findAllSliceByKeywordOrderByPriceDesc(keyword, pageable);
-            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                    pageable,
-                    products.hasNext());
+            return getProductResponseSliceList(findByKeywordOrderByPriceDesc(keyword, pageable), pageable);
         }
 
         // 가격 낮은 순
         if (sort == 4) {
-            Slice<Product> products = productRepository.findAllSliceByKeywordOrderByPriceAsc(keyword, pageable);
-            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                    pageable,
-                    products.hasNext());
+            return getProductResponseSliceList(findByKeywordOrderByPriceAsc(keyword, pageable), pageable);
         }
 
         throw new CustomException(SORT_NOT_FOUND);
@@ -143,6 +113,52 @@ public class ProductService {
         List<GetProductOptionResponse> options = getOptions(product);
         // 반환
         return GetProductDetailResponse.from(product, options);
+    }
+
+    private Slice<Product> findByCategoryId(Integer categoryId, Pageable pageable) {
+        return productRepository.findAllSliceByProductCategoryId(categoryId, pageable);
+    }
+
+    private Slice<Product> findByCategoryIdOrderByReviewCntDesc(Integer categoryId, Pageable pageable) {
+        return productRepository.findAllSliceByProductCategoryIdOrderByReviewCntDesc(categoryId, pageable);
+    }
+
+    private Slice<Product> findByCategoryIdOrderByReviewAvgDesc(Integer categoryId, Pageable pageable) {
+        return productRepository.findAllSliceByProductCategoryIdOrderByReviewAvgDesc(categoryId, pageable);
+    }
+
+    private Slice<Product> findByCategoryIdOrderByPriceDesc(Integer categoryId, Pageable pageable) {
+        return productRepository.findAllSliceByProductCategoryIdOrderByPriceDesc(categoryId, pageable);
+    }
+
+    private Slice<Product> findByCategoryIdOrderByPriceAsc(Integer categoryId, Pageable pageable) {
+        return productRepository.findAllSliceByProductCategoryIdOrderByPriceAsc(categoryId, pageable);
+    }
+
+    private Slice<Product> findByKeyword(String keyword, Pageable pageable) {
+        return productRepository.findAllSliceByKeyword(keyword, pageable);
+    }
+
+    private Slice<Product> findByKeywordOrderByReviewAvgDesc(String keyword, Pageable pageable) {
+        return productRepository.findAllSliceByKeywordOrderByReviewAvgDesc(keyword, pageable);
+    }
+
+    private Slice<Product> findByKeywordOrderByReviewCntDesc(String keyword, Pageable pageable) {
+        return productRepository.findAllSliceByKeywordOrderByReviewCntDesc(keyword, pageable);
+    }
+
+    private Slice<Product> findByKeywordOrderByPriceDesc(String keyword, Pageable pageable) {
+        return productRepository.findAllSliceByKeywordOrderByPriceDesc(keyword, pageable);
+    }
+
+    private Slice<Product> findByKeywordOrderByPriceAsc(String keyword, Pageable pageable) {
+        return productRepository.findAllSliceByKeywordOrderByPriceAsc(keyword, pageable);
+    }
+
+    private SliceList<GetProductResponse> getProductResponseSliceList(Slice<Product> products, Pageable pageable) {
+        return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
+                pageable,
+                products.hasNext());
     }
 
     private List<GetProductOptionResponse> getOptions(Product product) {
