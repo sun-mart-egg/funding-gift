@@ -28,6 +28,7 @@ public class ProductService {
     private final ProductCategoryRepository productCategoryRepository;
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
+    private Pageable pageable;
 
     // 카테고리 리스트 조회
     public List<GetProductCategoryResponse> getCategories() {
@@ -37,7 +38,7 @@ public class ProductService {
     }
 
     // 카테고리 별 상품 리스트 조회
-    public List<GetProductResponse> getProducts(Integer categoryId, Integer page, Integer size, Integer sort) {
+    public List<GetProductResponse> getProductsByCategoryId(Integer categoryId, Integer page, Integer size, Integer sort) {
         validateCategoryId(categoryId);
         Pageable pageable = PageRequest.of(page, size);
 
@@ -77,6 +78,50 @@ public class ProductService {
         }
 
         throw new CustomException(SORT_NOT_FOUND);
+    }
+
+    // 검색어 별 상품 리스트 조회
+    public List<GetProductResponse> getProductsByKeyword(String keyword, Integer page, Integer size, Integer sort) {
+        keyword = "%" + keyword + "%";
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 기본 순
+        if (sort == 0) {
+            return productRepository.findAllSliceByKeyword(keyword, pageable)
+                    .stream().map(GetProductResponse::from)
+                    .collect(Collectors.toList());
+        }
+
+        // 리뷰 많은 순
+        if (sort == 1) {
+            return productRepository.findAllSliceByKeywordOrderByReviewAvgDesc(keyword, pageable)
+                    .stream().map(GetProductResponse::from)
+                    .collect(Collectors.toList());
+        }
+
+        // 평점 높은 순
+        if (sort == 2) {
+            return productRepository.findAllSliceByKeywordOrderByReviewCntDesc(keyword, pageable)
+                    .stream().map(GetProductResponse::from)
+                    .collect(Collectors.toList());
+        }
+
+        // 가격 높은 순
+        if (sort == 3) {
+            return productRepository.findAllSliceByKeywordOrderByPriceDesc(keyword, pageable)
+                    .stream().map(GetProductResponse::from)
+                    .collect(Collectors.toList());
+        }
+
+        // 가격 낮은 순
+        if (sort == 4) {
+            return productRepository.findAllSliceByKeywordOrderByPriceAsc(keyword, pageable)
+                    .stream().map(GetProductResponse::from)
+                    .collect(Collectors.toList());
+        }
+
+        throw new CustomException(SORT_NOT_FOUND);
+
     }
 
     // 상품 상세 조회
