@@ -14,9 +14,8 @@ function FundingList({ listData }) {
       className="w-full flex-col items-center justify-center overflow-auto"
     >
       {data.map((item, index) => (
-        <div className="flex w-full justify-center">
+        <div key={index} className="flex w-full justify-center">
           <FundingCard
-            key={item.index}
             people={item.people}
             title={item.title}
             progress={item.progress}

@@ -28,7 +28,7 @@ import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx"
 import Home from "./components/Home/Home.jsx";
 import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
 import FundingMain from "./components/Funding/pages/FundingMain.jsx";
-
+import StoryPage from "./components/Funding/pages/StoryPage.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -63,6 +63,8 @@ function App() {
         </Route>
 
         <Route path="/loginCallback" element={<LoginCallback />} />
+
+        <Route path="/story/:id" element={<StoryPage />} />
       </Routes>
     </BrowserRouter>
   );
