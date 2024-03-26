@@ -82,7 +82,6 @@ public class ProductService {
 
     // 검색어 별 상품 리스트 조회
     public List<GetProductResponse> getProductsByKeyword(String keyword, Integer page, Integer size, Integer sort) {
-        keyword = "%" + keyword + "%";
         Pageable pageable = PageRequest.of(page, size);
 
         // 기본 순
