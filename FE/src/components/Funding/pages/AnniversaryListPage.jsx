@@ -1,6 +1,6 @@
 import AnniversaryList from "../component/AnniversaryList";
 import anniversaryData from "../data";
-function AnniversaryListPage() {
+function AnniversaryListPage({ listData }) {
   return (
     <div>
       <AnniversaryList listData={anniversaryData} />

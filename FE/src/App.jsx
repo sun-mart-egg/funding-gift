@@ -4,7 +4,7 @@ import MainLayout from "./components/UI/MainLayout.jsx";
 import SubLayout from "./components/UI/SubLayout.jsx";
 
 import Login from "./components/Login/LoginPage.jsx";
-import LoginCallback from "./components/Login/LoginCallback.jsx"
+import LoginCallback from "./components/Login/LoginCallback.jsx";
 import Signup from "./components/Login/Signup.jsx";
 import SignupFinish from "./components/Login/SignupFinish.jsx";
 
@@ -27,6 +27,7 @@ import MakeFundingDetail from "./components/Funding/pages/MakeFundingDetail.jsx"
 import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx";
 import Home from "./components/Home/Home.jsx";
 import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
+import FundingMain from "./components/Funding/pages/FundingMain.jsx";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/my-funding" element={<MyFunding />} />
           <Route path="/product" element={<Product />} />
+          <Route path="/funding" element={<FundingMain />} />
         </Route>
 
         <Route element={<SubLayout />}>
@@ -61,7 +63,6 @@ function App() {
         </Route>
 
         <Route path="/loginCallback" element={<LoginCallback />} />
-
       </Routes>
     </BrowserRouter>
   );
