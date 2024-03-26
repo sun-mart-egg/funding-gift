@@ -88,42 +88,47 @@ public class ProductService {
     }
 
     // 검색어 별 상품 리스트 조회
-    public List<GetProductResponse> getProductsByKeyword(String keyword, Integer page, Integer size, Integer sort) {
+    public SliceList<GetProductResponse> getProductsByKeyword(String keyword, Integer page, Integer size, Integer sort) {
         Pageable pageable = PageRequest.of(page, size);
 
         // 기본 순
         if (sort == 0) {
-            return productRepository.findAllSliceByKeyword(keyword, pageable)
-                    .stream().map(GetProductResponse::from)
-                    .collect(Collectors.toList());
+            Slice<Product> products = productRepository.findAllSliceByKeyword(keyword, pageable);
+            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
+                    pageable,
+                    products.hasNext());
         }
 
         // 리뷰 많은 순
         if (sort == 1) {
-            return productRepository.findAllSliceByKeywordOrderByReviewAvgDesc(keyword, pageable)
-                    .stream().map(GetProductResponse::from)
-                    .collect(Collectors.toList());
+            Slice<Product> products = productRepository.findAllSliceByKeywordOrderByReviewAvgDesc(keyword, pageable);
+            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
+                    pageable,
+                    products.hasNext());
         }
 
         // 평점 높은 순
         if (sort == 2) {
-            return productRepository.findAllSliceByKeywordOrderByReviewCntDesc(keyword, pageable)
-                    .stream().map(GetProductResponse::from)
-                    .collect(Collectors.toList());
+            Slice<Product> products = productRepository.findAllSliceByKeywordOrderByReviewCntDesc(keyword, pageable);
+            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
+                    pageable,
+                    products.hasNext());
         }
 
         // 가격 높은 순
         if (sort == 3) {
-            return productRepository.findAllSliceByKeywordOrderByPriceDesc(keyword, pageable)
-                    .stream().map(GetProductResponse::from)
-                    .collect(Collectors.toList());
+            Slice<Product> products = productRepository.findAllSliceByKeywordOrderByPriceDesc(keyword, pageable);
+            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
+                    pageable,
+                    products.hasNext());
         }
 
         // 가격 낮은 순
         if (sort == 4) {
-            return productRepository.findAllSliceByKeywordOrderByPriceAsc(keyword, pageable)
-                    .stream().map(GetProductResponse::from)
-                    .collect(Collectors.toList());
+            Slice<Product> products = productRepository.findAllSliceByKeywordOrderByPriceAsc(keyword, pageable);
+            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
+                    pageable,
+                    products.hasNext());
         }
 
         throw new CustomException(SORT_NOT_FOUND);
