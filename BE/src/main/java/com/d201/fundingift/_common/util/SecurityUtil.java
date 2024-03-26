@@ -18,7 +18,7 @@ public class SecurityUtil {
     private final ConsumerRepository consumerRepository;
 
     public Long getConsumerId() {
-        return getConsumerIdOrElseThrow();
+        return existConsumer(getConsumerIdOrElseThrow());
     }
 
     public Consumer getConsumer() {
@@ -48,5 +48,12 @@ public class SecurityUtil {
     private Consumer findConsumerById(Long consumerId) {
         return consumerRepository.findById(consumerId)
                 .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
+    }
+
+    private Long existConsumer(Long consumerId) {
+        if(consumerRepository.existsById(consumerId))
+            return consumerId;
+        else
+            throw new CustomException(ErrorType.CONSUMER_NOT_FOUND);
     }
 }
