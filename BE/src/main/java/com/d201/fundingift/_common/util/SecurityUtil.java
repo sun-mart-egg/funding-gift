@@ -17,6 +17,10 @@ public class SecurityUtil {
 
     private final ConsumerRepository consumerRepository;
 
+    public Long getConsumerId() {
+        return getConsumerIdOrElseThrow();
+    }
+
     public Consumer getConsumer() {
         return findConsumerById(getConsumerIdOrElseThrow());
     }
@@ -46,9 +50,3 @@ public class SecurityUtil {
                 .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
     }
 }
-/*
-* Todo
-*  예외처리. 부탁.
-*  consumerId만 뽑는 메소드. 필요.
-*
-*/
