@@ -67,7 +67,7 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public SuccessResponse<List<GetProductResponse>> getProductsByKeyword(@RequestParam(required = true, name = "keyword") String keyword,
+    public SuccessResponse<SliceList<GetProductResponse>> getProductsByKeyword(@RequestParam(required = true, name = "keyword") String keyword,
                                                                          @RequestParam(required = true, name = "page") Integer page,
                                                                          @RequestParam(required = true, name = "size") Integer size,
                                                                          @RequestParam(required = true, name = "sort") Integer sort) {
