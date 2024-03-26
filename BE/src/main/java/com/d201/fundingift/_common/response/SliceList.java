@@ -3,7 +3,6 @@ package com.d201.fundingift._common.response;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
