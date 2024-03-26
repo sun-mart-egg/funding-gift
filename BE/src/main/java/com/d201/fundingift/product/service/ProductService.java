@@ -1,6 +1,7 @@
 package com.d201.fundingift.product.service;
 
 import com.d201.fundingift._common.exception.CustomException;
+import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift.product.dto.response.GetProductCategoryResponse;
 import com.d201.fundingift.product.dto.response.GetProductDetailResponse;
 import com.d201.fundingift.product.dto.response.GetProductOptionResponse;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +30,7 @@ public class ProductService {
     private final ProductCategoryRepository productCategoryRepository;
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
-    private Pageable pageable;
+
 
     // 카테고리 리스트 조회
     public List<GetProductCategoryResponse> getCategories() {
@@ -38,43 +40,48 @@ public class ProductService {
     }
 
     // 카테고리 별 상품 리스트 조회
-    public List<GetProductResponse> getProductsByCategoryId(Integer categoryId, Integer page, Integer size, Integer sort) {
+    public SliceList<GetProductResponse> getProductsByCategoryId(Integer categoryId, Integer page, Integer size, Integer sort) {
         validateCategoryId(categoryId);
         Pageable pageable = PageRequest.of(page, size);
 
         // 기본 순
         if (sort == 0) {
-            return productRepository.findAllSliceByProductCategoryId(categoryId, pageable)
-                    .stream().map(GetProductResponse::from)
-                    .collect(Collectors.toList());
+            Slice<Product> products = productRepository.findAllSliceByProductCategoryId(categoryId, pageable);
+            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
+                                    pageable,
+                                    products.hasNext());
         }
 
         // 리뷰 많은 순
         if (sort == 1) {
-            return productRepository.findAllSliceByProductCategoryIdOrderByReviewCntDesc(categoryId, pageable)
-                    .stream().map(GetProductResponse::from)
-                    .collect(Collectors.toList());
+            Slice<Product> products = productRepository.findAllSliceByProductCategoryIdOrderByReviewCntDesc(categoryId, pageable);
+            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
+                                    pageable,
+                                    products.hasNext());
         }
 
         // 평점 높은 순
         if (sort == 2) {
-            return productRepository.findAllSliceByProductCategoryIdOrderByReviewAvgDesc(categoryId, pageable)
-                    .stream().map(GetProductResponse::from)
-                    .collect(Collectors.toList());
+            Slice<Product> products = productRepository.findAllSliceByProductCategoryIdOrderByReviewAvgDesc(categoryId, pageable);
+            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
+                                    pageable,
+                                    products.hasNext());
         }
 
         // 가격 높은 순
         if (sort == 3) {
-            return productRepository.findAllSliceByProductCategoryIdOrderByPriceDesc(categoryId, pageable)
-                    .stream().map(GetProductResponse::from)
-                    .collect(Collectors.toList());
+            Slice<Product> products = productRepository.findAllSliceByProductCategoryIdOrderByPriceDesc(categoryId, pageable);
+            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
+                                    pageable,
+                                    products.hasNext());
         }
 
         // 가격 낮은 순
         if (sort == 4) {
-            return productRepository.findAllSliceByProductCategoryIdOrderByPriceAsc(categoryId, pageable)
-                    .stream().map(GetProductResponse::from)
-                    .collect(Collectors.toList());
+            Slice<Product> products = productRepository.findAllSliceByProductCategoryIdOrderByPriceAsc(categoryId, pageable);
+            return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
+                                    pageable,
+                                    products.hasNext());
         }
 
         throw new CustomException(SORT_NOT_FOUND);
