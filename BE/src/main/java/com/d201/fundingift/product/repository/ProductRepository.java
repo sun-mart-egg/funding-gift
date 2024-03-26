@@ -46,34 +46,34 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // 검색어 별 상품 리스트 조회 - 기본 순
     @Query("select p from Product p " +
-            "where (p.name like :keyword or p.description like :keyword or p.productCategory.name like :keyword) " +
+            "where (p.name like concat('%', :keyword, '%') or p.description like concat('%', :keyword, '%') or p.productCategory.name like concat('%', :keyword, '%')) " +
             "and p.status = 'ACTIVE' and p.deletedAt is null")
     Slice<Product> findAllSliceByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
     // 검색어 별 상품 리스트 조회 - 리뷰 많은 순
     @Query("select p from Product p " +
-            "where (p.name like :keyword or p.description like :keyword or p.productCategory.name like :keyword) " +
+            "where (p.name like concat('%', :keyword, '%') or p.description like concat('%', :keyword, '%') or p.productCategory.name like concat('%', :keyword, '%')) " +
             "and p.status = 'ACTIVE' and p.deletedAt is null " +
             "order by p.reviewCnt desc")
     Slice<Product> findAllSliceByKeywordOrderByReviewAvgDesc(@Param("keyword") String keyword, Pageable pageable);
 
     // 검색어 별 상품 리스트 조회 - 평점 높은 순
     @Query("select p from Product p " +
-            "where (p.name like :keyword or p.description like :keyword or p.productCategory.name like :keyword) " +
+            "where (p.name like concat('%', :keyword, '%') or p.description like concat('%', :keyword, '%') or p.productCategory.name like concat('%', :keyword, '%')) " +
             "and p.status = 'ACTIVE' and p.deletedAt is null " +
             "order by p.reviewAvg desc")
     Slice<Product> findAllSliceByKeywordOrderByReviewCntDesc(@Param("keyword") String keyword, Pageable pageable);
 
     // 검색어 별 상품 리스트 조회 - 가격 높은 순
     @Query("select p from Product p " +
-            "where (p.name like :keyword or p.description like :keyword or p.productCategory.name like :keyword) " +
+            "where (p.name like concat('%', :keyword, '%') or p.description like concat('%', :keyword, '%') or p.productCategory.name like concat('%', :keyword, '%')) " +
             "and p.status = 'ACTIVE' and p.deletedAt is null " +
             "order by p.price desc")
     Slice<Product> findAllSliceByKeywordOrderByPriceDesc(@Param("keyword") String keyword, Pageable pageable);
 
     // 검색어 별 상품 리스트 조회 - 가격 낮은 순
     @Query("select p from Product p " +
-            "where (p.name like :keyword or p.description like :keyword or p.productCategory.name like :keyword) " +
+            "where (p.name like concat('%', :keyword, '%') or p.description like concat('%', :keyword, '%') or p.productCategory.name like concat('%', :keyword, '%')) " +
             "and p.status = 'ACTIVE' and p.deletedAt is null " +
             "order by p.reviewCnt asc")
     Slice<Product> findAllSliceByKeywordOrderByPriceAsc(@Param("keyword") String keyword, Pageable pageable);
