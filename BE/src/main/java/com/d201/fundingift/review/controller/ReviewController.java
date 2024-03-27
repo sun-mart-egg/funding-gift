@@ -12,10 +12,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -31,9 +33,12 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    public SuccessResponse<Void> postReview(@RequestPart PostReviewRequest request) throws IOException {
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public SuccessResponse<Void> postReview(@RequestPart @Valid PostReviewRequest request,
+                                            @RequestPart(required = false) MultipartFile image1,
+                                            @RequestPart(required = false) MultipartFile image2) throws IOException {
         log.info("[ReviewController.postReview]");
-        reviewService.postReview(request);
+        reviewService.postReview(request, image1, image2);
         return ResponseUtils.ok(CREATE_REVIEW_SUCCESS);
     }
 

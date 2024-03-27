@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -41,7 +42,7 @@ public class ReviewService {
     private final ProductOptionRepository productOptionRepository;
 
     @Transactional
-    public void postReview(PostReviewRequest request) throws IOException {
+    public void postReview(PostReviewRequest request, MultipartFile image1, MultipartFile image2) throws IOException {
         log.info(request.toString());
 
         Consumer consumer = getConsumer();
@@ -52,11 +53,16 @@ public class ReviewService {
         validateProductOption(product, productOption);
 
         // S3 이미지 업로드
-        String image1 = s3Uploader.upload(request.getImage1());
-        String image2 = s3Uploader.upload(request.getImage2());
+        String imageUrl1 = null, imageUrl2 = null;
+        if (image1 != null && !image1.isEmpty()) {
+            imageUrl1 = s3Uploader.upload(image1);
+        }
+        if (image2 != null && !image2.isEmpty()) {
+            imageUrl2 = s3Uploader.upload(image2);
+        }
 
         // 리뷰 생성
-        reviewRepository.save(Review.from(request, image1, image2, product, productOption, consumer));
+        reviewRepository.save(Review.from(request, imageUrl1, imageUrl2, product, productOption, consumer));
 
         // 리뷰 개수 추가
         product.insertReview(request.getStar());
@@ -152,7 +158,7 @@ public class ReviewService {
 
     // 상품 옵션
     private ProductOption findProductOptionById(Long productOptionId) {
-        return productOptionRepository.findById(productOptionId)
+        return productOptionRepository.findByIdAndStatusIsNotInactive(productOptionId)
                 .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_OPTION_NOT_FOUND));
     }
 
