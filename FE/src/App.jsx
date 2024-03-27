@@ -65,7 +65,7 @@ function App() {
           <Route path="/brand/:brandId" element={<BrandStore />} />
         </Route>
 
-        <Route path="/loginCallback" element={<LoginCallback />} />
+        <Route path="/login-callback" element={<LoginCallback />} />
         <Route path="/story/:id" element={<StoryPage />} />
       </Routes>
     </BrowserRouter>
