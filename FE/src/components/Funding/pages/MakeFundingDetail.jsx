@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom"; // useNavigate 사용
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import egg from "/imgs/egg3.jpg";
-import Footer from "../../UI/Footer";
-import anniversaryData from "../data";
+import { useStore } from "../../Store/AnniversaryStore";
 
 function MakeFundingDetail() {
-  // 현재 보여줄 컨텐츠 인덱스를 상태로 관리
-  const [contentIndex, setContentIndex] = useState(0);
+  const { contentIndex, setContentIndex, selectedAnniversary } = useStore(); // Zustand에서 상태를 가져옵니다.
+  const navigate = useNavigate(); // useNavigate 훅 사용
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const ref = useRef(null); // DatePicker에 대한 ref를 생성합니다.
+
   // 사용자 입력 데이터를 상태로 관리
   const [formData, setFormData] = useState({
     bestFriend: false,
@@ -32,13 +34,11 @@ function MakeFundingDetail() {
     </button>
   ));
 
-  const navigate = useNavigate(); // useNavigate 훅 사용
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const ref = useRef(null); // DatePicker에 대한 ref를 생성합니다.
   // 다음 컨텐츠를 보여주는 함수
   const handleNext = () => {
+    console.log(`Current Index: ${contentIndex}`); // 상태 변화 추적
     if (contentIndex < 4) {
-      setContentIndex((prevIndex) => prevIndex + 1);
+      setContentIndex(contentIndex + 1); // 상태 업데이트
     } else {
       //펀딩 만드는 api 연결 필요
 
@@ -49,7 +49,13 @@ function MakeFundingDetail() {
 
   // 이전 컨텐츠를 보여주는 함수
   const handlePrev = () => {
-    setContentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+    console.log(`Current Index: ${contentIndex}`); // 상태 변화 추적
+    if (contentIndex > 0) {
+      setContentIndex(contentIndex - 1); // 상태 업데이트
+    } else {
+      //펀딩 만드는 api 연결 필요
+      setContentIndex(0);
+    }
   };
 
   // 폼 데이터를 처리하는 함수
@@ -152,8 +158,15 @@ function MakeFundingDetail() {
                   </button>
                 </div>
                 <div className="mt-2 text-xs">
-                  <p>시은이 생일</p>
-                  <p>2024.4.22</p>
+                  {selectedAnniversary && (
+                    <div>
+                      <div className="flex">
+                        <p className="mb-1 mr-1">{selectedAnniversary.name}</p>
+                        <p>{selectedAnniversary.anniversary}</p>
+                      </div>
+                      <p>{selectedAnniversary.date}</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
