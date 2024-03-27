@@ -12,6 +12,13 @@ import ScrollToTop from "../UI/ScrollToTop2";
 
 function Wishlist() {
 
+	const [selectedButtonId, setSelectedButtonId] = useState(1);
+
+	  // 카테고리 선택 시 필터링
+		const handleCategorySelection = (id) => {
+			setSelectedButtonId(id);
+		};
+
 	const buttons = [
 		{ id: 1, text: "전체", image: Categories1 },
 		{ id: 2, text: "패션", image: Categories2 },

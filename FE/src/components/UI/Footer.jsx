@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import Home from "/imgs/footer_home.png";
 import HomeActivated from "/imgs/footer_home_activated.png";
@@ -13,10 +13,14 @@ import CatPaw from "/imgs/cat_paw.png";
 
 function Footer() {
   const navigate = useNavigate();
-  const currentPath = window.location.pathname;
+  const location = useLocation();
+  const currentPath =
+    location.pathname !== "/" && location.pathname.endsWith("/")
+      ? location.pathname.slice(0, -1)
+      : location.pathname;
   let additionalLeft = 0;
 
-  if (currentPath === "/product") {
+  if (currentPath === ("/product" || "/product/")) {
     additionalLeft = 1.5;
   }
 
@@ -38,27 +42,31 @@ function Footer() {
         document.querySelectorAll(".footer-icon")[currentIconIndex];
       const iconRect = currentIcon.getBoundingClientRect();
       setCatPawPosition({
-        left: iconRect.left + iconRect.width / 2 - 20 + additionalLeft, // Adjust based on cat paw icon size
-        bottom: 0, // Adjust based on footer height
+        left: iconRect.left + iconRect.width / 2 - 20 + additionalLeft,
+        bottom: 0,
         opacity: 1,
       });
+    } else {
+      setCatPawPosition({ ...catPawPosition, opacity: 0 }); // 경로가 일치하지 않으면 고양이 발 숨기기
     }
   };
 
   useEffect(() => {
+    const path = currentPath === "/" ? "/" : currentPath.replace(/\/$/, "");
+
     updateCatPawPosition();
     window.addEventListener("resize", updateCatPawPosition);
     return () => {
       window.removeEventListener("resize", updateCatPawPosition);
     };
-  }, [currentPath]);
+  }, [currentPath]); // currentPath 변경 시 업데이트
 
   const handleIconClick = (path) => {
     navigate(path);
   };
 
   return (
-    <footer className="shadow-top fixed bottom-0 flex w-full max-w-[500px] items-center justify-between bg-white px-10 pt-[10px] text-center font-cusFont2">
+    <footer className="fixed bottom-0 flex w-full max-w-[500px] items-center justify-between bg-white px-10 pt-[10px] text-center font-cusFont2 shadow-top">
       {["/", "/product", "/funding", "/my-funding"].map((path, index) => (
         <div
           key={index}

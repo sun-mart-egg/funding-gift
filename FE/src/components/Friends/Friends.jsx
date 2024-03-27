@@ -51,8 +51,8 @@ function Friends() {
 
   return (
     <div className="sub-layer">
-      <div className="flex w-full flex-row justify-between">
-        <div className=" flex flex-row items-center p-3">
+      <div className="flex flex-row justify-between w-full">
+        <div className="flex flex-row items-center p-3 ">
           <p className=" p-2.5 font-cusFont3 text-lg font-bold">친구 8</p>
           <button>
             <img src={refreshIcon} alt="동기화아이콘" />
@@ -68,13 +68,13 @@ function Friends() {
           ) : (
             ""
           )}
-          <button onClick={searchState} className=" p-1">
+          <button onClick={searchState} className="p-1 ">
             <img
               src={isSearch ? searchIconTrue : searchIcon}
               alt="검색아이콘"
             />
           </button>
-          <button onClick={filterState} className=" p-1">
+          <button onClick={filterState} className="p-1 ">
             <img
               src={isFilter ? filterIconTrue : filterIcon}
               alt="필터아이콘"
@@ -83,7 +83,7 @@ function Friends() {
         </div>
       </div>
 
-      <p className=" font-cusFont5 text-4xl">친구목록 나올거에요</p>
+      <p className="text-4xl  font-cusFont5">친구목록 나올거에요</p>
 
       <div className="grid w-full max-w-[450px] grid-flow-row grid-cols-1 gap-3">
         {myFriends.map((friend) => (
@@ -96,7 +96,7 @@ function Friends() {
             </div>
             <p className="signup-font">{friend.name}</p>
             <button
-              className="signup-font h-full border bg-yellow-200"
+              className="h-full bg-yellow-200 border signup-font"
               onClick={handleChin}
             >
               {isChin ? "친한친구 맞음" : "친한친구 아님"}
