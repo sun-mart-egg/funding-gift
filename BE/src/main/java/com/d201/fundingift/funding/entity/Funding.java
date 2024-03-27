@@ -14,6 +14,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.SQLDelete;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,5 +155,17 @@ public class Funding extends BaseTime {
                 .productOption(productOption)
                 .build();
 
+    }
+
+    public String getAnniversaryDateToString() {
+        return anniversaryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    public String getStartDateToString() {
+        return startDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+    public String getEndDateToString() {
+        return endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 }
