@@ -53,6 +53,7 @@ public class FundingService {
         fundingRepository.save(Funding.from(postFundingRequest, consumer, anniversaryCategory, product, productOption));
     }
 
+    //내 펀딩 목록 보기, 제품명으로 검색 기능 추가
     public SliceList<GetFundingResponse> getMyFundings(String keyword, Pageable pageable) {
         Long consumerId = securityUtil.getConsumerId();
 
@@ -65,14 +66,17 @@ public class FundingService {
         }
     }
 
+    //slice<Funding> -> SliceList<GetFundingResponse> 변경 매서드
     private SliceList<GetFundingResponse> getMyFundingsSliceList(Slice<Funding> fundings) {
         return SliceList.from(fundings.stream().map(GetFundingResponse::from).collect(Collectors.toList()), fundings.getPageable(), fundings.hasNext());
     }
 
+    //consumerId로 펀딩 목록 찾기
     private Slice<Funding> findAllByConsumerId(Long consumerId, Pageable pageable) {
         return fundingRepository.findAllByConsumerIdAndDeletedAtIsNull(consumerId, pageable);
     }
 
+    //consumerId, 검색어로 펀딩 목록 찾기
     private Slice<Funding> findAllByConsumerIdAndProductName(Long consumerId, String keyword, Pageable pageable) {
         return fundingRepository.findAllByConsumerIdAndProductNameAndDeletedAtIsNull(consumerId, keyword, pageable);
     }
