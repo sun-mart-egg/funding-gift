@@ -41,8 +41,38 @@ public class ProductService {
 
     // 카테고리 별 상품 리스트 조회
     public SliceList<GetProductResponse> getProductsByCategoryId(Integer categoryId, Integer page, Integer size, Integer sort) {
-        validateCategoryId(categoryId);
         Pageable pageable = PageRequest.of(page, size);
+
+        if (categoryId == null) {
+            // 기본 순
+            if (sort == 0) {
+                return getProductResponseSliceList(findAll(pageable), pageable);
+            }
+
+            // 리뷰 많은 순
+            if (sort == 1) {
+                return getProductResponseSliceList(findAllOrderByReviewCntDesc(pageable), pageable);
+            }
+
+            // 평점 높은 순
+            if (sort == 2) {
+                return getProductResponseSliceList(findAllOrderByReviewAvgDesc(pageable), pageable);
+            }
+
+            // 가격 높은 순
+            if (sort == 3) {
+                return getProductResponseSliceList(findAllOrderByPriceDesc(pageable), pageable);
+            }
+
+            // 가격 낮은 순
+            if (sort == 4) {
+                return getProductResponseSliceList(findAllOrderByPriceAsc(pageable), pageable);
+            }
+
+            throw new CustomException(SORT_NOT_FOUND);
+        }
+
+        validateCategoryId(categoryId);
 
         // 기본 순
         if (sort == 0) {
@@ -113,6 +143,26 @@ public class ProductService {
         List<GetProductOptionResponse> options = getOptions(product);
         // 반환
         return GetProductDetailResponse.from(product, options);
+    }
+
+    private Slice<Product> findAll(Pageable pageable) {
+        return productRepository.findAllSlice(pageable);
+    }
+
+    private Slice<Product> findAllOrderByReviewCntDesc(Pageable pageable) {
+        return productRepository.findAllSliceOrderByReviewCntDesc(pageable);
+    }
+
+    private Slice<Product> findAllOrderByReviewAvgDesc(Pageable pageable) {
+        return productRepository.findAllSliceOrderByReviewAvgDesc(pageable);
+    }
+
+    private Slice<Product> findAllOrderByPriceDesc(Pageable pageable) {
+        return productRepository.findAllSliceOrderByPriceDesc(pageable);
+    }
+
+    private Slice<Product> findAllOrderByPriceAsc(Pageable pageable) {
+        return productRepository.findAllSliceOrderByPriceAsc(pageable);
     }
 
     private Slice<Product> findByCategoryId(Integer categoryId, Pageable pageable) {
