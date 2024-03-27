@@ -19,9 +19,11 @@ function AccountListPage() {
     },
   ];
   return (
-    <div className="sub-layer">
+    <div className="sub-layer font-cusFont3 text-[14px]">
       <AccounList listData={data} />
-      <button className="bg-cusColor3 text-white">신규 계좌 입력</button>
+      <button className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white">
+        신규 계좌 입력
+      </button>
     </div>
   );
 }
