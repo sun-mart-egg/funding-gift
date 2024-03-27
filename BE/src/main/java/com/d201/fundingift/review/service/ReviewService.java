@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -69,81 +70,35 @@ public class ReviewService {
     }
 
     public SliceList<GetReviewResponse> getReviews(Long productId, Long productOptionId, Integer page, Integer size, Integer sort) {
+        // 상품, 상품 옵션
         Product product = findProductById(productId);
-        Consumer consumer = getConsumerOrNull();
-        Pageable pageable = PageRequest.of(page, size);
-
-        // 상품 옵션 없음
-        if (productOptionId == null) {
-            // 최신 순
-            if (sort == 0) {
-                return getReviewResponseSliceList(findByProductOrderByCreatedAtDesc(product, pageable), consumer);
-            }
-
-            // 별점 높은 순
-            if (sort == 1) {
-                return getReviewResponseSliceList(findByProductOrderByStarDesc(product, pageable), consumer);
-            }
-
-            // 별점 낮은 순
-            if (sort == 2) {
-                return getReviewResponseSliceList(findByProductOrderByStarAsc(product, pageable), consumer);
-            }
-
-        }
-
-        // 상품 옵션 있음
         ProductOption productOption = findProductOptionById(productOptionId);
-        validateProductOption(product, productOption); // 상품 옵션이 상품과 매칭되는지 검사
+        // 상품 옵션이 상품과 매칭되는지 검사
+        validateProductOption(product, productOption);
 
+        // 페이징 객체
+        Pageable pageable = PageRequest.of(page, size, getSort(sort));
+
+        return getReviewResponseSliceList(reviewRepository.findAllSliceByProductAndOption(product, productOption, pageable),
+                                            getConsumerOrNull());
+    }
+
+    private Sort getSort(Integer sort) {
         // 최신 순
         if (sort == 0) {
-            return getReviewResponseSliceList(findByProductAndOptionOrderByCreatedAtDesc(product, productOption, pageable), consumer);
+            return Sort.by("createdAt").descending();
         }
-
         // 별점 높은 순
         if (sort == 1) {
-            return getReviewResponseSliceList(findByProductAndOptionOrderByStarDesc(product, productOption, pageable), consumer);
+            return Sort.by("star").descending();
         }
-
         // 별점 낮은 순
         if (sort == 2) {
-            return getReviewResponseSliceList(findByProductAndOptionOrderByStarAsc(product, productOption, pageable), consumer);
+            return Sort.by("star").ascending();
         }
-
+        // 예외
         throw new CustomException(SORT_NOT_FOUND);
     }
-
-    // 옵션 전체 + 최신 순
-    private Slice<Review> findByProductOrderByCreatedAtDesc(Product product, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductOrderByCreatedAtDesc(product, pageable);
-    }
-
-    // 옵션 + 최신 순
-    private Slice<Review> findByProductAndOptionOrderByCreatedAtDesc(Product product, ProductOption productOption, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductOrderAndOptionByCreatedAtDesc(product, productOption, pageable);
-    }
-
-    // 옵션 전체 + 별점 높은 순
-    private Slice<Review> findByProductOrderByStarDesc(Product product, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductOrderByStarDesc(product, pageable);
-    }
-
-    // 옵션 + 별점 높은 순
-    private Slice<Review> findByProductAndOptionOrderByStarDesc(Product product, ProductOption productOption, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductOrderAndOptionByStarDesc(product, productOption, pageable);
-    }
-
-    // 옵션 전체 + 별점 낮은 순
-    private Slice<Review> findByProductOrderByStarAsc(Product product, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductOrderByStarAsc(product, pageable);
-    }
-
-    // 옵션 + 별점 낮은 순
-    private Slice<Review> findByProductAndOptionOrderByStarAsc(Product product, ProductOption productOption, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductAndOptionOrderByStarAsc(product, productOption, pageable);
-    }
-
     private SliceList<GetReviewResponse> getReviewResponseSliceList(Slice<Review> reviews, Consumer consumer) {
         return SliceList.from(reviews.stream().map(r -> GetReviewResponse.from(r, consumer)).collect(Collectors.toList()),
                 reviews.getPageable(),
