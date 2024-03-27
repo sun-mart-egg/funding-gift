@@ -44,7 +44,7 @@ public class GetFundingResponse {
     private String productImage;
 
     @Builder
-    public GetFundingResponse(Long fundingId, Integer targetPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, Long productId, String productName, String productImage) {
+    private GetFundingResponse(Long fundingId, Integer targetPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, Long productId, String productName, String productImage) {
         this.fundingId = fundingId;
         this.targetPrice = targetPrice;
         this.anniversaryDate = anniversaryDate;

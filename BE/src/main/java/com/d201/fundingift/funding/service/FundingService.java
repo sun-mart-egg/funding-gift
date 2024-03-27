@@ -57,13 +57,12 @@ public class FundingService {
     public SliceList<GetFundingResponse> getMyFundings(String keyword, Pageable pageable) {
         Long consumerId = securityUtil.getConsumerId();
 
-        //제품영 검색어 입력 여부
-        if (keyword == null) {
+        //제품명으로 검색 안하는 경우
+        if (keyword == null)
             return getMyFundingsSliceList(findAllByConsumerId(consumerId, pageable));
-        } else {
 
-            return getMyFundingsSliceList(findAllByConsumerIdAndProductName(consumerId, keyword, pageable));
-        }
+        //제품명으로 검색하는 경우
+        return getMyFundingsSliceList(findAllByConsumerIdAndProductName(consumerId, keyword, pageable));
     }
 
     public SliceList<GetFundingResponse> getFriendFundings(Long friendConsumerId, String keyword, Pageable pageable) {
@@ -77,13 +76,7 @@ public class FundingService {
          * TODO : consumerId, firendConsumerId 친구인 경우 친한 친구인지 아닌지 확인
          */
 
-        //제품영 검색어 입력 여부
-        if (keyword == null) {
-            return getMyFundingsSliceList(findAllByConsumerId(consumerId, pageable));
-        } else {
-
-            return getMyFundingsSliceList(findAllByConsumerIdAndProductName(consumerId, keyword, pageable));
-        }
+        return null;
     }
 
     //slice<Funding> -> SliceList<GetFundingResponse> 변경 매서드
