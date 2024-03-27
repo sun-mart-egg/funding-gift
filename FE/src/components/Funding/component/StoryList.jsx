@@ -1,13 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 function StoryList({ listData }) {
-  const [data, setData] = useState(listData);
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
 
-  const handleStoryClick = (item) => {
-    console.log(item);
-    navigate(`/story/${item.id}`);
+  useEffect(() => {
+    const uniqueData = Array.from(
+      new Map(listData.map((item) => [item.id, item])).values(),
+    );
+    setData(uniqueData);
+  }, [listData]);
+
+  const handleStoryClick = (selectedItem) => {
+    const relatedStories = listData.filter(
+      (item) => item.people === selectedItem.people,
+    );
+    const storiesData = encodeURIComponent(JSON.stringify(relatedStories));
+    navigate(`/story/${selectedItem.id}?data=${storiesData}`);
   };
 
   return (

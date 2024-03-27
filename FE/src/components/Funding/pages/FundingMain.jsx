@@ -29,9 +29,18 @@ function FundingMain() {
       img: "/imgs/egg3.jpg",
       progress: 70,
     },
+    {
+      id: 1,
+      people: "임수빈",
+      title: "FOOD IS MY LIFE",
+      name: "냠냠 세트",
+      date: "2024.4.15 ~ 2024.4.22",
+      img: "/imgs/egg3.jpg",
+      progress: 70,
+    },
 
     {
-      id: 2,
+      id: 3,
       people: "김대영",
       title: "MUSIC IS MY LIFE",
       name: "에어팟 맥스",
@@ -40,7 +49,7 @@ function FundingMain() {
       progress: 100,
     },
     {
-      id: 3,
+      id: 4,
       people: "박종혁",
       title: "FOOD IS MY LIFE",
       name: "고오급 케이크",
@@ -49,7 +58,7 @@ function FundingMain() {
       img: "/imgs/egg3.jpg",
     },
     {
-      id: 4,
+      id: 5,
       people: "이민수",
       title: "FOOD IS MY LIFE",
       name: "고오급 케이크",
