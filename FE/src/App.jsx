@@ -48,11 +48,13 @@ function App() {
             path="/friend-funding-detail"
             element={<FriendFundingDetail />}
           />
-          <Route path="/address-list" element={<AddressListPage />} />
+
           <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/anniversary-list" element={<AnniversaryListPage />} />
+          <Route path="/address-list" element={<AddressListPage />} />
+          <Route path="/account-list" element={<AccountListPage />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/participate" element={<ParticipatePage />} />

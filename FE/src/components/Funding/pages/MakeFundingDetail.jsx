@@ -206,7 +206,7 @@ function MakeFundingDetail() {
                   <p>주소</p>
                   <button
                     className="common-btn h-6 bg-gray-500 text-xs"
-                    onClick={() => navigate("/anniversary-list")}
+                    onClick={() => navigate("/address-list")}
                   >
                     선택
                   </button>
@@ -221,7 +221,7 @@ function MakeFundingDetail() {
                   <p>환불 계좌</p>
                   <button
                     className="common-btn h-6 bg-gray-500 text-xs"
-                    onClick={() => navigate("/anniversary-list")}
+                    onClick={() => navigate("/account-list")}
                   >
                     선택
                   </button>
@@ -312,7 +312,7 @@ function MakeFundingDetail() {
           ) : (
             <button
               onClick={handleNext}
-              style={{ width: "calc(66% )" }} // 버튼 너비 조정
+              style={{ width: "calc(75% )" }} // 버튼 너비 조정
               className="common-btn"
             >
               다음
