@@ -6,6 +6,7 @@ import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift._common.response.SuccessType;
 import com.d201.fundingift.funding.dto.request.PostFundingRequest;
+import com.d201.fundingift.funding.dto.response.GetFundingResponse;
 import com.d201.fundingift.funding.service.FundingService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,10 +15,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.d201.fundingift._common.response.SuccessType.*;
 
@@ -48,4 +51,10 @@ public class FundingController {
         return ResponseUtils.ok(CREATE_FUNDING_SUCCESS);
     }
 
+    @GetMapping
+    public SuccessResponse<List<GetFundingResponse>> getMyFundings(@RequestParam(required = false, name = "keyword") String keyword,
+                                                                 @PageableDefault(size=3, sort="id", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        return ResponseUtils.ok(fundingService.getMyFundings(keyword, pageable), GET_MY_FUNDINGS_SUCCESS);
+    }
 }

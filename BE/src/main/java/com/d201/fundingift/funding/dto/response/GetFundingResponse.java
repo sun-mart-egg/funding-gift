@@ -1,6 +1,8 @@
 package com.d201.fundingift.funding.dto.response;
 
+import com.d201.fundingift.funding.entity.Funding;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
@@ -12,13 +14,13 @@ public class GetFundingResponse {
     private Integer targetPrice;
 
     @Schema(description = "기념일 날짜", example = "2024-12-12")
-    private LocalDate anniversaryDate;
+    private String anniversaryDate;
 
     @Schema(description = "펀딩시작 날짜", example = "2024-12-08")
-    private LocalDate startDate;
+    private String startDate;
 
     @Schema(description = "펀딩종료 날짜", example = "2024-12-14")
-    private LocalDate endDate;
+    private String endDate;
 
     @Schema(description = "펀딩명", example = "내생일이야")
     private String title; //펀딩명
@@ -32,6 +34,38 @@ public class GetFundingResponse {
     @Schema(description = "제품 고유번호", example = "1")
     private Long productId;
 
-    @Schema(description = "제품옵션 고유번호", example = "1")
-    private Long productOptionId;
+    @Schema(description = "제품명", example = "에어팟 맥스")
+    private String productName;
+
+    @Schema(description = "제품 이미지", example = "image url")
+    private String productImage;
+
+    @Builder
+    public GetFundingResponse(Integer targetPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, Long productId, String productName, String productImage) {
+        this.targetPrice = targetPrice;
+        this.anniversaryDate = anniversaryDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.title = title;
+        this.isPrivate = isPrivate;
+        this.anniversaryCategoryId = anniversaryCategoryId;
+        this.productId = productId;
+        this.productName = productName;
+        this.productImage = productImage;
+    }
+
+    public static GetFundingResponse from(Funding funding) {
+        return builder()
+                .targetPrice(funding.getTargetPrice())
+                .anniversaryDate(funding.getAnniversaryDateToString())
+                .startDate(funding.getStartDateToString())
+                .endDate(funding.getEndDateToString())
+                .title(funding.getTitle())
+                .isPrivate(funding.getIsPrivate())
+                .anniversaryCategoryId(funding.getAnniversaryCategory().getId())
+                .productId(funding.getProduct().getId())
+                .productName(funding.getProduct().getName())
+                .productImage(funding.getProduct().getImage())
+                .build();
+    }
 }
