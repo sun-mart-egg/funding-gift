@@ -15,6 +15,35 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "where p.id = :productId and p.status = 'ACTIVE' and p.deletedAt is null")
     Optional<Product> findById(@Param("productId") Long productId);
 
+    // 전체 상품 리스트 조회 - 기본 순
+    @Query("select p from Product p " +
+            "where p.status = 'ACTIVE' and p.deletedAt is null")
+    Slice<Product> findAllSlice(Pageable pageable);
+
+    // 전체 상품 리스트 조회 - 리뷰 많은 순
+    @Query("select p from Product p " +
+            "where p.status = 'ACTIVE' and p.deletedAt is null " +
+            "order by p.reviewCnt desc")
+    Slice<Product> findAllSliceOrderByReviewAvgDesc(Pageable pageable);
+
+    // 카테고리 별 상품 리스트 조회 - 평점 높은 순
+    @Query("select p from Product p " +
+            "where p.status = 'ACTIVE' and p.deletedAt is null " +
+            "order by p.reviewAvg desc")
+    Slice<Product> findAllSliceOrderByReviewCntDesc(Pageable pageable);
+
+    // 카테고리 별 상품 리스트 조회 - 가격 높은 순
+    @Query("select p from Product p " +
+            "where p.status = 'ACTIVE' and p.deletedAt is null " +
+            "order by p.price desc")
+    Slice<Product> findAllSliceOrderByPriceDesc(Pageable pageable);
+
+    // 카테고리 별 상품 리스트 조회 - 가격 낮은 순
+    @Query("select p from Product p " +
+            "where p.status = 'ACTIVE' and p.deletedAt is null " +
+            "order by p.reviewCnt asc")
+    Slice<Product> findAllSliceOrderByPriceAsc(Pageable pageable);
+
     // 카테고리 별 상품 리스트 조회 - 기본 순
     @Query("select p from Product p " +
             "where p.productCategory.id = :categoryId and p.status = 'ACTIVE' and p.deletedAt is null")
