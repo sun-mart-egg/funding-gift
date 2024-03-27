@@ -30,6 +30,7 @@ import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
 
 // 삭제 예정 
 import ProdcutTemp from "./components/Products/Producttemp.jsx"
+import ProductComponent from "./components/Products/ProductComponent.jsx";
 
 function App() {
   return (
@@ -39,6 +40,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/my-funding" element={<MyFunding />} />
           <Route path="/product" element={<Product />} />
+          {/* 삭제 예정 */}
+          <Route path="/producttemp" element={<ProdcutTemp />} />
         </Route>
 
         <Route element={<SubLayout />}>
@@ -67,6 +70,7 @@ function App() {
 
         {/* 삭제 예정 */}
         <Route path="/producttemp" element={<ProdcutTemp />} />
+        <Route path="/Productcomponent" element={<ProductComponent />} />
 
       </Routes>
     </BrowserRouter>

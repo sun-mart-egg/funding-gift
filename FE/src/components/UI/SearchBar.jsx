@@ -1,11 +1,33 @@
+import { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 
-function SearchBar({}) {
+function SearchBar({ setKeyword, onSubmit, resetSearch }) {
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    if (resetSearch) {
+      setSearchText(""); // Reset searchText if resetSearch prop is true
+    }
+  }, [resetSearch]);
+
+  const handleChange = (e) => {
+    const { value } = e.target;
+    setSearchText(value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setKeyword(searchText); // Pass searchText as the keyword
+    onSubmit(); // Call the submission event
+  };
+
   return (
-    <div className="search relative mx-auto flex max-w-[95%] items-center">
+    <form onSubmit={handleSubmit} className="search relative mx-auto flex max-w-[95%] items-center">
       <input
         type="text"
         name="searchText"
+        value={searchText}
+        onChange={handleChange}
         className="w-full rounded-md border border-cusColor3 py-1.5 pl-2 pr-10 text-gray-900 placeholder:text-xs placeholder:text-gray-400 focus:border-transparent focus:ring-2 focus:ring-cusColor3"
         placeholder="제품의 이름으로 펀딩을 검색해보세요."
       />
@@ -15,7 +37,8 @@ function SearchBar({}) {
       >
         <FiSearch size={20} />
       </button>
-    </div>
+    </form>
   );
 }
+
 export default SearchBar;
