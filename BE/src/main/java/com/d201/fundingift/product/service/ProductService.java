@@ -51,10 +51,10 @@ public class ProductService {
         if (categoryId == null) {
             // 키워드 X
             if (keyword == null) {
-                return getProductResponseSliceList(productRepository.findAllSlice(pageable), pageable);
+                return getProductResponseSliceList(productRepository.findAllSlice(pageable));
             }
             // 키워드 O
-            return getProductResponseSliceList(productRepository.findAllSliceByKeyword(keyword, pageable), pageable);
+            return getProductResponseSliceList(productRepository.findAllSliceByKeyword(keyword, pageable));
         }
 
         /**
@@ -64,10 +64,10 @@ public class ProductService {
 
         // 키워드 X
         if (keyword == null) {
-            return getProductResponseSliceList(productRepository.findAllSliceByCategoryId(categoryId, pageable), pageable);
+            return getProductResponseSliceList(productRepository.findAllSliceByCategoryId(categoryId, pageable));
         }
         // 키워드 O
-        return getProductResponseSliceList(productRepository.findAllSliceByCategoryIdAndKeyword(categoryId, keyword, pageable), pageable);
+        return getProductResponseSliceList(productRepository.findAllSliceByCategoryIdAndKeyword(categoryId, keyword, pageable));
     }
 
     // 상품 상세 조회
@@ -106,9 +106,9 @@ public class ProductService {
         throw new CustomException(SORT_NOT_FOUND);
     }
 
-    private SliceList<GetProductResponse> getProductResponseSliceList(Slice<Product> products, Pageable pageable) {
+    private SliceList<GetProductResponse> getProductResponseSliceList(Slice<Product> products) {
         return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                pageable,
+                products.getPageable(),
                 products.hasNext());
     }
 
