@@ -31,8 +31,6 @@ import static com.d201.fundingift._common.response.ErrorType.USER_UNAUTHORIZED;
 public class ConsumerService {
 
     private final ConsumerRepository consumerRepository;
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
     private final SecurityUtil securityUtil;
     private final JwtUtil jwtUtil;
     private final RestTemplate restTemplate;
@@ -85,17 +83,8 @@ public class ConsumerService {
                 .orElseThrow((() -> new CustomException(USER_NOT_FOUND))));
     }
 
-    // 친구 목록 생성 (회원가입 시)
-    // 실제 서비스에서는 회원가입 로직과 연동되어야 합니다.
-
-    // 친구 목록 조회
-    public Object getFriendsList(Integer page, Integer size, String sort, Boolean isFavorite) {
-        // 페이지네이션, 정렬, 즐겨찾기 필터 등을 적용하여 친구 목록 조회 로직 구현
-        return null;
-    }
-
     public void logoutUser() {
-        String consumerId = securityUtil.getConsumerOrNull().getName();
+        String consumerId = securityUtil.getConsumer().getName();
         String kakaoAccessToken = jwtUtil.getKakaoAccessToken(consumerId);
 
         // 1. 로컬 로그아웃 처리: 토큰 무효화
@@ -104,7 +93,7 @@ public class ConsumerService {
         jwtUtil.deleteRefreshToken(consumerId);
         jwtUtil.deleteKakaoAccessToken(consumerId);
 
-        // 2. 카카오 로그아웃 API 호출
+        // 2. 카카오 로그아웃 API 호출  전체 삭제인지?
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + kakaoAccessToken);
         HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -115,6 +104,11 @@ public class ConsumerService {
             // 에러 처리
             throw new RuntimeException("Failed to logout from Kakao");
         }
+    }
+
+    public Consumer getConsumerById(Long consumerId) {
+        return consumerRepository.findById(consumerId)
+                .orElseThrow(() -> new RuntimeException("Consumer not found with id: " + consumerId));
     }
 
     public void deleteConsumer(Long consumerId) {

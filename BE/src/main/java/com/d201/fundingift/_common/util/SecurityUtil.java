@@ -17,6 +17,11 @@ import org.springframework.stereotype.Component;
 public class SecurityUtil {
 
     private final ConsumerRepository consumerRepository;
+    public Consumer getConsumer() {
+        Long consumerId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+        return consumerRepository.findById(consumerId)
+                .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
+    }
 
     public Consumer getConsumerOrNull() {
         Long consumerId;

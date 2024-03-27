@@ -92,7 +92,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 Long consumerId = consumerService.saveOAuth2User(principal);
 
                 // Access, Refresh 토큰 생성.
-                String accessToken = jwtUtil.createToken(consumerId.toString());
+                String accessToken = jwtUtil.createAccessToken(consumerId.toString());
                 String refreshToken = jwtUtil.createRefreshToken(consumerId.toString());
 
                 // Redis 에 Access, Refresh 토큰 저장.
@@ -105,12 +105,12 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 return UriComponentsBuilder.fromUriString(targetUrl)
                         .queryParam("access-token", accessToken)
                         .queryParam("consumer-id",consumerId)
-                        .queryParam("next-page","sign-in")
+                        .queryParam("next-page","sign-up")
                         .build().toUriString();
             } else {
                 // 가입 된 상태일 경우 -> 로그인
                 Long consumerId = findMember.get().getId();
-                String accessToken = jwtUtil.createToken(consumerId.toString());
+                String accessToken = jwtUtil.getAccessToken(consumerId);
 
                 // Redis 에 카카오 액세스 토큰 저장.
                 jwtUtil.saveKakaoAccessToken(consumerId, principal.getUserInfo().getAccessToken());
@@ -135,6 +135,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             jwtUtil.deleteAccessToken(consumerId);
             jwtUtil.deleteRefreshToken(consumerId);
             jwtUtil.deleteKakaoAccessToken(consumerId);
+            // Todo: 친구 목록 삭제 추가
 
             return UriComponentsBuilder.fromUriString(targetUrl)
                     .build().toUriString();
