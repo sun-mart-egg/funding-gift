@@ -7,7 +7,7 @@ export const useStore = create((set) => ({
     set({ selectedAnniversary: anniversary }),
 
   selectedAddress: null,
-  setSelectedAdress: (address) => set({ selectedAddress: address }),
+  setSelectedAddress: (address) => set({ selectedAddress: address }),
 
   selectedAccount: null,
   setSelectedAccount: (account) => set({ selectedAccount: account }),

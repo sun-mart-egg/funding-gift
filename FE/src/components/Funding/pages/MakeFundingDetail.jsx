@@ -240,6 +240,7 @@ function MakeFundingDetail() {
                         <p>{selectedAddress.nickname}</p>
                       </div>
                       <p>{selectedAddress.phone}</p>
+                      <p>{selectedAddress.address}</p>
                     </div>
                   )}
                 </div>

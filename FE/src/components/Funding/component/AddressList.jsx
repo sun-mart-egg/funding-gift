@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import AddressCard from "./AddressCard";
+import { useStore } from "../../Store/MakeStore";
 
 function AddressList({ listData }) {
   // listData 상태 관리
   const [data, setData] = useState(listData);
 
+  const selectedAddressIndex = useStore((state) => state.selectedAddressIndex);
+  const setSelectedAddressIndex = useStore(
+    (state) => state.setSelectedAddressIndex,
+  );
+  const setSelectedAddress = useStore((state) => state.setSelectedAddress);
+
   // isSelected 상태를 업데이트하는 함수
-  const handleSelect = (selectedIndex) => {
-    const newData = data.map((item, index) => ({
-      ...item,
-      isSelected: index === selectedIndex,
-    }));
-    setData(newData);
+  const handleSelect = (index) => {
+    setSelectedAddress(data[index]);
+    setSelectedAddressIndex(index);
   };
 
   return (
@@ -27,7 +31,7 @@ function AddressList({ listData }) {
           isDefault={item.isDefault}
           phone={item.phone}
           address={item.address}
-          isSelected={item.isSelected}
+          isSelected={index === selectedAddressIndex}
           onSelect={() => handleSelect(index)} // onSelect prop 추가
         />
       ))}

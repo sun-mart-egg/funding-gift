@@ -6,7 +6,6 @@ import { useStore } from "../../Store/MakeStore";
 function AnniversaryListPage() {
   const navigate = useNavigate();
   const setContentIndex = useStore((state) => state.setContentIndex);
-  const { selectedAnniversaryIndex } = useStore();
 
   const handleSelectButtonClick = () => {
     setContentIndex(2); // 컨텐츠 인덱스를 2로 설정
