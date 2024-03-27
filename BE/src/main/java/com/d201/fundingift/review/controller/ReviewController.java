@@ -33,10 +33,22 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    @Operation(summary = "리뷰 생성",
+            description = """
+                           `token` \n
+                           리뷰를 생성합니다. \n
+                           이미지는 최대 2장 가능합니다. (image1, image2)  \n
+                           포스트맨으로 테스트해주세요. 테스트하는 방법은 https://fearless-texture-68a.notion.site/POSTMAN-74f33445c6824c189a4ddfad874b247b?pvs=4 참고해주세요.
+                           - star: 값이 1에서 5 사이여야 합니다.
+                           - content: 길이가 10에서 255 사이여야 합니다.
+                           """)
+    @ApiResponse(responseCode = "200",
+            description = "성공",
+            useReturnTypeSchema = true)
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public SuccessResponse<Void> postReview(@RequestPart @Valid PostReviewRequest request,
-                                            @RequestPart(required = false) MultipartFile image1,
-                                            @RequestPart(required = false) MultipartFile image2) throws IOException {
+                                            @Schema(example = "이미지 파일 1") @RequestPart(required = false) MultipartFile image1,
+                                            @Schema(example = "이미지 파일 2") @RequestPart(required = false) MultipartFile image2) throws IOException {
         log.info("[ReviewController.postReview]");
         reviewService.postReview(request, image1, image2);
         return ResponseUtils.ok(CREATE_REVIEW_SUCCESS);
