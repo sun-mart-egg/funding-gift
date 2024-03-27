@@ -46,27 +46,27 @@ public class ProductService {
         if (categoryId == null) {
             // 기본 순
             if (sort == 0) {
-                return getProductResponseSliceList(findAll(pageable), pageable);
+                return getProductResponseSliceList(findAll(pageable));
             }
 
             // 리뷰 많은 순
             if (sort == 1) {
-                return getProductResponseSliceList(findAllOrderByReviewCntDesc(pageable), pageable);
+                return getProductResponseSliceList(findAllOrderByReviewCntDesc(pageable));
             }
 
             // 평점 높은 순
             if (sort == 2) {
-                return getProductResponseSliceList(findAllOrderByReviewAvgDesc(pageable), pageable);
+                return getProductResponseSliceList(findAllOrderByReviewAvgDesc(pageable));
             }
 
             // 가격 높은 순
             if (sort == 3) {
-                return getProductResponseSliceList(findAllOrderByPriceDesc(pageable), pageable);
+                return getProductResponseSliceList(findAllOrderByPriceDesc(pageable));
             }
 
             // 가격 낮은 순
             if (sort == 4) {
-                return getProductResponseSliceList(findAllOrderByPriceAsc(pageable), pageable);
+                return getProductResponseSliceList(findAllOrderByPriceAsc(pageable));
             }
 
             throw new CustomException(SORT_NOT_FOUND);
@@ -76,27 +76,27 @@ public class ProductService {
 
         // 기본 순
         if (sort == 0) {
-            return getProductResponseSliceList(findByCategoryId(categoryId, pageable), pageable);
+            return getProductResponseSliceList(findByCategoryId(categoryId, pageable));
         }
 
         // 리뷰 많은 순
         if (sort == 1) {
-            return getProductResponseSliceList(findByCategoryIdOrderByReviewCntDesc(categoryId, pageable), pageable);
+            return getProductResponseSliceList(findByCategoryIdOrderByReviewCntDesc(categoryId, pageable));
         }
 
         // 평점 높은 순
         if (sort == 2) {
-            return getProductResponseSliceList(findByCategoryIdOrderByReviewAvgDesc(categoryId, pageable), pageable);
+            return getProductResponseSliceList(findByCategoryIdOrderByReviewAvgDesc(categoryId, pageable));
         }
 
         // 가격 높은 순
         if (sort == 3) {
-            return getProductResponseSliceList(findByCategoryIdOrderByPriceDesc(categoryId, pageable), pageable);
+            return getProductResponseSliceList(findByCategoryIdOrderByPriceDesc(categoryId, pageable));
         }
 
         // 가격 낮은 순
         if (sort == 4) {
-            return getProductResponseSliceList(findByCategoryIdOrderByPriceAsc(categoryId, pageable), pageable);
+            return getProductResponseSliceList(findByCategoryIdOrderByPriceAsc(categoryId, pageable));
         }
 
         throw new CustomException(SORT_NOT_FOUND);
@@ -108,27 +108,27 @@ public class ProductService {
 
         // 기본 순
         if (sort == 0) {
-            return getProductResponseSliceList(findByKeyword(keyword, pageable), pageable);
+            return getProductResponseSliceList(findByKeyword(keyword, pageable));
         }
 
         // 리뷰 많은 순
         if (sort == 1) {
-            return getProductResponseSliceList(findByKeywordOrderByReviewCntDesc(keyword, pageable), pageable);
+            return getProductResponseSliceList(findByKeywordOrderByReviewCntDesc(keyword, pageable));
         }
 
         // 평점 높은 순
         if (sort == 2) {
-            return getProductResponseSliceList(findByKeywordOrderByReviewAvgDesc(keyword, pageable), pageable);
+            return getProductResponseSliceList(findByKeywordOrderByReviewAvgDesc(keyword, pageable));
         }
 
         // 가격 높은 순
         if (sort == 3) {
-            return getProductResponseSliceList(findByKeywordOrderByPriceDesc(keyword, pageable), pageable);
+            return getProductResponseSliceList(findByKeywordOrderByPriceDesc(keyword, pageable));
         }
 
         // 가격 낮은 순
         if (sort == 4) {
-            return getProductResponseSliceList(findByKeywordOrderByPriceAsc(keyword, pageable), pageable);
+            return getProductResponseSliceList(findByKeywordOrderByPriceAsc(keyword, pageable));
         }
 
         throw new CustomException(SORT_NOT_FOUND);
@@ -205,9 +205,9 @@ public class ProductService {
         return productRepository.findAllSliceByKeywordOrderByPriceAsc(keyword, pageable);
     }
 
-    private SliceList<GetProductResponse> getProductResponseSliceList(Slice<Product> products, Pageable pageable) {
+    private SliceList<GetProductResponse> getProductResponseSliceList(Slice<Product> products) {
         return SliceList.from(products.stream().map(GetProductResponse::from).collect(Collectors.toList()),
-                pageable,
+                products.getPageable(),
                 products.hasNext());
     }
 
