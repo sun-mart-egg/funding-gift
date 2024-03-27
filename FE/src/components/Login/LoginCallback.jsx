@@ -2,32 +2,49 @@ import { useEffect } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
 
 function LoginCallback() {
-    const [ searchParams ] = useSearchParams()
+    const [searchParams] = useSearchParams()
     const navigate = useNavigate()
 
     useEffect(() => {
         async function getTokens() {
+            // access-token, consumer-id, next-page 값을 찾아서 가져옴
+            // next-page에는 값이 'main'과 'sign-up' 이 있다.
             const accessToken = await searchParams.get("access-token")
-            const memberId = await searchParams.get("member-id")
+            const consumerId = await searchParams.get("consumer-id")
+            const nextPage = await searchParams.get("next-page")
 
-            // 토큰값이 null 값이면
-            // localStorage에 accessToken, memberId를 위에 get으로 얻은걸로 할당
-            // 상세주소 입력하는 signup 페이지로 이동
-            if (accessToken === null) {
-                localStorage.setItem("accessToken", accessToken)
-                localStorage.setItem("memberId", memberId)
+            // 토큰값이 null 이 아닌 경우
+            // localStroage에 access-token, consumer-id를 설정
+            if (accessToken !== null) {
+                localStorage.setItem("access-token", accessToken)
+                localStorage.setItem("consumer-id", consumerId)
                 console.log("토큰 : ", accessToken)
-                console.log("멤버 ID : ", memberId)
-                navigate("/signup")
+                console.log("멤버 ID : ", consumerId)
             }
-            // 토큰이 있는 경우 == 이미 로그인을 한 경우
+
+            // localStroage에서 access-token을 받아왔다면
+            if (localStorage.getItem("access-token")) {
+
+                // nextPage의 값이 main이다 === 기존 회원
+                // 메인 페이지로 돌려보낸다.
+                if (nextPage === "main") {
+                    window.alert("이미 로그인 했습니다.")
+                    return navigate("/")
+                }
+
+                // 그게 아니다 === 신규회원
+                else {
+                    return navigate("/signup")
+                }
+            }
+
             else {
                 navigate("/")
             }
         }
         getTokens()
     })
-    return 
+    return
 }
 
 export default LoginCallback

@@ -4,7 +4,7 @@ import MainLayout from "./components/UI/MainLayout.jsx";
 import SubLayout from "./components/UI/SubLayout.jsx";
 
 import Login from "./components/Login/LoginPage.jsx";
-import LoginCallback from "./components/Login/LoginCallback.jsx"
+import LoginCallback from "./components/Login/LoginCallback.jsx";
 import Signup from "./components/Login/Signup.jsx";
 import SignupFinish from "./components/Login/SignupFinish.jsx";
 
@@ -27,11 +27,10 @@ import MakeFundingDetail from "./components/Funding/pages/MakeFundingDetail.jsx"
 import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx";
 import Home from "./components/Home/Home.jsx";
 import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
-
-// 삭제 예정 
+import FundingMain from "./components/Funding/pages/FundingMain.jsx";
+import StoryPage from "./components/Funding/pages/StoryPage.jsx";
 import ProdcutTemp from "./components/Products/Producttemp.jsx"
 import ProductComponent from "./components/Products/ProductComponent.jsx";
-
 function App() {
   return (
     <BrowserRouter>
@@ -40,6 +39,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/my-funding" element={<MyFunding />} />
           <Route path="/product" element={<Product />} />
+          <Route path="/funding" element={<FundingMain />} />
           {/* 삭제 예정 */}
           <Route path="/producttemp" element={<ProdcutTemp />} />
         </Route>
@@ -54,10 +54,13 @@ function App() {
             path="/friend-funding-detail"
             element={<FriendFundingDetail />}
           />
+
           <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/anniversary-list" element={<AnniversaryListPage />} />
+          <Route path="/address-list" element={<AddressListPage />} />
+          <Route path="/account-list" element={<AccountListPage />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/participate" element={<ParticipatePage />} />
@@ -67,10 +70,7 @@ function App() {
         </Route>
 
         <Route path="/login-callback" element={<LoginCallback />} />
-
-        {/* 삭제 예정 */}
-        <Route path="/producttemp" element={<ProdcutTemp />} />
-        <Route path="/Productcomponent" element={<ProductComponent />} />
+        <Route path="/story/:id" element={<StoryPage />} />
 
       </Routes>
     </BrowserRouter>
