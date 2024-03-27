@@ -3,8 +3,8 @@ package com.d201.fundingift.funding.controller;
 
 import com.d201.fundingift._common.response.ErrorResponse;
 import com.d201.fundingift._common.response.ResponseUtils;
+import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.response.SuccessResponse;
-import com.d201.fundingift._common.response.SuccessType;
 import com.d201.fundingift.funding.dto.request.PostFundingRequest;
 import com.d201.fundingift.funding.dto.response.GetFundingResponse;
 import com.d201.fundingift.funding.service.FundingService;
@@ -52,8 +52,8 @@ public class FundingController {
     }
 
     @GetMapping
-    public SuccessResponse<List<GetFundingResponse>> getMyFundings(@RequestParam(required = false, name = "keyword") String keyword,
-                                                                 @PageableDefault(size=3, sort="id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public SuccessResponse<SliceList<GetFundingResponse>> getMyFundings(@RequestParam(required = false, name = "keyword") String keyword,
+                                                                        @PageableDefault(size=3, sort="id", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return ResponseUtils.ok(fundingService.getMyFundings(keyword, pageable), GET_MY_FUNDINGS_SUCCESS);
     }

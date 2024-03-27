@@ -2,6 +2,7 @@ package com.d201.fundingift.funding.service;
 
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
+import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
@@ -17,12 +18,11 @@ import com.d201.fundingift.product.repository.ProductOptionRepository;
 import com.d201.fundingift.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,21 +53,28 @@ public class FundingService {
         fundingRepository.save(Funding.from(postFundingRequest, consumer, anniversaryCategory, product, productOption));
     }
 
-    public List<GetFundingResponse> getMyFundings(String keyword, Pageable pageable) {
+    public SliceList<GetFundingResponse> getMyFundings(String keyword, Pageable pageable) {
         Long consumerId = securityUtil.getConsumerId();
 
         //제품영 검색어 입력 여부
         if (keyword == null) {
-
-            return fundingRepository.findAllByConsumerIdAndDeletedAtIsNull(consumerId, pageable)
-                    .stream().map(GetFundingResponse::from)
-                    .collect(Collectors.toList());
+            return getMyFundingsSliceList(findAllByConsumerId(consumerId, pageable));
         } else {
 
-            return fundingRepository.findAllByConsumerIdAndProductNameAndDeletedAtIsNull(consumerId, keyword, pageable)
-                    .stream().map(GetFundingResponse::from)
-                    .collect(Collectors.toList());
+            return getMyFundingsSliceList(findAllByConsumerIdAndProductName(consumerId, keyword, pageable));
         }
+    }
+
+    private SliceList<GetFundingResponse> getMyFundingsSliceList(Slice<Funding> fundings) {
+        return SliceList.from(fundings.stream().map(GetFundingResponse::from).collect(Collectors.toList()), fundings.getPageable(), fundings.hasNext());
+    }
+
+    private Slice<Funding> findAllByConsumerId(Long consumerId, Pageable pageable) {
+        return fundingRepository.findAllByConsumerIdAndDeletedAtIsNull(consumerId, pageable);
+    }
+
+    private Slice<Funding> findAllByConsumerIdAndProductName(Long consumerId, String keyword, Pageable pageable) {
+        return fundingRepository.findAllByConsumerIdAndProductNameAndDeletedAtIsNull(consumerId, keyword, pageable);
     }
 
     private AnniversaryCategory getAnniversaryCategory(PostFundingRequest postFundingRequest) {
