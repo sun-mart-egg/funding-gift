@@ -31,11 +31,11 @@ import java.util.stream.Collectors;
 public class FundingService {
 
     private final FundingRepository fundingRepository;
-    private final SecurityUtil  securityUtil;
     private final ConsumerRepository consumerRepository;
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final AnniversaryCategoryRepository anniversaryCategoryRepository;
+    private final SecurityUtil  securityUtil;
 
 
     @Transactional
@@ -66,6 +66,26 @@ public class FundingService {
         }
     }
 
+    public SliceList<GetFundingResponse> getFriendFundings(Long friendConsumerId, String keyword, Pageable pageable) {
+        Long consumerId = securityUtil.getConsumerId();
+
+        //친구 아이디 존재 여부 확인
+        findByConsumerId(friendConsumerId);
+
+        /**
+         * TODO : consumerId, firendConsumerId 친구아닌 경우 예외
+         * TODO : consumerId, firendConsumerId 친구인 경우 친한 친구인지 아닌지 확인
+         */
+
+        //제품영 검색어 입력 여부
+        if (keyword == null) {
+            return getMyFundingsSliceList(findAllByConsumerId(consumerId, pageable));
+        } else {
+
+            return getMyFundingsSliceList(findAllByConsumerIdAndProductName(consumerId, keyword, pageable));
+        }
+    }
+
     //slice<Funding> -> SliceList<GetFundingResponse> 변경 매서드
     private SliceList<GetFundingResponse> getMyFundingsSliceList(Slice<Funding> fundings) {
         return SliceList.from(fundings.stream().map(GetFundingResponse::from).collect(Collectors.toList()), fundings.getPageable(), fundings.hasNext());
@@ -79,6 +99,11 @@ public class FundingService {
     //consumerId, 검색어로 펀딩 목록 찾기
     private Slice<Funding> findAllByConsumerIdAndProductName(Long consumerId, String keyword, Pageable pageable) {
         return fundingRepository.findAllByConsumerIdAndProductNameAndDeletedAtIsNull(consumerId, keyword, pageable);
+    }
+
+    private void findByConsumerId(Long consumerId){
+        consumerRepository.findById(consumerId)
+                .orElseThrow(() -> new CustomException(ErrorType.USER_NOT_FOUND));
     }
 
     private AnniversaryCategory getAnniversaryCategory(PostFundingRequest postFundingRequest) {
