@@ -35,7 +35,6 @@
   src: url(/fonts/Yeongdo.ttf);
 }
 
-
 #root {
   @apply bg-cusColor4;
 }
@@ -49,6 +48,10 @@
   .sub-layer {
     /* 열방향, 가운데정렬, 최대너비500, 너비반응형, 배경흰색 */
     @apply relative flex h-screen max-w-[500px] flex-col items-center justify-center bg-white  pb-20;
+  }
+  .story-layer {
+    /* 열방향, 가운데정렬, 최대너비500, 너비반응형, 배경흰색 */
+    @apply relative flex h-screen max-w-[500px] flex-col items-center justify-center bg-white;
   }
 
   .header {
@@ -75,12 +78,12 @@
 
   .common-btn {
     /* 가운데정렬, 테투리둥글게, 나눔스퀘어, 글꼴흰색, 배경주황색 */
-    @apply flex flex-row items-center justify-center p-2 text-white rounded-lg bg-cusColor3 font-cusFont3;
+    @apply flex flex-row items-center justify-center rounded-lg bg-cusColor3 p-2 font-cusFont3 text-white;
   }
 
   /* 회원, 친구목록 관련 */
   .signup-font {
-    @apply text-gray-400 font-cusFont3;
+    @apply font-cusFont3 text-gray-400;
   }
 
   .fav-btn {
