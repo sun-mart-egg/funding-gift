@@ -43,7 +43,9 @@ public class ProductController {
 
     @Operation(summary = "카테고리 별 상품 목록 조회",
             description = """
-                           카테고리 별 상품 목록을 조회합니다. Query Parameter로 category-id, page, size, sort 넣어주세요. 
+                           카테고리 별 상품 목록을 조회합니다. 
+                           Query Parameter로 category-id, page, size, sort 넣어주세요. 
+                           category-id가 없으면 전체 목록을 조회합니다. 
                            결과로 data, page, size, hasNext를 반환합니다.
                            - data: 응답 데이터
                            - page: 현재 페이지 번호
@@ -58,7 +60,7 @@ public class ProductController {
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @GetMapping("")
     public SuccessResponse<SliceList<GetProductResponse>> getProductsByCategory
-            (@Schema(description = "카테고리 ID", example = "1") @RequestParam(required = true, name = "category-id") Integer categoryId,
+            (@Schema(description = "카테고리 ID, 없으면 전체 목록을 조회합니다.", example = "1") @RequestParam(required = false, name = "category-id") Integer categoryId,
              @Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam(required = true, name = "page") Integer page,
              @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam(required = true, name = "size") Integer size,
              @Schema(description = """
