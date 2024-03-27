@@ -5,11 +5,11 @@ import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.entity.Consumer;
-import com.d201.fundingift.product.dto.response.GetProductResponse;
 import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.entity.ProductOption;
 import com.d201.fundingift.product.repository.ProductOptionRepository;
 import com.d201.fundingift.product.repository.ProductRepository;
+import com.d201.fundingift.review.dto.request.PostReviewRequest;
 import com.d201.fundingift.review.dto.response.GetReviewResponse;
 import com.d201.fundingift.review.entity.Review;
 import com.d201.fundingift.review.repository.ReviewRepository;
@@ -19,8 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.d201.fundingift._common.response.ErrorType.PRODUCT_OPTION_MISMATCH;
@@ -28,6 +28,7 @@ import static com.d201.fundingift._common.response.ErrorType.SORT_NOT_FOUND;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ReviewService {
 
@@ -35,6 +36,22 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
+
+    @Transactional
+    public void postReview(PostReviewRequest request) {
+        Consumer consumer = getConsumer();
+        Product product = findProductById(request.getProductId());
+        ProductOption productOption = findProductOptionById(request.getProductOptionId());
+
+        // 상품 옵션이 상품과 매칭되는지 검사
+        validateProductOption(product, productOption);
+
+        // 리뷰 생성
+        reviewRepository.save(Review.from(request, product, productOption, consumer));
+
+        // 리뷰 개수 추가
+        product.insertReview(request.getStar());
+    }
 
     public SliceList<GetReviewResponse> getReviews(Long productId, Long productOptionId, Integer page, Integer size, Integer sort) {
         Product product = findProductById(productId);
@@ -62,7 +79,7 @@ public class ReviewService {
 
         // 상품 옵션 있음
         ProductOption productOption = findProductOptionById(productOptionId);
-        validateProductOption(productOption, productId); // 상품 옵션이 상품과 매칭되는지 검사
+        validateProductOption(product, productOption); // 상품 옵션이 상품과 매칭되는지 검사
 
         // 최신 순
         if (sort == 0) {
@@ -130,10 +147,14 @@ public class ReviewService {
                 .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_OPTION_NOT_FOUND));
     }
 
-    private void validateProductOption(ProductOption productOption, Long productId) {
-        if (productOption.getProduct().getId() != productId) {
+    private void validateProductOption(Product product, ProductOption productOption) {
+        if (productOption.getProduct().getId() != product.getId()) {
             throw new CustomException(PRODUCT_OPTION_MISMATCH);
         }
+    }
+
+    private Consumer getConsumer() {
+        return securityUtil.getConsumer();
     }
 
     private Consumer getConsumerOrNull() {
