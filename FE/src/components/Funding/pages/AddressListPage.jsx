@@ -24,7 +24,7 @@ function AddressListPage() {
   ];
 
   const handleSelectButtonClick = () => {
-    setContentIndex(3); // 컨텐츠 인덱스를 2로 설정
+    setContentIndex(3); // 컨텐츠 인덱스를 3으로 설정
     navigate("/make-funding-detail"); // 라우트 경로는 실제 경로에 맞게 조정해야 합니다.
   };
 

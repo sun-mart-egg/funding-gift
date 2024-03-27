@@ -232,7 +232,7 @@ function MakeFundingDetail() {
                 </div>
                 <div className="mt-4 h-[80px] rounded-md border border-gray-400 text-xs">
                   {selectedAddress == null ? (
-                    "주소 정보 보여주는 곳"
+                    "주소를 선택해 주세요"
                   ) : (
                     <div>
                       <div className="flex">
@@ -257,7 +257,17 @@ function MakeFundingDetail() {
                   </button>
                 </div>
                 <div className="mt-4 h-[50px] rounded-md border border-gray-400 text-xs">
-                  계좌 정보 보여주는 곳
+                  {selectedAccount == null ? (
+                    "계좌를 선택해 주세요"
+                  ) : (
+                    <div>
+                      <p>{selectedAccount.name}</p>
+                      <div className="flex">
+                        <p className="mb-1 mr-1">{selectedAccount.bank}</p>
+                        <p>{selectedAccount.account}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
