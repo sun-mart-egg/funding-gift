@@ -3,6 +3,7 @@ package com.d201.fundingift.review.service;
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.response.SliceList;
+import com.d201.fundingift._common.util.S3Uploader;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.product.entity.Product;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 import static com.d201.fundingift._common.response.ErrorType.PRODUCT_OPTION_MISMATCH;
@@ -32,13 +34,16 @@ import static com.d201.fundingift._common.response.ErrorType.SORT_NOT_FOUND;
 @RequiredArgsConstructor
 public class ReviewService {
 
+    private final S3Uploader s3Uploader;
     private final SecurityUtil securityUtil;
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
 
     @Transactional
-    public void postReview(PostReviewRequest request) {
+    public void postReview(PostReviewRequest request) throws IOException {
+        log.info(request.toString());
+
         Consumer consumer = getConsumer();
         Product product = findProductById(request.getProductId());
         ProductOption productOption = findProductOptionById(request.getProductOptionId());
@@ -46,8 +51,12 @@ public class ReviewService {
         // 상품 옵션이 상품과 매칭되는지 검사
         validateProductOption(product, productOption);
 
+        // S3 이미지 업로드
+        String image1 = s3Uploader.upload(request.getImage1());
+        String image2 = s3Uploader.upload(request.getImage2());
+
         // 리뷰 생성
-        reviewRepository.save(Review.from(request, product, productOption, consumer));
+        reviewRepository.save(Review.from(request, image1, image2, product, productOption, consumer));
 
         // 리뷰 개수 추가
         product.insertReview(request.getStar());

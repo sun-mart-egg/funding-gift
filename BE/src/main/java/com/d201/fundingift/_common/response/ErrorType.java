@@ -18,6 +18,8 @@ public enum ErrorType {
      * CUSTOM ERROR
      */
     SORT_NOT_FOUND(HttpStatus.BAD_REQUEST, "정렬 조건을 찾을 수 없습니다."),
+    INVALID_FILE_FORMAT(HttpStatus.BAD_REQUEST, "파일의 포맷이 올바르지 않습니다."),
+    IMAGE_FILE_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 파일 업로드에 실패하였습니다."),
 
     // 사용자
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "등록된 사용자가 없습니다."),

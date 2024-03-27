@@ -66,12 +66,12 @@ public class Review extends BaseTime {
         this.consumer = consumer;
     }
 
-    public static Review from(PostReviewRequest request, Product product, ProductOption productOption, Consumer consumer) {
+    public static Review from(PostReviewRequest request, String image1, String image2, Product product, ProductOption productOption, Consumer consumer) {
         return builder()
                 .star(request.getStar())
                 .content(request.getContent())
-                .image1(request.getImage1())
-                .image2(request.getImage2())
+                .image1(image1)
+                .image2(image2)
                 .product(product)
                 .productOption(productOption)
                 .consumer(consumer)

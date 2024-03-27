@@ -14,9 +14,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.io.IOException;
 
 import static com.d201.fundingift._common.response.SuccessType.CREATE_REVIEW_SUCCESS;
 import static com.d201.fundingift._common.response.SuccessType.GET_REVIEWS_BY_PRODUCT_SUCCESS;
@@ -30,8 +31,8 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("")
-    public SuccessResponse<Void> postReview(@RequestBody PostReviewRequest request) {
+    public SuccessResponse<Void> postReview(@RequestPart PostReviewRequest request) throws IOException {
+        log.info("[ReviewController.postReview]");
         reviewService.postReview(request);
         return ResponseUtils.ok(CREATE_REVIEW_SUCCESS);
     }
@@ -40,7 +41,7 @@ public class ReviewController {
             description = """
                            상품 별 리뷰 목록을 조회합니다. \n
                            Query Parameter로 product-id, product-option-id, page, size, sort 넣어주세요. \n
-                           product-option-id가 없으면 전체 옵션을 조회합니다. 
+                           product-option-id가 없으면 전체 옵션을 조회합니다. \n
                            결과로 data, page, size, hasNext를 반환합니다.
                            - data: 응답 데이터
                            - page: 현재 페이지 번호
