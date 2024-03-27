@@ -17,26 +17,43 @@ public class SecurityUtil {
 
     private final ConsumerRepository consumerRepository;
 
+    public Long getConsumerId() {
+        return existConsumer(getConsumerIdOrElseThrow());
+    }
+
     public Consumer getConsumer() {
-        Long consumerId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+        return findConsumerById(getConsumerIdOrElseThrow());
+    }
+
+    public Consumer getConsumerOrNull() {
+        return findConsumerById(getConsumerIdOrElseNull());
+    }
+
+    private Long getConsumerIdOrElseThrow() {
+        try {
+            return Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+        } catch (NumberFormatException e) {
+            throw new CustomException(ErrorType.USER_UNAUTHORIZED);
+        }
+    }
+
+    private Long getConsumerIdOrElseNull() {
+        try {
+            return Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private Consumer findConsumerById(Long consumerId) {
         return consumerRepository.findById(consumerId)
                 .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
     }
 
-    public Consumer getConsumerOrNull() {
-        Long consumerId;
-        try {
-            consumerId = Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
-        } catch (NumberFormatException e) {
-            return null;
-        }
-        return consumerRepository.findById(consumerId).orElse(null);
+    private Long existConsumer(Long consumerId) {
+        if(consumerRepository.existsById(consumerId))
+            return consumerId;
+        else
+            throw new CustomException(ErrorType.CONSUMER_NOT_FOUND);
     }
-
 }
-/*
-* Todo
-*  예외처리. 부탁.
-*  consumerId만 뽑는 메소드. 필요.
-*
-*/
