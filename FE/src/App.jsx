@@ -4,7 +4,7 @@ import MainLayout from "./components/UI/MainLayout.jsx";
 import SubLayout from "./components/UI/SubLayout.jsx";
 
 import Login from "./components/Login/LoginPage.jsx";
-import LoginCallback from "./components/Login/LoginCallback.jsx"
+import LoginCallback from "./components/Login/LoginCallback.jsx";
 import Signup from "./components/Login/Signup.jsx";
 import SignupFinish from "./components/Login/SignupFinish.jsx";
 
@@ -48,10 +48,13 @@ function App() {
             path="/friend-funding-detail"
             element={<FriendFundingDetail />}
           />
+
           <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/anniversary-list" element={<AnniversaryListPage />} />
+          <Route path="/address-list" element={<AddressListPage />} />
+          <Route path="/account-list" element={<AccountListPage />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/participate" element={<ParticipatePage />} />
@@ -61,7 +64,6 @@ function App() {
         </Route>
 
         <Route path="/login-callback" element={<LoginCallback />} />
-
       </Routes>
     </BrowserRouter>
   );
