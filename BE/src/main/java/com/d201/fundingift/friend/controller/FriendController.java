@@ -38,8 +38,8 @@ public class FriendController {
                     useReturnTypeSchema = true)
     })
     @GetMapping("/kakao")
-    public SuccessResponse<GetKakaoFriendsResponse> getKakaoFriends(Authentication authentication) {
-        GetKakaoFriendsResponse friendsResponse = friendService.getKakaoFriends(authentication);
+    public SuccessResponse<GetKakaoFriendsResponse> getKakaoFriendByAuthentication(Authentication authentication) {
+        GetKakaoFriendsResponse friendsResponse = friendService.getKakaoFriendByAuthentication(authentication);
 
         // 로그에 친구의 닉네임 출력
         for (FriendDto friend : friendsResponse.getElements()) {

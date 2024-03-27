@@ -149,37 +149,4 @@ public class JwtUtil {
             return null;
         }
     }
-
-    public void saveTokens(Long userId, String accessToken, String refreshToken) {
-        redisTemplate.opsForValue().set("accessToken:" + userId, accessToken);
-        redisTemplate.opsForValue().set("refreshToken:" + userId, refreshToken);
-    }
-
-    public void saveKakaoAccessToken(Long consumerId, String accessToken) {
-        redisTemplate.opsForValue().set("kakaoAccessToken:" + consumerId, accessToken);
-    }
-
-    public String getAccessToken(Long consumerId) {
-        return (String) redisTemplate.opsForValue().get("accessToken:" + consumerId);
-    }
-
-    public String getRefreshToken(Long consumerId) {
-        return (String) redisTemplate.opsForValue().get("refreshToken:" + consumerId);
-    }
-
-    public String getKakaoAccessToken(String consumerId) {
-        return (String) redisTemplate.opsForValue().get("kakaoAccessToken:" + consumerId);
-    }
-
-    public void deleteAccessToken(String consumerId) {
-        redisTemplate.delete("accessToken:" + consumerId);
-    }
-
-    public void deleteRefreshToken(String consumerId) {
-        redisTemplate.delete("refreshToken:" + consumerId);
-    }
-
-    public void deleteKakaoAccessToken(String consumerId) {
-        redisTemplate.delete("kakaoAccessToken:" + consumerId);
-    }
 }
