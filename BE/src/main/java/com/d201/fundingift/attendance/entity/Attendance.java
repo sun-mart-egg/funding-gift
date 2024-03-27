@@ -1,6 +1,7 @@
 package com.d201.fundingift.attendance.entity;
 
 import com.d201.fundingift._common.entity.BaseTime;
+import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.funding.entity.Funding;
 import jakarta.persistence.*;
@@ -48,5 +49,16 @@ public class Attendance extends BaseTime {
         this.consumer = consumer;
         this.funding = funding;
     }
+
+    public static Attendance from(PostAttendanceRequest postAttendanceRequest, Consumer consumer, Funding funding) {
+        return Attendance.builder()
+                .sendMessageTitle(postAttendanceRequest.getSendMessageTitle())
+                .sendMessage(postAttendanceRequest.getSendMessage())
+                .price(postAttendanceRequest.getPrice())
+                .consumer(consumer)
+                .funding(funding)
+                .build();
+    }
+
 
 }
