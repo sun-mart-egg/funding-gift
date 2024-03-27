@@ -51,18 +51,18 @@ public class FundingController {
         return ResponseUtils.ok(CREATE_FUNDING_SUCCESS);
     }
 
-    @GetMapping
+    @GetMapping("/my-fundings")
     public SuccessResponse<SliceList<GetFundingResponse>> getMyFundings(@RequestParam(required = false, name = "keyword") String keyword,
-                                                                        @PageableDefault(size=3, sort="id", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                                        @PageableDefault(size=3, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return ResponseUtils.ok(fundingService.getMyFundings(keyword, pageable), GET_MY_FUNDINGS_SUCCESS);
     }
 
-    @GetMapping
+    @GetMapping("/friend-fundings")
     public SuccessResponse<SliceList<GetFundingResponse>> getFriendFundings(
                                                                         @RequestParam(required = true, name = "friend-consumer-id") Long friendConsumerId,
                                                                         @RequestParam(required = false, name = "keyword") String keyword,
-                                                                        @PageableDefault(size=3, sort="id", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                                        @PageableDefault(size=3, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return ResponseUtils.ok(fundingService.getFriendFundings(friendConsumerId, keyword, pageable), GET_FRIEND_FUNDINGS_SUCCESS);
     }
