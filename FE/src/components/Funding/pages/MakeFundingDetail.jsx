@@ -22,12 +22,14 @@ function MakeFundingDetail() {
     bestFriend: false,
     title: "",
     fundingIntro: "",
-    anniversary: "",
+    anniversary:
+      selectedAnniversary == null ? "" : selectedAnniversary.anniversary,
     startDate: null,
     endDate: null,
     minMoney: "",
-    address: "",
-    account: "",
+    address: selectedAddress == null ? "" : selectedAddress.address,
+    account: selectedAccount == null ? "" : selectedAccount.account,
+    bank: selectedAccount == null ? "" : selectedAccount.bank,
   });
 
   const CustomInput = forwardRef(({ value, onClick }, ref) => (
@@ -104,7 +106,7 @@ function MakeFundingDetail() {
               <img src={egg} alt="" className="mx-auto" />
             </div>
             <div id="itemInfo">
-              <p className="p-2 font-cusFont2 text-xl"> 에어팟 맥스</p>
+              <p className="p-2 font-cusFont2 text-xl"> 고오급 계란</p>
               <p>760,000</p>
               <p>로 선물은 만들어 볼까요?</p>
             </div>
@@ -112,7 +114,7 @@ function MakeFundingDetail() {
         );
       case 1:
         return (
-          <div className="text-md flex flex-col  justify-center">
+          <div className="text-md flex flex-col  justify-center ">
             <div id="card-content">
               <div id="is-bestfriend" className="mb-6 flex">
                 <p className="mr-4 ">친한친구에게만 공개하기</p>
@@ -276,24 +278,26 @@ function MakeFundingDetail() {
 
       case 4:
         return (
-          <div>
-            <img src="" alt="" />
-            <p>
+          <div className="flex flex-col items-center justify-center text-[12px]">
+            <img src={egg} alt="" className="mb-4 w-[50%]" />
+            <p className="mb-1">고오급 계란</p>
+            <p className="mb-1">
               {formData.bestFriend
                 ? "친한 친구에게만 공개하기"
                 : "모두에게 공개하기"}
             </p>
-            <p>{formData.title}</p>
-            <p>{formData.intro}</p>
-            <p>{formData.anniversary}</p>
-            <p>
+            <p className="mb-1">{formData.title}</p>
+            <p className="mb-1">{formData.intro}</p>
+            <p className="mb-1">{formData.anniversary}</p>
+            <p className="mb-1">
               {getFormattedDate(formData.startDate)} ~{" "}
               {getFormattedDate(formData.endDate)}
             </p>
 
-            <p>{formData.minMoney}</p>
-            <p>{formData.address}</p>
-            <p>{formData.account}</p>
+            <p className="mb-1">{formData.minMoney}</p>
+            <p className="mb-1">{formData.address}</p>
+            <p className="mb-1">{formData.bank}</p>
+            <p className="mb-1">{formData.account}</p>
           </div>
         );
     }
