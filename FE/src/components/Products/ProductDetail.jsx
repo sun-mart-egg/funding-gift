@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useStore } from "../Store/MakeStore";
 import SampleImage from "/imgs/product_sample.png";
 
 import Star from "/imgs/star.png";
@@ -12,8 +12,11 @@ import DeactivatedSmile from "/imgs/smile_deactivated.png";
 
 function ProductDetail() {
   const navigate = useNavigate();
+  const reset = useStore((state) => state.reset); // reset 함수를 가져옵니다.
 
   const handleClick = () => {
+    reset(); // 상태 초기화
+
     navigate("/make-funding-detail");
   };
 

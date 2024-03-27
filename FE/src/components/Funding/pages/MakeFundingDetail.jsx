@@ -3,23 +3,33 @@ import { useNavigate } from "react-router-dom"; // useNavigate 사용
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import egg from "/imgs/egg3.jpg";
-import Footer from "../../UI/Footer";
-import anniversaryData from "../data";
+import { useStore } from "../../Store/MakeStore";
 
 function MakeFundingDetail() {
-  // 현재 보여줄 컨텐츠 인덱스를 상태로 관리
-  const [contentIndex, setContentIndex] = useState(0);
+  const {
+    contentIndex,
+    setContentIndex,
+    selectedAnniversary,
+    selectedAddress,
+    selectedAccount,
+  } = useStore(); // Zustand에서 상태를 가져옵니다.
+  const navigate = useNavigate(); // useNavigate 훅 사용
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const ref = useRef(null); // DatePicker에 대한 ref를 생성합니다.
+
   // 사용자 입력 데이터를 상태로 관리
   const [formData, setFormData] = useState({
     bestFriend: false,
     title: "",
     fundingIntro: "",
-    anniversary: "",
+    anniversary:
+      selectedAnniversary == null ? "" : selectedAnniversary.anniversary,
     startDate: null,
     endDate: null,
     minMoney: "",
-    address: "",
-    account: "",
+    address: selectedAddress == null ? "" : selectedAddress.address,
+    account: selectedAccount == null ? "" : selectedAccount.account,
+    bank: selectedAccount == null ? "" : selectedAccount.bank,
   });
 
   const CustomInput = forwardRef(({ value, onClick }, ref) => (
@@ -32,13 +42,11 @@ function MakeFundingDetail() {
     </button>
   ));
 
-  const navigate = useNavigate(); // useNavigate 훅 사용
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const ref = useRef(null); // DatePicker에 대한 ref를 생성합니다.
   // 다음 컨텐츠를 보여주는 함수
   const handleNext = () => {
+    console.log(`Current Index: ${contentIndex}`); // 상태 변화 추적
     if (contentIndex < 4) {
-      setContentIndex((prevIndex) => prevIndex + 1);
+      setContentIndex(contentIndex + 1); // 상태 업데이트
     } else {
       //펀딩 만드는 api 연결 필요
 
@@ -49,7 +57,13 @@ function MakeFundingDetail() {
 
   // 이전 컨텐츠를 보여주는 함수
   const handlePrev = () => {
-    setContentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
+    console.log(`Current Index: ${contentIndex}`); // 상태 변화 추적
+    if (contentIndex > 0) {
+      setContentIndex(contentIndex - 1); // 상태 업데이트
+    } else {
+      //펀딩 만드는 api 연결 필요
+      setContentIndex(0);
+    }
   };
 
   // 폼 데이터를 처리하는 함수
@@ -92,7 +106,7 @@ function MakeFundingDetail() {
               <img src={egg} alt="" className="mx-auto" />
             </div>
             <div id="itemInfo">
-              <p className="p-2 font-cusFont2 text-xl"> 에어팟 맥스</p>
+              <p className="p-2 font-cusFont2 text-xl"> 고오급 계란</p>
               <p>760,000</p>
               <p>로 선물은 만들어 볼까요?</p>
             </div>
@@ -100,7 +114,7 @@ function MakeFundingDetail() {
         );
       case 1:
         return (
-          <div className="text-md flex flex-col  justify-center">
+          <div className="text-md flex flex-col  justify-center ">
             <div id="card-content">
               <div id="is-bestfriend" className="mb-6 flex">
                 <p className="mr-4 ">친한친구에게만 공개하기</p>
@@ -152,8 +166,15 @@ function MakeFundingDetail() {
                   </button>
                 </div>
                 <div className="mt-2 text-xs">
-                  <p>시은이 생일</p>
-                  <p>2024.4.22</p>
+                  {selectedAnniversary && (
+                    <div>
+                      <div className="flex">
+                        <p className="mb-1 mr-1">{selectedAnniversary.name}</p>
+                        <p>{selectedAnniversary.anniversary}</p>
+                      </div>
+                      <p>{selectedAnniversary.date}</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -206,13 +227,24 @@ function MakeFundingDetail() {
                   <p>주소</p>
                   <button
                     className="common-btn h-6 bg-gray-500 text-xs"
-                    onClick={() => navigate("/anniversary-list")}
+                    onClick={() => navigate("/address-list")}
                   >
                     선택
                   </button>
                 </div>
                 <div className="mt-4 h-[80px] rounded-md border border-gray-400 text-xs">
-                  주소정보 보여주는 곳
+                  {selectedAddress == null ? (
+                    "주소를 선택해 주세요"
+                  ) : (
+                    <div>
+                      <div className="flex">
+                        <p className="mb-1 mr-1">{selectedAddress.name}</p>
+                        <p>{selectedAddress.nickname}</p>
+                      </div>
+                      <p>{selectedAddress.phone}</p>
+                      <p>{selectedAddress.address}</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -221,13 +253,23 @@ function MakeFundingDetail() {
                   <p>환불 계좌</p>
                   <button
                     className="common-btn h-6 bg-gray-500 text-xs"
-                    onClick={() => navigate("/anniversary-list")}
+                    onClick={() => navigate("/account-list")}
                   >
                     선택
                   </button>
                 </div>
                 <div className="mt-4 h-[50px] rounded-md border border-gray-400 text-xs">
-                  계좌 정보 보여주는 곳
+                  {selectedAccount == null ? (
+                    "계좌를 선택해 주세요"
+                  ) : (
+                    <div>
+                      <p>{selectedAccount.name}</p>
+                      <div className="flex">
+                        <p className="mb-1 mr-1">{selectedAccount.bank}</p>
+                        <p>{selectedAccount.account}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -236,24 +278,26 @@ function MakeFundingDetail() {
 
       case 4:
         return (
-          <div>
-            <img src="" alt="" />
-            <p>
+          <div className="flex flex-col items-center justify-center text-[12px]">
+            <img src={egg} alt="" className="mb-4 w-[50%]" />
+            <p className="mb-1">고오급 계란</p>
+            <p className="mb-1">
               {formData.bestFriend
                 ? "친한 친구에게만 공개하기"
                 : "모두에게 공개하기"}
             </p>
-            <p>{formData.title}</p>
-            <p>{formData.intro}</p>
-            <p>{formData.anniversary}</p>
-            <p>
+            <p className="mb-1">{formData.title}</p>
+            <p className="mb-1">{formData.intro}</p>
+            <p className="mb-1">{formData.anniversary}</p>
+            <p className="mb-1">
               {getFormattedDate(formData.startDate)} ~{" "}
               {getFormattedDate(formData.endDate)}
             </p>
 
-            <p>{formData.minMoney}</p>
-            <p>{formData.address}</p>
-            <p>{formData.account}</p>
+            <p className="mb-1">{formData.minMoney}</p>
+            <p className="mb-1">{formData.address}</p>
+            <p className="mb-1">{formData.bank}</p>
+            <p className="mb-1">{formData.account}</p>
           </div>
         );
     }
@@ -312,7 +356,7 @@ function MakeFundingDetail() {
           ) : (
             <button
               onClick={handleNext}
-              style={{ width: "calc(66% )" }} // 버튼 너비 조정
+              style={{ width: "calc(75% )" }} // 버튼 너비 조정
               className="common-btn"
             >
               다음
