@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useStore } from "../Store/AnniversaryStore";
+import { useStore } from "../Store/MakeStore";
 import SampleImage from "/imgs/product_sample.png";
 
 import Star from "/imgs/star.png";

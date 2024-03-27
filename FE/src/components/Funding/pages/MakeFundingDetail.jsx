@@ -3,10 +3,16 @@ import { useNavigate } from "react-router-dom"; // useNavigate 사용
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import egg from "/imgs/egg3.jpg";
-import { useStore } from "../../Store/AnniversaryStore";
+import { useStore } from "../../Store/MakeStore";
 
 function MakeFundingDetail() {
-  const { contentIndex, setContentIndex, selectedAnniversary } = useStore(); // Zustand에서 상태를 가져옵니다.
+  const {
+    contentIndex,
+    setContentIndex,
+    selectedAnniversary,
+    selectedAddress,
+    selectedAccount,
+  } = useStore(); // Zustand에서 상태를 가져옵니다.
   const navigate = useNavigate(); // useNavigate 훅 사용
   const [showDatePicker, setShowDatePicker] = useState(false);
   const ref = useRef(null); // DatePicker에 대한 ref를 생성합니다.
@@ -225,7 +231,17 @@ function MakeFundingDetail() {
                   </button>
                 </div>
                 <div className="mt-4 h-[80px] rounded-md border border-gray-400 text-xs">
-                  주소정보 보여주는 곳
+                  {selectedAddress == null ? (
+                    "주소 정보 보여주는 곳"
+                  ) : (
+                    <div>
+                      <div className="flex">
+                        <p className="mb-1 mr-1">{selectedAddress.name}</p>
+                        <p>{selectedAddress.nickname}</p>
+                      </div>
+                      <p>{selectedAddress.phone}</p>
+                    </div>
+                  )}
                 </div>
               </div>
 

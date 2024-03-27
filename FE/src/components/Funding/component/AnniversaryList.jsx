@@ -1,21 +1,24 @@
 import React, { useState } from "react";
 import AnniversaryCard from "./AnniversaryCard";
-import { useStore } from "../../Store/AnniversaryStore";
+import { useStore } from "../../Store/MakeStore";
 
 function AnniversaryList({ listData }) {
   // listData 상태 관리
+  const { selectedAnniversaryIndex } = useStore();
   const [data, setData] = useState(listData);
+  const setSelectedAnniversaryIndex = useStore(
+    (state) => state.setSelectedAnniversaryIndex,
+  );
+
   const setSelectedAnniversary = useStore(
     (state) => state.setSelectedAnniversary,
   );
-  const setSelectedIndex = useStore((state) => state.setSelectedIndex);
-  const selectedIndex = useStore((state) => state.selectedIndex);
 
   // isSelected 상태를 업데이트하는 함수
   const handleSelect = (index) => {
     setSelectedAnniversary(listData[index]);
-    setSelectedIndex(index);
-    console.log(selectedIndex);
+    setSelectedAnniversaryIndex(index); // 기념일 인덱스를 설정
+    console.log(selectedAnniversaryIndex);
   };
 
   return (
@@ -29,7 +32,7 @@ function AnniversaryList({ listData }) {
           anniversary={item.anniversary}
           name={item.name}
           date={item.date}
-          isSelected={index === selectedIndex} // 현재 카드가 선택된 상태인지 판단
+          isSelected={index === selectedAnniversaryIndex} // 현재 카드가 선택된 상태인지 판단
           onSelect={() => handleSelect(index)} // onSelect prop 추가
         />
       ))}

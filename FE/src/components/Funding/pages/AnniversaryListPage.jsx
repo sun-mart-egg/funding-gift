@@ -1,17 +1,18 @@
 import AnniversaryList from "../component/AnniversaryList";
 import anniversaryData from "../data";
 import { useNavigate } from "react-router-dom"; // useNavigate 사용
-import { useStore } from "../../Store/AnniversaryStore";
+import { useStore } from "../../Store/MakeStore";
 
 function AnniversaryListPage() {
   const navigate = useNavigate();
   const setContentIndex = useStore((state) => state.setContentIndex);
-  const { selectedIndex } = useStore();
+  const { selectedAnniversaryIndex } = useStore();
 
   const handleSelectButtonClick = () => {
     setContentIndex(2); // 컨텐츠 인덱스를 2로 설정
     navigate("/make-funding-detail"); // 라우트 경로는 실제 경로에 맞게 조정해야 합니다.
   };
+
   return (
     <div className="sub-layer font-cusFont3 text-[14px]">
       <AnniversaryList listData={anniversaryData} className="" />
