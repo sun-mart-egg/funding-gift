@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,11 +42,12 @@ public class ProductController {
         return ResponseUtils.ok(productService.getCategories(), GET_PRODUCT_CATEGORIES_SUCCESS);
     }
 
-    @Operation(summary = "카테고리 별 상품 목록 조회",
+    @Operation(summary = "상품 목록 조회",
             description = """
-                           카테고리 별 상품 목록을 조회합니다. 
-                           Query Parameter로 category-id, page, size, sort 넣어주세요. 
-                           category-id가 없으면 전체 목록을 조회합니다. 
+                           상품 목록을 조회합니다. \n
+                           Query Parameter로 category-id, keyword, page, size, sort 넣어주세요. \n
+                           category-id가 없으면 전체 목록을 조회합니다. \n
+                           keyword가 있으면 해당 검색어 목록을 조회합니다. \n
                            결과로 data, page, size, hasNext를 반환합니다.
                            - data: 응답 데이터
                            - page: 현재 페이지 번호
@@ -59,8 +61,9 @@ public class ProductController {
                 description = "잘못된 category-id / 잘못된 sort",
                 content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @GetMapping("")
-    public SuccessResponse<SliceList<GetProductResponse>> getProductsByCategory
+    public SuccessResponse<SliceList<GetProductResponse>> getProducts
             (@Schema(description = "카테고리 ID, 없으면 전체 목록을 조회합니다.", example = "1") @RequestParam(required = false, name = "category-id") Integer categoryId,
+             @Schema(description = "검색 키워드, 없으면 키워드 없이 조회합니다.", example = "반지") @RequestParam(required = false, name = "keyword") String keyword,
              @Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam(required = true, name = "page") Integer page,
              @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam(required = true, name = "size") Integer size,
              @Schema(description = """
@@ -72,40 +75,40 @@ public class ProductController {
                                     - 4: 가격 낮은 순
                                     """, example = "0") @RequestParam(required = true, name = "sort") Integer sort) {
         log.info("[ProductController.getProductsByCategoryId]");
-        return ResponseUtils.ok(productService.getProductsByCategoryId(categoryId, page, size, sort), GET_PRODUCTS_BY_CATEGORY_SUCCESS);
+        return ResponseUtils.ok(productService.getProducts(categoryId, keyword, page, size, sort), GET_PRODUCTS_BY_CATEGORY_SUCCESS);
     }
 
-    @Operation(summary = "키워드 별 상품 목록 조회",
-            description = """
-                           키워드 별 상품 목록을 조회합니다. Query Parameter로 keyword, page, size, sort 넣어주세요. 
-                           결과로 data, page, size, hasNext를 반환합니다.
-                           - data: 응답 데이터
-                           - page: 현재 페이지 번호
-                           - size: 현재 데이터 개수
-                           - hasNext: 다음 페이지 존재 여부
-                           """)
-    @ApiResponse(responseCode = "200",
-            description = "성공",
-            useReturnTypeSchema = true)
-    @ApiResponse(responseCode = "400",
-            description = "잘못된 sort",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @GetMapping("/search")
-    public SuccessResponse<SliceList<GetProductResponse>> getProductsByKeyword
-            (@Schema(description = "검색 키워드", example = "반지") @RequestParam(required = true, name = "keyword") String keyword,
-             @Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam(required = true, name = "page") Integer page,
-             @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam(required = true, name = "size") Integer size,
-             @Schema(description = """
-                                    정렬 조건
-                                    - 0: 기본 순
-                                    - 1: 리뷰 많은 순
-                                    - 2: 평점 높은 순
-                                    - 3: 가격 높은 순
-                                    - 4: 가격 낮은 순
-                                    """, example = "0") @RequestParam(required = true, name = "sort") Integer sort) {
-        log.info("[ProductController.getProductsByKeyword]");
-        return ResponseUtils.ok(productService.getProductsByKeyword(keyword, page, size, sort), GET_PRODUCTS_BY_KEYWORD_SUCCESS);
-    }
+//    @Operation(summary = "키워드 별 상품 목록 조회",
+//            description = """
+//                           키워드 별 상품 목록을 조회합니다. Query Parameter로 keyword, page, size, sort 넣어주세요.
+//                           결과로 data, page, size, hasNext를 반환합니다.
+//                           - data: 응답 데이터
+//                           - page: 현재 페이지 번호
+//                           - size: 현재 데이터 개수
+//                           - hasNext: 다음 페이지 존재 여부
+//                           """)
+//    @ApiResponse(responseCode = "200",
+//            description = "성공",
+//            useReturnTypeSchema = true)
+//    @ApiResponse(responseCode = "400",
+//            description = "잘못된 sort",
+//            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+//    @GetMapping("/search")
+//    public SuccessResponse<SliceList<GetProductResponse>> getProductsByKeyword
+//            (@Schema(description = "검색 키워드", example = "반지") @RequestParam(required = true, name = "keyword") String keyword,
+//             @Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam(required = true, name = "page") Integer page,
+//             @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam(required = true, name = "size") Integer size,
+//             @Schema(description = """
+//                                    정렬 조건
+//                                    - 0: 기본 순
+//                                    - 1: 리뷰 많은 순
+//                                    - 2: 평점 높은 순
+//                                    - 3: 가격 높은 순
+//                                    - 4: 가격 낮은 순
+//                                    """, example = "0") @RequestParam(required = true, name = "sort") Integer sort) {
+//        log.info("[ProductController.getProductsByKeyword]");
+//        return ResponseUtils.ok(productService.getProductsByKeyword(keyword, page, size, sort), GET_PRODUCTS_BY_KEYWORD_SUCCESS);
+//    }
 
     // 토큰 검사 추가 필요 (위시리스트 여부 확인)
     @Operation(summary = "상품 상세 조회",
