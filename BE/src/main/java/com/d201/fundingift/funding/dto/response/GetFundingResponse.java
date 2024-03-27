@@ -11,6 +11,9 @@ import java.time.LocalDate;
 public class GetFundingResponse {
 
     @Schema(description = "목표 금액(펀딩 만들 당시의 제품 금액)", example = "500000")
+    private Long fundingId;
+
+    @Schema(description = "목표 금액(펀딩 만들 당시의 제품 금액)", example = "500000")
     private Integer targetPrice;
 
     @Schema(description = "기념일 날짜", example = "2024-12-12")
@@ -41,7 +44,8 @@ public class GetFundingResponse {
     private String productImage;
 
     @Builder
-    public GetFundingResponse(Integer targetPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, Long productId, String productName, String productImage) {
+    public GetFundingResponse(Long fundingId, Integer targetPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, Long productId, String productName, String productImage) {
+        this.fundingId = fundingId;
         this.targetPrice = targetPrice;
         this.anniversaryDate = anniversaryDate;
         this.startDate = startDate;
@@ -56,6 +60,7 @@ public class GetFundingResponse {
 
     public static GetFundingResponse from(Funding funding) {
         return builder()
+                .fundingId(funding.getId())
                 .targetPrice(funding.getTargetPrice())
                 .anniversaryDate(funding.getAnniversaryDateToString())
                 .startDate(funding.getStartDateToString())
