@@ -39,7 +39,7 @@ function Friends() {
 
   return (
     <div className="sub-layer top-[40px] justify-start">
-      <div className="flex flex-row justify-between w-full">
+      <div className="flex flex-row justify-between w-full ">
         <div className="flex flex-row items-center p-3 ">
           <p className=" p-2.5 font-cusFont3 text-lg font-bold">친구 {friends.length}</p>
           <button>
