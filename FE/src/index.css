@@ -90,3 +90,9 @@
     @apply h-full max-h-[100px] w-full max-w-[100px] rounded border-[3px] bg-white;
   }
 }
+
+/* 스크롤 투명하게 만듭니다 */
+::-webkit-scrollbar {
+  width: 0px;
+  display: none;
+}
