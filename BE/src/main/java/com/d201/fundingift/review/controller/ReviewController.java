@@ -5,6 +5,7 @@ import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift.review.dto.request.PostReviewRequest;
+import com.d201.fundingift.review.dto.request.PutReviewRequest;
 import com.d201.fundingift.review.dto.response.GetReviewResponse;
 import com.d201.fundingift.review.service.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,8 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-import static com.d201.fundingift._common.response.SuccessType.CREATE_REVIEW_SUCCESS;
-import static com.d201.fundingift._common.response.SuccessType.GET_REVIEWS_BY_PRODUCT_SUCCESS;
+import static com.d201.fundingift._common.response.SuccessType.*;
 
 @Tag(name = "reviews", description = "리뷰 관련 API")
 @Slf4j
@@ -85,6 +85,14 @@ public class ReviewController {
                                     """, example = "0") @RequestParam(required = true, name = "sort") Integer sort) {
         log.info("[ReviewController.getReviews]");
         return ResponseUtils.ok(reviewService.getReviews(productId, productOptionId, page, size, sort), GET_REVIEWS_BY_PRODUCT_SUCCESS);
+    }
+
+    @PutMapping("/{review-id}")
+    public SuccessResponse<Void> updateReview(@PathVariable("review-id") Long reviewId,
+                                              @RequestBody PutReviewRequest request) {
+        log.info("[ReviewController.updateReview]");
+        reviewService.updateReview(reviewId, request);
+        return ResponseUtils.ok(UPDATE_REVIEW_SUCCESS);
     }
 
 }

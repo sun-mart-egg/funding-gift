@@ -39,7 +39,7 @@ public class SecurityUtil {
         try {
             return Long.valueOf(SecurityContextHolder.getContext().getAuthentication().getName());
         } catch (NumberFormatException e) {
-            throw new CustomException(ErrorType.USER_UNAUTHORIZED);
+            throw new CustomException(ErrorType.TOKEN_NOT_FOUND);
         }
     }
 
