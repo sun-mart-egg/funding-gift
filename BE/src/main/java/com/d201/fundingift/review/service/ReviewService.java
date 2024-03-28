@@ -2,21 +2,29 @@ package com.d201.fundingift.review.service;
 
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
+import com.d201.fundingift._common.response.SliceList;
+import com.d201.fundingift._common.util.S3Uploader;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.entity.ProductOption;
 import com.d201.fundingift.product.repository.ProductOptionRepository;
 import com.d201.fundingift.product.repository.ProductRepository;
+import com.d201.fundingift.review.dto.request.PostReviewRequest;
 import com.d201.fundingift.review.dto.response.GetReviewResponse;
+import com.d201.fundingift.review.entity.Review;
 import com.d201.fundingift.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+import java.io.IOException;
 import java.util.stream.Collectors;
 
 import static com.d201.fundingift._common.response.ErrorType.PRODUCT_OPTION_MISMATCH;
@@ -24,100 +32,77 @@ import static com.d201.fundingift._common.response.ErrorType.SORT_NOT_FOUND;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ReviewService {
 
+    private final S3Uploader s3Uploader;
     private final SecurityUtil securityUtil;
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
 
-    public List<GetReviewResponse> getReviews(Long productId, Long productOptionId, Integer page, Integer size, Integer sort) {
-        Product product = findProductById(productId);
-        Consumer consumer = getConsumerOrNull();
-        Pageable pageable = PageRequest.of(page, size);
+    @Transactional
+    public void postReview(PostReviewRequest request, MultipartFile image1, MultipartFile image2) throws IOException {
+        log.info(request.toString());
 
-        // 상품 옵션 없음
-        if (productOptionId == null) {
-            // 최신 순
-            if (sort == 0) {
-                return findByProductOrderByCreatedAtDesc(product, consumer, pageable);
-            }
+        Consumer consumer = getConsumer();
+        Product product = findProductById(request.getProductId());
+        ProductOption productOption = findProductOptionById(request.getProductOptionId());
 
-            // 별점 높은 순
-            if (sort == 1) {
-                return findByProductOrderByStarDesc(product, consumer, pageable);
-            }
+        // 상품 옵션이 상품과 매칭되는지 검사
+        validateProductOption(product, productOption);
 
-            // 별점 낮은 순
-            if (sort == 2) {
-                return findByProductOrderByStarAsc(product, consumer, pageable);
-            }
-
+        // S3 이미지 업로드
+        String imageUrl1 = null, imageUrl2 = null;
+        if (image1 != null && !image1.isEmpty()) {
+            imageUrl1 = s3Uploader.upload(image1);
+        }
+        if (image2 != null && !image2.isEmpty()) {
+            imageUrl2 = s3Uploader.upload(image2);
         }
 
-        // 상품 옵션 있음
-        ProductOption productOption = findProductOptionById(productOptionId);
-        validateProductOption(productOption, productId); // 상품 옵션이 상품과 매칭되는지 검사
+        // 리뷰 생성
+        reviewRepository.save(Review.from(request, imageUrl1, imageUrl2, product, productOption, consumer));
 
+        // 리뷰 개수 추가
+        product.insertReview(request.getStar());
+    }
+
+    public SliceList<GetReviewResponse> getReviews(Long productId, Long productOptionId, Integer page, Integer size, Integer sort) {
+        // 상품, 상품 옵션
+        Product product = findProductById(productId);
+        ProductOption productOption = findProductOptionById(productOptionId);
+        // 상품 옵션이 상품과 매칭되는지 검사
+        validateProductOption(product, productOption);
+
+        // 페이징 객체
+        Pageable pageable = PageRequest.of(page, size, getSort(sort));
+
+        return getReviewResponseSliceList(reviewRepository.findAllSliceByProductAndOption(product, productOption, pageable),
+                                            getConsumerOrNull());
+    }
+
+    private Sort getSort(Integer sort) {
         // 최신 순
         if (sort == 0) {
-            return findByProductAndOptionOrderByCreatedAtDesc(product, productOption, consumer, pageable);
+            return Sort.by("createdAt").descending();
         }
-
         // 별점 높은 순
         if (sort == 1) {
-            return findByProductAndOptionOrderByStarDesc(product, productOption, consumer, pageable);
+            return Sort.by("star").descending();
         }
-
         // 별점 낮은 순
         if (sort == 2) {
-            return findByProductAndOptionOrderByStarAsc(product, productOption, consumer, pageable);
+            return Sort.by("star").ascending();
         }
-
+        // 예외
         throw new CustomException(SORT_NOT_FOUND);
     }
-
-    // 옵션 전체 + 최신 순
-    private List<GetReviewResponse> findByProductOrderByCreatedAtDesc(Product product, Consumer consumer, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductOrderByCreatedAtDesc(product, pageable)
-                .stream().map(r -> GetReviewResponse.from(r, consumer))
-                .collect(Collectors.toList());
-    }
-
-    // 옵션 + 최신 순
-    private List<GetReviewResponse> findByProductAndOptionOrderByCreatedAtDesc(Product product, ProductOption productOption, Consumer consumer, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductOrderAndOptionByCreatedAtDesc(product, productOption, pageable)
-                .stream().map(r -> GetReviewResponse.from(r, consumer))
-                .collect(Collectors.toList());
-    }
-
-    // 옵션 전체 + 별점 높은 순
-    private List<GetReviewResponse> findByProductOrderByStarDesc(Product product, Consumer consumer, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductOrderByStarDesc(product, pageable)
-                .stream().map(r -> GetReviewResponse.from(r, consumer))
-                .collect(Collectors.toList());
-    }
-
-    // 옵션 + 별점 높은 순
-    private List<GetReviewResponse> findByProductAndOptionOrderByStarDesc(Product product, ProductOption productOption, Consumer consumer, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductOrderAndOptionByStarDesc(product, productOption, pageable)
-                .stream().map(r -> GetReviewResponse.from(r, consumer))
-                .collect(Collectors.toList());
-    }
-
-    // 옵션 전체 + 별점 낮은 순
-    private List<GetReviewResponse> findByProductOrderByStarAsc(Product product, Consumer consumer, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductOrderByStarAsc(product, pageable)
-                .stream().map(r -> GetReviewResponse.from(r, consumer))
-                .collect(Collectors.toList());
-    }
-
-    // 옵션 + 별점 낮은 순
-    private List<GetReviewResponse> findByProductAndOptionOrderByStarAsc(Product product, ProductOption productOption, Consumer consumer, Pageable pageable) {
-        return reviewRepository.findAllSliceByProductAndOptionOrderByStarAsc(product, productOption, pageable)
-                .stream().map(r -> GetReviewResponse.from(r, consumer))
-                .collect(Collectors.toList());
+    private SliceList<GetReviewResponse> getReviewResponseSliceList(Slice<Review> reviews, Consumer consumer) {
+        return SliceList.from(reviews.stream().map(r -> GetReviewResponse.from(r, consumer)).collect(Collectors.toList()),
+                reviews.getPageable(),
+                reviews.hasNext());
     }
 
     // 상품
@@ -128,14 +113,18 @@ public class ReviewService {
 
     // 상품 옵션
     private ProductOption findProductOptionById(Long productOptionId) {
-        return productOptionRepository.findById(productOptionId)
+        return productOptionRepository.findByIdAndStatusIsNotInactive(productOptionId)
                 .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_OPTION_NOT_FOUND));
     }
 
-    private void validateProductOption(ProductOption productOption, Long productId) {
-        if (productOption.getProduct().getId() != productId) {
+    private void validateProductOption(Product product, ProductOption productOption) {
+        if (productOption.getProduct().getId() != product.getId()) {
             throw new CustomException(PRODUCT_OPTION_MISMATCH);
         }
+    }
+
+    private Consumer getConsumer() {
+        return securityUtil.getConsumer();
     }
 
     private Consumer getConsumerOrNull() {

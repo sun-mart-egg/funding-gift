@@ -4,6 +4,7 @@ import com.d201.fundingift._common.entity.BaseTime;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.entity.ProductOption;
+import com.d201.fundingift.review.dto.request.PostReviewRequest;
 import com.d201.fundingift.review.entity.status.ReviewStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -63,6 +64,18 @@ public class Review extends BaseTime {
         this.product = product;
         this.productOption = productOption;
         this.consumer = consumer;
+    }
+
+    public static Review from(PostReviewRequest request, String image1, String image2, Product product, ProductOption productOption, Consumer consumer) {
+        return builder()
+                .star(request.getStar())
+                .content(request.getContent())
+                .image1(image1)
+                .image2(image2)
+                .product(product)
+                .productOption(productOption)
+                .consumer(consumer)
+                .build();
     }
 
 }
