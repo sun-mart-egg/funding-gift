@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 
 import Star from '/imgs/star.png';
 import Logo from '/imgs/logo.png';
+import ImageComingSoon from '/imgs/image_coming_soon.png'
 
-function ProductComponent({ categoryId, sort }) {
+import NoSearchResult from '/imgs/no_search_result.png'
+
+function ProductComponent({ categoryId, keyword, sort }) {
   console.log('ProductComponent 렌더링');
 
   const [products, setProducts] = useState([]);
@@ -29,17 +32,30 @@ function ProductComponent({ categoryId, sort }) {
     // Reset products when categoryId or sort changes
     setCurrentPage(0);
     setProducts([]);
-  }, [categoryId, sort]);
+  }, [categoryId, sort, keyword]);
 
   useEffect(() => {
     // Fetch products when currentPage changes
     loadProducts(currentPage);
-  }, [currentPage, categoryId, sort]);
+  }, [currentPage, categoryId, sort, keyword]);
+
+  const renderNoResultsMessage = () => {
+    if (!loading && products.length === 0) {
+      return (
+        <div className='w-full h-full text-center flex flex-col items-center' style={{ backgroundColor: '#FFFBE8' }}>
+          <p className='text-4xl font-cusFont4 pt-[30px]'>검색 결과가 없습니다.</p>
+          <img src={NoSearchResult} className='w-[90%] h-auto'></img>
+        </div>
+
+      )
+    }
+    return null;
+  };
 
   const loadProducts = async (page) => {
     setLoading(true);
     try {
-      const response = await fetch(`https://j10d201.p.ssafy.io/api/products?category-id=${categoryId}&page=${page}&size=10&sort=${sort}`);
+      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/products?category-id=${categoryId}&keyword=${keyword}&page=${page}&size=10&sort=${sort}`);
       const json = await response.json();
       if (json.code === 200 && json.data) {
         // 현재 페이지가 0인 경우 새 데이터 설정, 그 외에는 기존 데이터에 추가
@@ -63,7 +79,7 @@ function ProductComponent({ categoryId, sort }) {
     return num >= 1000 ? "999+" : num;
   };
 
-  
+
 
   return (
     <div className="mt-4 flex min-h-[63%] w-[95.5%] flex-grow flex-wrap justify-center overflow-y-auto bg-white font-cusfont2">
@@ -74,9 +90,10 @@ function ProductComponent({ categoryId, sort }) {
           className="m-2 h-[58.5%] w-[45%] flex-col rounded-md text-[12px]"
         >
           {/* 이미지 */}
-          <div className="h-[70%] w-[100%]">
+          <div className="h-[70%] w-[100%] text-center">
             <Link to={`/product/${product.productId}`}>
-              <img src={Logo} alt="" className="h-full w-full rounded-md border border-gray-300 shadow" />
+              <p className='font-cusFont4'>이미지 준비중입니다!</p>
+              <img src={ImageComingSoon} alt="" className="h-full w-full rounded-md border border-gray-300 shadow" />
             </Link>
           </div>
           {/* 상품 정보 */}
@@ -95,6 +112,7 @@ function ProductComponent({ categoryId, sort }) {
         </div>
       ))}
       {loading && <p>Loading more products...</p>}
+      {renderNoResultsMessage()} {/* 검색 결과가 없을 때 메시지 표시 */}
     </div>
   );
 }

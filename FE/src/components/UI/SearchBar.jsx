@@ -1,14 +1,8 @@
 import { useState, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 
-function SearchBar({ setKeyword, onSubmit, resetSearch }) {
+function SearchBar({ setKeyword, onSubmit }) {
   const [searchText, setSearchText] = useState("");
-
-  useEffect(() => {
-    if (resetSearch) {
-      setSearchText(""); // Reset searchText if resetSearch prop is true
-    }
-  }, [resetSearch]);
 
   const handleChange = (e) => {
     const { value } = e.target;
