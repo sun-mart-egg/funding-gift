@@ -1,18 +1,23 @@
 package com.d201.fundingift.consumer.service;
 
 import com.d201.fundingift._common.exception.CustomException;
+import com.d201.fundingift._common.jwt.RedisJwtRepository;
 import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
+import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.dto.response.GetConsumerInfoByIdResponse;
 import com.d201.fundingift.consumer.dto.response.GetConsumerMyInfoResponse;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -20,13 +25,15 @@ import static com.d201.fundingift._common.response.ErrorType.USER_NOT_FOUND;
 import static com.d201.fundingift._common.response.ErrorType.USER_UNAUTHORIZED;
 
 @Service
+@Slf4j
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ConsumerService {
 
     private final ConsumerRepository consumerRepository;
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private final RedisJwtRepository redisJwtRepository;
+    private final SecurityUtil securityUtil;
+    private final RestTemplate restTemplate;
 
     // 회원가입
     @Transactional
@@ -44,11 +51,11 @@ public class ConsumerService {
 
     // socialId로 회원 찾기.
     public Optional<Consumer> findBySocialId(String socialId) {
-        return consumerRepository.findBySocialId(socialId);
+        return consumerRepository.findBySocialIdAndDeletedAtIsNull(socialId);
     }
 
     private Consumer findById(Long id) {
-        return consumerRepository.findById(id)
+        return consumerRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow((() -> new CustomException(USER_NOT_FOUND)));
     }
 
@@ -72,24 +79,46 @@ public class ConsumerService {
 
     // 소비자 프로필 조회
     public GetConsumerInfoByIdResponse getConsumerInfoById(Long consumerId) {
-        return GetConsumerInfoByIdResponse.from(consumerRepository.findById(consumerId)
+        return GetConsumerInfoByIdResponse.from(consumerRepository.findByIdAndDeletedAtIsNull(consumerId)
                 .orElseThrow((() -> new CustomException(USER_NOT_FOUND))));
     }
 
-    // 친구 목록 생성 (회원가입 시)
-    // 실제 서비스에서는 회원가입 로직과 연동되어야 합니다.
+    public void logoutUser() {
+        Long consumerId = Long.valueOf(securityUtil.getConsumer().getId());
+        String kakaoAccessToken = redisJwtRepository.getKakaoAccessToken(consumerId);
+        log.info("logoutUser: "+consumerId);
+        log.info("kakaoAccessToken: "+kakaoAccessToken);
 
-    // 친구 목록 조회
-    public Object getFriendsList(Integer page, Integer size, String sort, Boolean isFavorite) {
-        // 페이지네이션, 정렬, 즐겨찾기 필터 등을 적용하여 친구 목록 조회 로직 구현
-        return null;
+        // 1. 카카오 로그아웃 API 호출  전체 삭제인지?
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + kakaoAccessToken);
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity("https://kapi.kakao.com/v1/user/logout", entity, String.class);
+
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            // 에러 처리
+            throw new RuntimeException("Failed to logout from Kakao");
+        }
+
+        // 2. 로컬 로그아웃 처리: 토큰 무효화
+        // 레디스에서 해당 사용자의 액세스 토큰 및 리프레시 토큰 및 카카오 액세스 토큰 삭제
+        redisJwtRepository.deleteAccessToken(consumerId);
+        redisJwtRepository.deleteRefreshToken(consumerId);
+        redisJwtRepository.deleteKakaoAccessToken(consumerId);
+
     }
 
-        public void saveAccessToken(Long consumerId, String accessToken) {
-            redisTemplate.opsForValue().set("accessToken:" + consumerId, accessToken);
-        }
+    @Transactional
+    public void deleteConsumer(Long consumerId) {
+        log.info("Attempting to delete consumer with ID: {}", consumerId);
+        consumerRepository.findByIdAndDeletedAtIsNull(consumerId).ifPresentOrElse(
+                consumer -> {
+                    consumerRepository.delete(consumer);
+                    log.info("Deleted consumer with ID: {}", consumerId);
+                },
+                () -> log.warn("Consumer with ID: {} not found, cannot delete", consumerId)
+        );
+    }
 
-        public String getAccessToken(String consumerId) {
-            return redisTemplate.opsForValue().get("accessToken:" + consumerId);
-        }
 }

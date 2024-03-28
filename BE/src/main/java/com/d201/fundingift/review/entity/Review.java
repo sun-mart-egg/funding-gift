@@ -4,6 +4,7 @@ import com.d201.fundingift._common.entity.BaseTime;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.entity.ProductOption;
+import com.d201.fundingift.review.dto.request.PostReviewRequest;
 import com.d201.fundingift.review.entity.status.ReviewStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +17,7 @@ import org.hibernate.annotations.SQLDelete;
 @ToString
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE review set deleted_at = CONVERT_TZ(NOW(), 'UTC', 'Asia/Seoul') where review_id = ?")
+@SQLDelete(sql = "UPDATE review set deleted_at = DATE_ADD(NOW(), INTERVAL 9 HOUR) where review_id = ?")
 public class Review extends BaseTime {
 
     @Id
@@ -63,6 +64,18 @@ public class Review extends BaseTime {
         this.product = product;
         this.productOption = productOption;
         this.consumer = consumer;
+    }
+
+    public static Review from(PostReviewRequest request, String image1, String image2, Product product, ProductOption productOption, Consumer consumer) {
+        return builder()
+                .star(request.getStar())
+                .content(request.getContent())
+                .image1(image1)
+                .image2(image2)
+                .product(product)
+                .productOption(productOption)
+                .consumer(consumer)
+                .build();
     }
 
 }

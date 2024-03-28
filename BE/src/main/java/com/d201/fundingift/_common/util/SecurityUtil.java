@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 /*
  *  Security Context의 인증 객체로부터 다양한 정보를 뽑아서 제공하는 클래스
  */
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Component;
 public class SecurityUtil {
 
     private final ConsumerRepository consumerRepository;
-
     public Long getConsumerId() {
         return existConsumer(getConsumerIdOrElseThrow());
     }
@@ -26,7 +27,11 @@ public class SecurityUtil {
     }
 
     public Consumer getConsumerOrNull() {
-        return findConsumerById(getConsumerIdOrElseNull());
+        Long consumerId = getConsumerIdOrElseNull();
+        if (consumerId == null) {
+            return null;
+        }
+        return findConsumerById(consumerId);
     }
 
     private Long getConsumerIdOrElseThrow() {
@@ -46,7 +51,7 @@ public class SecurityUtil {
     }
 
     private Consumer findConsumerById(Long consumerId) {
-        return consumerRepository.findById(consumerId)
+        return consumerRepository.findByIdAndDeletedAtIsNull(consumerId)
                 .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
     }
 
