@@ -9,38 +9,42 @@ import axios from "axios";
 
 function MyFunding() {
   const navigate = useNavigate();
-  const [accessToken, setAccessToken] = useState("");
   const [buttonSelected, setButtonSelected] = useState(true);
   const [myFundings, setMyFundings] = useState([]); // API로부터 받은 데이터를 저장할 상태
-
-  const fetchMyFundings = async () => {
-    try {
-      const response = await axios.get(
-        import.meta.env.VITE_BASE_URL + "/api/fundings/my-fundings",
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          params: {
-            page: 0,
-            size: 8,
-          },
-          paramsSerializer: (params) => {
-            // 직접 쿼리 스트링을 구성
-            return `page=${params.page}&size=${params.size}&sort=createdAt&sort=DESC`;
-          },
-        },
-      );
-      setMyFundings(response.data.data.data);
-      console.log(response.data.data.data);
-    } catch (error) {
-      console.error("내가 만든 펀딩을 불러오는데 실패했습니다.", error);
-    }
-  };
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem("access-token");
-    setAccessToken(token);
+    if (!token) {
+      console.log("토큰이 존재하지 않습니다.");
+      setIsLoading(false); // 토큰이 없는 경우 로딩 상태를 해제합니다.
+      // 추가적으로 사용자를 로그인 페이지로 리다이렉트할 수 있습니다.
+      navigate("/login-page");
+      return;
+    }
+
+    const fetchMyFundings = async () => {
+      try {
+        const response = await axios.get(
+          import.meta.env.VITE_BASE_URL + "/api/fundings/my-fundings",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              page: 0,
+              size: 8,
+            },
+          },
+        );
+        setMyFundings(response.data.data.data);
+      } catch (error) {
+        console.error("내가 만든 펀딩을 불러오는데 실패했습니다.", error);
+      } finally {
+        setIsLoading(false); // 데이터 로딩이 끝났으므로 로딩 상태를 해제합니다.
+      }
+    };
+
     fetchMyFundings();
   }, []);
 
@@ -117,7 +121,13 @@ function MyFunding() {
         <SearchBar />
 
         {buttonSelected ? (
-          <CardList data={myFundings} />
+          myFundings.length === 0 ? (
+            <div className="m-1 flex flex-col items-center justify-start p-10 font-cusFont3 text-[20px]">
+              아직 만들어진 펀딩이 없습니다.{" "}
+            </div>
+          ) : (
+            <CardList data={myFundings} />
+          )
         ) : (
           <CardList data={data2} />
         )}
