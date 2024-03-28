@@ -95,7 +95,7 @@ public class FundingService {
     }
 
     private void findByConsumerId(Long consumerId){
-        consumerRepository.findById(consumerId)
+        consumerRepository.findByIdAndDeletedAtIsNull(consumerId)
                 .orElseThrow(() -> new CustomException(ErrorType.USER_NOT_FOUND));
     }
 

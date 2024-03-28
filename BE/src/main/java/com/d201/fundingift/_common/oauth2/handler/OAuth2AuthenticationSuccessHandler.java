@@ -1,6 +1,7 @@
 package com.d201.fundingift._common.oauth2.handler;
 
 import com.d201.fundingift._common.jwt.JwtUtil;
+import com.d201.fundingift._common.jwt.RedisJwtRepository;
 import com.d201.fundingift._common.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
 import com.d201.fundingift._common.oauth2.user.OAuth2Provider;
@@ -8,19 +9,18 @@ import com.d201.fundingift._common.oauth2.user.OAuth2UserUnlinkManager;
 import com.d201.fundingift._common.oauth2.util.CookieUtils;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.service.ConsumerService;
+import com.d201.fundingift.friend.service.FriendService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 
 import static com.d201.fundingift._common.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.MODE_PARAM_COOKIE_NAME;
@@ -35,6 +35,8 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final OAuth2UserUnlinkManager oAuth2UserUnlinkManager;
     private final JwtUtil jwtUtil;
     private final ConsumerService consumerService;
+    private final FriendService friendService;
+    private final RedisJwtRepository redisJwtRepository;
 
 
     @Override
@@ -45,7 +47,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         targetUrl = determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
-            logger.debug("Response has already been cimmitted. Unable to redirect to " + targetUrl);
+            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
         }
 
@@ -74,10 +76,11 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                     .build().toUriString();
         }
 
+        String socialId = principal.getUserInfo().getId();
+        Optional<Consumer> findMember = consumerService.findBySocialId(socialId) ;
+
         // 로그인 버튼 눌렀을 시
         if ("login".equalsIgnoreCase(mode)) {
-            // TODO: 리프레시 토큰 발급
-            // TODO: 리프레시 토큰 DB 저장
             log.info("email={}, name={}, nickname={}, profileUrl={}, accessToken={}",
                     principal.getUserInfo().getEmail(),
                     principal.getUserInfo().getName(),
@@ -86,35 +89,42 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                     principal.getUserInfo().getAccessToken()
             );
 
-            String socialId = principal.getUserInfo().getId();
-            Optional<Consumer> findMember = consumerService.findBySocialId(socialId);
-
-            // 가입 안 된 상태일 경우 -> 회원등록
+            // DB에 회원정보가 없을 경우 -> 회원등록
             if(findMember.isEmpty()){
                 Long consumerId = consumerService.saveOAuth2User(principal);
 
-                // Redis에 소비자ID, 카카오 액세스 토큰 저장.
-                consumerService.saveAccessToken(consumerId, principal.getUserInfo().getAccessToken());
+                // Access, Refresh 토큰 생성.
+                String accessToken = jwtUtil.createAccessToken(consumerId.toString());
+                String refreshToken = jwtUtil.createRefreshToken(consumerId.toString());
 
-                // 서비스 액세스 토큰 생성
-                // TODO: 리프레시 토큰 발급
-                // TODO: 리프레시 토큰 DB 저장
-                String accessToken = jwtUtil.createToken(consumerId.toString());
-                //String refreshToken = "test_refresh_token";
+                // Redis 에 Access, Refresh 토큰 저장.
+                redisJwtRepository.saveAccessToken(consumerId,accessToken);
+                redisJwtRepository.saveRefreshToken(consumerId,refreshToken);
 
-                // 회원가입 페이지로 리다이렉트(예정)
+                // Redis 에 kakaoAccess 토큰 저장.
+                redisJwtRepository.saveKakaoAccessToken(consumerId, principal.getUserInfo().getAccessToken());
+
+                // 친구 추가 실행 (동의 있을 때만 없을 때 예외처리)
+                friendService.getKakaoFriendsByConsumerId(consumerId);
+
+                // 회원가입 페이지로 리다이렉트
                 return UriComponentsBuilder.fromUriString(targetUrl)
                         .queryParam("access-token", accessToken)
                         .queryParam("consumer-id",consumerId)
-                        .queryParam("next-page","sign-in")
+                        .queryParam("next-page","sign-up")
                         .build().toUriString();
             } else {
                 // 가입 된 상태일 경우 -> 로그인
                 Long consumerId = findMember.get().getId();
-                String accessToken = jwtUtil.createToken(consumerId.toString());
 
-                // Redis에 소비자ID, 카카오 액세스 토큰 저장.
-                consumerService.saveAccessToken(consumerId, principal.getUserInfo().getAccessToken());
+                // Access, Refresh 토큰 생성.
+                String accessToken = jwtUtil.createAccessToken(consumerId.toString());
+
+                // Redis 에 Access 토큰 저장.
+                redisJwtRepository.saveAccessToken(consumerId,accessToken);
+
+                // Redis 에 카카오 액세스 토큰 저장.
+                redisJwtRepository.saveKakaoAccessToken(consumerId, principal.getUserInfo().getAccessToken());
 
                 // 메인 페이지로 리다이렉트
                 return UriComponentsBuilder.fromUriString(targetUrl)
@@ -126,17 +136,59 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
 
         } else if ("unlink".equalsIgnoreCase(mode)) {
-
+            // 회원 탈퇴
             String accessToken = principal.getUserInfo().getAccessToken();
             OAuth2Provider provider = principal.getUserInfo().getProvider();
+            Long consumerId = findMember.get().getId();
 
-            // TODO: DB 삭제
-            // TODO: 리프레시 토큰 삭제
-            oAuth2UserUnlinkManager.unlink(provider, accessToken);
+            log.info("Starting unlink process for consumerId: {}", consumerId);
+
+            try {
+                consumerService.deleteConsumer(consumerId);
+                log.info("Deleted consumer data for consumerId: {}", consumerId);
+            } catch (Exception e) {
+                log.error("Error deleting consumer data for consumerId: {}: {}", consumerId, e.getMessage());
+                // Handle the error appropriately
+            }
+
+            try {
+                oAuth2UserUnlinkManager.unlink(provider, accessToken);
+                log.info("Unlinked OAuth2 user for consumerId: {}", consumerId);
+            } catch (Exception e) {
+                log.error("Error unlinking OAuth2 user for consumerId: {}: {}", consumerId, e.getMessage());
+                // Handle the error appropriately
+            }
+
+            try {
+                redisJwtRepository.deleteAccessToken(consumerId);
+                log.info("Deleted access token for consumerId: {}", consumerId);
+            } catch (Exception e) {
+                log.error("Error deleting access token for consumerId: {}: {}", consumerId, e.getMessage());
+            }
+
+            try {
+                redisJwtRepository.deleteRefreshToken(consumerId);
+                log.info("Deleted refresh token for consumerId: {}", consumerId);
+            } catch (Exception e) {
+                log.error("Error deleting refresh token for consumerId: {}: {}", consumerId, e.getMessage());
+            }
+
+            try {
+                redisJwtRepository.deleteKakaoAccessToken(consumerId);
+                log.info("Deleted Kakao access token for consumerId: {}", consumerId);
+            } catch (Exception e) {
+                log.error("Error deleting Kakao access token for consumerId: {}: {}", consumerId, e.getMessage());
+            }
+
+            // 친구 목록 전부 삭제
+            friendService.deleteAllFriendsByConsumerId(consumerId);
+
+            log.info("Completed unlink process for consumerId: {}", consumerId);
 
             return UriComponentsBuilder.fromUriString(targetUrl)
                     .build().toUriString();
         }
+
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("error", "Login failed")

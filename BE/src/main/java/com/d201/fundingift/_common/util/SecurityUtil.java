@@ -18,7 +18,6 @@ import java.util.Optional;
 public class SecurityUtil {
 
     private final ConsumerRepository consumerRepository;
-
     public Long getConsumerId() {
         return existConsumer(getConsumerIdOrElseThrow());
     }
@@ -52,7 +51,7 @@ public class SecurityUtil {
     }
 
     private Consumer findConsumerById(Long consumerId) {
-        return consumerRepository.findById(consumerId)
+        return consumerRepository.findByIdAndDeletedAtIsNull(consumerId)
                 .orElseThrow(() -> new CustomException(ErrorType.CONSUMER_NOT_FOUND));
     }
 
