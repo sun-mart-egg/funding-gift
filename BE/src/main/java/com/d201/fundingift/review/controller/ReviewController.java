@@ -74,7 +74,7 @@ public class ReviewController {
     @GetMapping("")
     public SuccessResponse<SliceList<GetReviewResponse>> getReviews
             (@Schema(description = "상품 ID", example = "1") @RequestParam(required = true, name = "product-id") Long productId,
-             @Schema(description = "상품 옵션 ID", example = "1") @RequestParam(required = true, name = "product-option-id") Long productOptionId,
+             @Schema(description = "상품 옵션 ID", example = "1") @RequestParam(required = false, name = "product-option-id") Long productOptionId,
              @Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam(required = true, name = "page") Integer page,
              @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam(required = true, name = "size") Integer size,
              @Schema(description = """
@@ -98,6 +98,21 @@ public class ReviewController {
         log.info("[ReviewController.updateReview]");
         reviewService.updateReview(reviewId, request);
         return ResponseUtils.ok(UPDATE_REVIEW_SUCCESS);
+    }
+
+    @Operation(summary = "리뷰 삭제",
+            description = """
+                          리뷰를 삭제합니다. \n
+                          Path Variable로 review-id 넣어주세요.
+                          """)
+    @ApiResponse(responseCode = "200",
+            description = "성공",
+            useReturnTypeSchema = true)
+    @DeleteMapping("/{review-id}")
+    public SuccessResponse<Void> deleteReview(@PathVariable("review-id") Long reviewId) {
+        log.info("[ReviewController.deleteReview]");
+        reviewService.deleteReview(reviewId);
+        return ResponseUtils.ok(DELETE_REVIEW_SUCCESS);
     }
 
 }

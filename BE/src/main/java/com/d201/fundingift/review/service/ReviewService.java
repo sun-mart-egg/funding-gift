@@ -69,32 +69,57 @@ public class ReviewService {
     }
 
     public SliceList<GetReviewResponse> getReviews(Long productId, Long productOptionId, Integer page, Integer size, Integer sort) {
-        // 상품, 상품 옵션
+        // 소비자
+        Consumer consumer = getConsumerOrNull();
+
+        // 상품
         Product product = findProductById(productId);
-        ProductOption productOption = findProductOptionById(productOptionId);
-        // 상품 옵션이 상품과 매칭되는지 검사
-        validateProductOption(product, productOption);
 
         // 페이징 객체
         Pageable pageable = PageRequest.of(page, size, getSort(sort));
 
-        return getReviewResponseSliceList(reviewRepository.findAllSliceByProductAndOption(product, productOption, pageable),
-                                            getConsumerOrNull());
+        // 전체 옵션의 리뷰 반환
+        if (productOptionId == null) {
+            getReviewResponseSliceList(reviewRepository.findAllSliceByProduct(product, pageable), consumer);
+        }
+
+        // 상품 옵션
+        ProductOption productOption = findProductOptionById(productOptionId);
+
+        // 상품 옵션이 상품과 매칭되는지 검사
+        validateProductOption(product, productOption);
+
+        // 해당 옵션의 리뷰 반환
+        return getReviewResponseSliceList(reviewRepository.findAllSliceByProductAndOption(product, productOption, pageable), consumer);
     }
 
     @Transactional
     public void updateReview(Long reviewId, PutReviewRequest request) {
-        log.info("updateReview : {}", request.toString());
+        log.info("updateReview : {}", reviewId);
+        log.info(request.toString());
 
         Consumer consumer = getConsumer();
         Review review = findReviewById(reviewId);
         validateReviewAndConsumer(review, consumer); // 작성자 일치하는지 검사
 
-        int oldStar = review.getStar();
+        // 상품 - 별점 상태 업데이트
+        review.getProduct().updateReview(review.getStar(), request.getStar());
         // 수정하기
         review.update(request);
-        // 리뷰 - 별점 상태 업데이트
-        review.getProduct().updateReview(oldStar, request.getStar());
+    }
+
+    @Transactional
+    public void deleteReview(Long reviewId) {
+        log.info("deleteReview: {}", reviewId);
+
+        Consumer consumer = getConsumer();
+        Review review = findReviewById(reviewId);
+        validateReviewAndConsumer(review, consumer); // 작성자 일치하는지 검사
+
+        // 상품 - 별점 상태 업데이트
+        review.getProduct().deleteReview(review.getStar());
+        // 삭제하기
+        reviewRepository.delete(review);
     }
 
     private Sort getSort(Integer sort) {
