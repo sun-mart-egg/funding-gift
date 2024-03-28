@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class FriendDto {
-    private Long id;
-    private String uuid;
+    private Long id; // 카카오 소셜 ID
+    private Long consumerId; // 소비자 ID
     private Boolean favorite;
     @SerializedName("profile_nickname")
     private String profileNickname;
@@ -15,9 +15,9 @@ public class FriendDto {
     private String profileThumbnailImage;
 
     @Builder
-    public FriendDto(Long id, String uuid, Boolean favorite, String profileNickname, String profileThumbnailImage) {
+    public FriendDto(Long id,Long consumerId, Boolean favorite, String profileNickname, String profileThumbnailImage) {
         this.id = id;
-        this.uuid = uuid;
+        this.consumerId = consumerId;
         this.favorite = favorite;
         this.profileNickname = profileNickname;
         this.profileThumbnailImage = profileThumbnailImage;

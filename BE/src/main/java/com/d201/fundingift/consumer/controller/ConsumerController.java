@@ -1,8 +1,10 @@
 package com.d201.fundingift.consumer.controller;
 
+import com.d201.fundingift._common.jwt.JwtUtil;
 import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift._common.response.SuccessType;
+import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.dto.response.GetConsumerInfoByIdResponse;
 import com.d201.fundingift.consumer.dto.response.GetConsumerMyInfoResponse;
 import com.d201.fundingift.consumer.service.ConsumerService;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 public class ConsumerController {
 
     private final ConsumerService consumerService;
+    private final SecurityUtil securityUtil;
 
     // 현재 인증된 사용자의 정보 조회
     @Operation(summary = "소비자 내 정보 조회",
@@ -57,4 +60,12 @@ public class ConsumerController {
         return ResponseUtils.ok(consumerService.getConsumerInfoById(consumerId), SuccessType.GET_CONSUMER_INFO_SUCCESS); // 여기서 SuccessType은 상황에 맞게 조정
     }
 
+    // 로그아웃
+    @PostMapping("/logout")
+    public SuccessResponse<Void> postLogoutUser() {
+        log.info("ConsumerController.postLogoutUser");
+        consumerService.logoutUser();
+        // 로그아웃 성공 응답 반환
+        return ResponseUtils.ok(SuccessType.LOGOUT_SUCCESS);
+    }
 }
