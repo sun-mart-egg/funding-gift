@@ -87,6 +87,11 @@ public class ReviewController {
         return ResponseUtils.ok(reviewService.getReviews(productId, productOptionId, page, size, sort), GET_REVIEWS_BY_PRODUCT_SUCCESS);
     }
 
+    @Operation(summary = "리뷰 수정 (보류)",
+                description = "이미지 수정이 안 돼서 보류합니다.")
+    @ApiResponse(responseCode = "200",
+            description = "성공",
+            useReturnTypeSchema = true)
     @PutMapping("/{review-id}")
     public SuccessResponse<Void> updateReview(@PathVariable("review-id") Long reviewId,
                                               @RequestBody PutReviewRequest request) {
