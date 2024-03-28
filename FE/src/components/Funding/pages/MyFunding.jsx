@@ -9,6 +9,7 @@ import axios from "axios";
 
 function MyFunding() {
   const navigate = useNavigate();
+  const [accessToken, setAccessToken] = useState("");
   const [buttonSelected, setButtonSelected] = useState(true);
   const [myFundings, setMyFundings] = useState([]); // API로부터 받은 데이터를 저장할 상태
 
@@ -18,7 +19,7 @@ function MyFunding() {
         import.meta.env.VITE_BASE_URL + "/api/fundings/my-fundings",
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2NyIsImlhdCI6MTcxMTYxMzgyMiwiZXhwIjoxNzExNzkzODIyfQ.Uqx-YSlRiI6Buiqdeh43Qel7F-hEbuKRxnmD-qQolBKbl8lX1CwGJ52NoAN3MPiKv71BJUzfLlaUtEcaaGw_WQ`,
+            Authorization: `Bearer ${accessToken}`,
           },
           params: {
             page: 0,
@@ -38,6 +39,8 @@ function MyFunding() {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("access-token");
+    setAccessToken(token);
     fetchMyFundings();
   }, []);
 
