@@ -89,10 +89,9 @@ function ProductComponent({ categoryId, keyword, sort }) {
           className="m-2 h-[58.5%] w-[45%] flex-col rounded-md text-[12px]"
         >
           {/* 이미지 */}
-          <div className="h-[70%] w-[100%] text-center">
+          <div className="w-full relative pt-[100%] rounded-md"> {/* paddingTop is same as width to maintain 1:1 aspect ratio */}
             <Link to={`/product/${product.productId}`}>
-              <p className='font-cusFont4'>이미지 준비중입니다!</p>
-              <img src={ImageComingSoon} alt="" className="h-full w-full rounded-md border border-gray-300 shadow" />
+              <img src={product.imgUrl || ImageComingSoon} alt="" className="absolute top-0 left-0 w-[100%] h-[100%] object-cover rounded-md"/>
             </Link>
           </div>
           {/* 상품 정보 */}
