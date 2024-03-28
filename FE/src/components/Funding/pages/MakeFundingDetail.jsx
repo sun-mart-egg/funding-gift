@@ -1,11 +1,15 @@
-import React, { useState, useRef, forwardRef } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate 사용
+import React, { useState, useRef, forwardRef, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom"; // useNavigate 사용
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import egg from "/imgs/egg3.jpg";
 import { useStore } from "../../Store/MakeStore";
+import useFormDataStore from "../../Store/FormDataStore";
+import { createFunding } from "../api/CreateFundingAPI";
 
 function MakeFundingDetail() {
+  const [searchParams] = useSearchParams();
+
   const {
     contentIndex,
     setContentIndex,
@@ -13,24 +17,12 @@ function MakeFundingDetail() {
     selectedAddress,
     selectedAccount,
   } = useStore(); // Zustand에서 상태를 가져옵니다.
+
+  const { formData, updateFormData } = useFormDataStore();
+
   const navigate = useNavigate(); // useNavigate 훅 사용
   const [showDatePicker, setShowDatePicker] = useState(false);
   const ref = useRef(null); // DatePicker에 대한 ref를 생성합니다.
-
-  // 사용자 입력 데이터를 상태로 관리
-  const [formData, setFormData] = useState({
-    bestFriend: false,
-    title: "",
-    fundingIntro: "",
-    anniversary:
-      selectedAnniversary == null ? "" : selectedAnniversary.anniversary,
-    startDate: null,
-    endDate: null,
-    minMoney: "",
-    address: selectedAddress == null ? "" : selectedAddress.address,
-    account: selectedAccount == null ? "" : selectedAccount.account,
-    bank: selectedAccount == null ? "" : selectedAccount.bank,
-  });
 
   const CustomInput = forwardRef(({ value, onClick }, ref) => (
     <button
@@ -42,26 +34,46 @@ function MakeFundingDetail() {
     </button>
   ));
 
-  // 다음 컨텐츠를 보여주는 함수
-  const handleNext = () => {
-    console.log(`Current Index: ${contentIndex}`); // 상태 변화 추적
-    if (contentIndex < 4) {
-      setContentIndex(contentIndex + 1); // 상태 업데이트
-    } else {
-      //펀딩 만드는 api 연결 필요
+  useEffect(() => {
+    async function getTokens() {
+      const accessToken = await searchParams.get("access-token");
+    }
+    if (selectedAnniversary) {
+      updateFormData("anniversaryDate", selectedAnniversary.anniversaryDate);
+    }
+    if (selectedAccount) {
+      updateFormData("accountBank", selectedAccount.accountBank);
+      updateFormData("accountNo", selectedAccount.accountNo);
+    }
+    if (selectedAddress) {
+      updateFormData("phoneNumber", selectedAddress.phoneNumber);
+      updateFormData("defaultAddr", selectedAddress.defaultAddr);
+      updateFormData("detailAddr", selectedAddress.detailAddr);
+      updateFormData("zipCode", selectedAddress.zipCode);
+    }
+  }, [selectedAnniversary, selectedAccount, updateFormData]);
 
-      // 마지막 페이지에서 "다음" 버튼을 누르면 MakeFundingFinish로 라우트
-      navigate("/make-funding-finish");
+  // 다음 컨텐츠를 보여주는 함수
+  const handleNext = async () => {
+    if (contentIndex < 4) {
+      setContentIndex(contentIndex + 1);
+    } else {
+      try {
+        const token = "";
+        const result = await createFunding(formData, token);
+        console.log("Response from the server:", result);
+        navigate("/make-funding-finish");
+      } catch (error) {
+        console.error("Failed to create funding:", error);
+      }
     }
   };
 
   // 이전 컨텐츠를 보여주는 함수
   const handlePrev = () => {
-    console.log(`Current Index: ${contentIndex}`); // 상태 변화 추적
     if (contentIndex > 0) {
       setContentIndex(contentIndex - 1); // 상태 업데이트
     } else {
-      //펀딩 만드는 api 연결 필요
       setContentIndex(0);
     }
   };
@@ -69,18 +81,21 @@ function MakeFundingDetail() {
   // 폼 데이터를 처리하는 함수
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const updatedValue =
+      name === "minPrice"
+        ? parseInt(value, 10) || 0
+        : type === "checkbox"
+          ? checked
+          : value;
+    updateFormData(name, updatedValue);
   };
 
   // 날짜 범위 변경 핸들러
   const handleDateChange = (dates) => {
     const [start, end] = dates;
-    setFormData({ ...formData, startDate: start, endDate: end });
+    updateFormData("startDate", start);
+    updateFormData("endDate", end);
   };
-
   const getFormattedDate = (date) => {
     if (!date) return "";
 
@@ -116,12 +131,12 @@ function MakeFundingDetail() {
         return (
           <div className="text-md flex flex-col  justify-center ">
             <div id="card-content">
-              <div id="is-bestfriend" className="mb-6 flex">
+              <div id="is-isPrivate" className="mb-6 flex">
                 <p className="mr-4 ">친한친구에게만 공개하기</p>
                 <input
                   type="checkbox"
-                  name="bestFriend"
-                  checked={formData.bestFriend}
+                  name="isPrivate"
+                  checked={formData.isPrivate}
                   onChange={handleInputChange}
                   className="p-4"
                 />
@@ -131,7 +146,7 @@ function MakeFundingDetail() {
                 <input
                   type="text"
                   name="title"
-                  value={formData.title}
+                  value={formData.title || ""}
                   placeholder="펀딩 제목을 입력해 주세요."
                   onChange={handleInputChange}
                   className="mt-2 h-7 w-full rounded-md border  border-gray-400 p-2 text-xs placeholder:text-xs"
@@ -141,8 +156,8 @@ function MakeFundingDetail() {
                 <p>펀딩 소개</p>
                 <textarea
                   type="text"
-                  name="intro"
-                  value={formData.intro}
+                  name="content"
+                  value={formData.content || ""}
                   onChange={handleInputChange}
                   placeholder="펀딩에 대해 소개해 주세요."
                   className="mt-2 w-full rounded-md border  border-gray-400 p-2 text-xs placeholder:text-xs"
@@ -155,7 +170,7 @@ function MakeFundingDetail() {
         return (
           <div className="text-md flex flex-col  justify-center">
             <div id="card-content">
-              <div id="anniversary" className="mb-6 ">
+              <div id="anniversaryDate" className="mb-6 ">
                 <div className=" flex justify-between">
                   <p>기념일</p>
                   <button
@@ -170,9 +185,9 @@ function MakeFundingDetail() {
                     <div>
                       <div className="flex">
                         <p className="mb-1 mr-1">{selectedAnniversary.name}</p>
-                        <p>{selectedAnniversary.anniversary}</p>
+                        <p>{selectedAnniversary.anniversaryName}</p>
                       </div>
-                      <p>{selectedAnniversary.date}</p>
+                      <p>{selectedAnniversary.anniversaryDate}</p>
                     </div>
                   )}
                 </div>
@@ -207,11 +222,11 @@ function MakeFundingDetail() {
               <div className="mb-6">
                 <p>최소금액</p>
                 <input
-                  type="text"
-                  name="minMoney"
-                  value={formData.minMoney}
+                  type="number"
+                  name="minPrice"
+                  value={formData.minPrice || ""}
                   placeholder="최소 금액을 입력해주세요."
-                  className="mt-2 h-7 w-full rounded-md border  border-gray-400 p-2 text-xs placeholder:text-xs"
+                  className="mt-2 h-7 w-full rounded-md border border-gray-400 p-2 text-xs placeholder:text-xs"
                   onChange={handleInputChange}
                 />
               </div>
@@ -241,8 +256,12 @@ function MakeFundingDetail() {
                         <p className="mb-1 mr-1">{selectedAddress.name}</p>
                         <p>{selectedAddress.nickname}</p>
                       </div>
-                      <p>{selectedAddress.phone}</p>
-                      <p>{selectedAddress.address}</p>
+                      <p>{selectedAddress.phoneNumber}</p>
+                      <div className="flex">
+                        <p className="mr-1">{selectedAddress.defaultAddr}</p>
+                        <p className="mr-1">{selectedAddress.detailAddr}</p>
+                        <p className="mr-1">{selectedAddress.zipCode}</p>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -265,8 +284,10 @@ function MakeFundingDetail() {
                     <div>
                       <p>{selectedAccount.name}</p>
                       <div className="flex">
-                        <p className="mb-1 mr-1">{selectedAccount.bank}</p>
-                        <p>{selectedAccount.account}</p>
+                        <p className="mb-1 mr-1">
+                          {selectedAccount.accountBank}
+                        </p>
+                        <p>{selectedAccount.accountNo}</p>
                       </div>
                     </div>
                   )}
@@ -277,27 +298,33 @@ function MakeFundingDetail() {
         );
 
       case 4:
+        console.log(formData);
         return (
           <div className="flex flex-col items-center justify-center text-[12px]">
             <img src={egg} alt="" className="mb-4 w-[50%]" />
             <p className="mb-1">고오급 계란</p>
             <p className="mb-1">
-              {formData.bestFriend
+              {formData.isPrivate
                 ? "친한 친구에게만 공개하기"
                 : "모두에게 공개하기"}
             </p>
             <p className="mb-1">{formData.title}</p>
-            <p className="mb-1">{formData.intro}</p>
-            <p className="mb-1">{formData.anniversary}</p>
+            <p className="mb-1">{formData.content}</p>
+            <p className="mb-1">{formData.anniversaryDate}</p>
             <p className="mb-1">
               {getFormattedDate(formData.startDate)} ~{" "}
               {getFormattedDate(formData.endDate)}
             </p>
 
-            <p className="mb-1">{formData.minMoney}</p>
-            <p className="mb-1">{formData.address}</p>
-            <p className="mb-1">{formData.bank}</p>
-            <p className="mb-1">{formData.account}</p>
+            <p className="mb-1">{formData.minPrice}</p>
+
+            <div className="mb-1 flex">
+              <p className="mr-1">{formData.defaultAddr} </p>
+              <p className="mr-1">{formData.detailAddr} </p>
+              <p className="mr-1">{formData.zipCode} </p>
+            </div>
+            <p className="mb-1">{formData.accountBank}</p>
+            <p className="mb-1">{formData.accountNo}</p>
           </div>
         );
     }

@@ -9,13 +9,20 @@ import Down from "/imgs/down.png";
 import SampleReview from "/imgs/samplereview.jpg";
 import ActivatedSmile from "/imgs/smile_activated.png";
 import DeactivatedSmile from "/imgs/smile_deactivated.png";
+import useFormDataStore from "../Store/FormDataStore";
 
 function ProductDetail() {
   const navigate = useNavigate();
   const reset = useStore((state) => state.reset); // reset 함수를 가져옵니다.
+  const resetFormData = useFormDataStore((state) => state.resetFormData);
+
+  const resetAll = () => {
+    reset(); // MakeStore의 상태를 초기화
+    resetFormData(); // FormDataStore의 상태를 초기화
+  };
 
   const handleClick = () => {
-    reset(); // 상태 초기화
+    resetAll(); // 상태 초기화
 
     navigate("/make-funding-detail");
   };
