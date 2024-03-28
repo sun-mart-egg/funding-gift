@@ -16,7 +16,8 @@ public class GetReviewResponse {
     private Long reviewId;
     private String optionName;
     private Boolean isMe;
-    private String writer;
+    private String writerName;
+    private String writerProfile;
     private Integer star;
     private String image1;
     private String image2;
@@ -25,11 +26,12 @@ public class GetReviewResponse {
     private String updatedAt;
 
     @Builder
-    private GetReviewResponse(Long reviewId, String optionName, Boolean isMe, String writer, Integer star, String image1, String image2, String content, String createdAt, String updatedAt) {
+    private GetReviewResponse(Long reviewId, String optionName, Boolean isMe, String writerName, String writerProfile, Integer star, String image1, String image2, String content, String createdAt, String updatedAt) {
         this.reviewId = reviewId;
         this.optionName = optionName;
         this.isMe = isMe;
-        this.writer = writer;
+        this.writerName = writerName;
+        this.writerProfile = writerProfile;
         this.star = star;
         this.image1 = image1;
         this.image2 = image2;
@@ -43,6 +45,8 @@ public class GetReviewResponse {
                 .reviewId(review.getId())
                 .optionName(review.getProductOption().getName())
                 .isMe(getIsMe(review.getConsumer(), consumer))
+                .writerProfile(review.getConsumer().getProfileImageUrl())
+                .writerName(review.getConsumer().getName())
                 .star(review.getStar())
                 .image1(review.getImage1())
                 .image2(review.getImage2())
