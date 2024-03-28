@@ -4,6 +4,7 @@ import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
 import com.d201.fundingift.attendance.service.AttendanceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
 
     @PostMapping
-    public SuccessResponse<Void> postFunding(@RequestBody PostAttendanceRequest postAttendanceRequest) {
+    public SuccessResponse<Void> postFunding(@RequestBody @Valid PostAttendanceRequest postAttendanceRequest) {
 
         attendanceService.postAttendance(postAttendanceRequest);
         return ResponseUtils.ok(POST_ATTENDANCE_SUCCESS);
