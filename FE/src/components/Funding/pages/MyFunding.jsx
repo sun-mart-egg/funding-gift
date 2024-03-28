@@ -143,39 +143,6 @@ function MyFunding() {
   );
 }
 
-let data = [
-  {
-    id: 0,
-    title: "GAME IS MY LIFE",
-    name: "닌텐도 스위치",
-    date: "2024.4.15 ~ 2024.4.22",
-    progress: 10,
-  },
-
-  {
-    id: 1,
-    title: "HEALTH IS MY LIFE",
-    name: "단백질 세트",
-    date: "2024.4.15 ~ 2024.4.22",
-    progress: 70,
-  },
-
-  {
-    id: 2,
-    title: "MUSIC IS MY LIFE",
-    name: "에어팟 맥스",
-    date: "2024.4.15 ~ 2024.4.22",
-    progress: 100,
-  },
-  {
-    id: 3,
-    title: "FOOD IS MY LIFE",
-    name: "고오급 케이크",
-    date: "2024.4.15 ~ 2024.4.22",
-    progress: 20,
-  },
-];
-
 let data2 = [
   {
     id: 0,

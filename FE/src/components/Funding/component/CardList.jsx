@@ -11,6 +11,7 @@ function CardList({ data }) {
           startDate={data.startDate}
           endDate={data.endDate}
           progress={0}
+          img={data.productImage}
         />
       ))}
     </div>
