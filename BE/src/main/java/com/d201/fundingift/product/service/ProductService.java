@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,100 +42,34 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    // 카테고리 별 상품 리스트 조회
-    public SliceList<GetProductResponse> getProductsByCategoryId(Integer categoryId, Integer page, Integer size, Integer sort) {
-        Pageable pageable = PageRequest.of(page, size);
+    // 상품 리스트 조회
+    public SliceList<GetProductResponse> getProducts(Integer categoryId, String keyword, Integer page, Integer size, Integer sort) {
+        // 페이징 객체
+        Pageable pageable = PageRequest.of(page, size, getSort(sort));
 
+        /**
+         * 전체 목록 조회
+         */
         if (categoryId == null) {
-            // 기본 순
-            if (sort == 0) {
-                return getProductResponseSliceList(findAll(pageable));
+            // 키워드 X
+            if (keyword == null) {
+                return getProductResponseSliceList(productRepository.findAllSlice(pageable));
             }
-
-            // 리뷰 많은 순
-            if (sort == 1) {
-                return getProductResponseSliceList(findAllOrderByReviewCntDesc(pageable));
-            }
-
-            // 평점 높은 순
-            if (sort == 2) {
-                return getProductResponseSliceList(findAllOrderByReviewAvgDesc(pageable));
-            }
-
-            // 가격 높은 순
-            if (sort == 3) {
-                return getProductResponseSliceList(findAllOrderByPriceDesc(pageable));
-            }
-
-            // 가격 낮은 순
-            if (sort == 4) {
-                return getProductResponseSliceList(findAllOrderByPriceAsc(pageable));
-            }
-
-            throw new CustomException(SORT_NOT_FOUND);
+            // 키워드 O
+            return getProductResponseSliceList(productRepository.findAllSliceByKeyword(keyword, pageable));
         }
 
-        validateCategoryId(categoryId);
+        /**
+         * 카테고리 별 목록 조회
+         */
+        validateCategoryId(categoryId); // 카테고리 유효성 검사
 
-        // 기본 순
-        if (sort == 0) {
-            return getProductResponseSliceList(findByCategoryId(categoryId, pageable));
+        // 키워드 X
+        if (keyword == null) {
+            return getProductResponseSliceList(productRepository.findAllSliceByCategoryId(categoryId, pageable));
         }
-
-        // 리뷰 많은 순
-        if (sort == 1) {
-            return getProductResponseSliceList(findByCategoryIdOrderByReviewCntDesc(categoryId, pageable));
-        }
-
-        // 평점 높은 순
-        if (sort == 2) {
-            return getProductResponseSliceList(findByCategoryIdOrderByReviewAvgDesc(categoryId, pageable));
-        }
-
-        // 가격 높은 순
-        if (sort == 3) {
-            return getProductResponseSliceList(findByCategoryIdOrderByPriceDesc(categoryId, pageable));
-        }
-
-        // 가격 낮은 순
-        if (sort == 4) {
-            return getProductResponseSliceList(findByCategoryIdOrderByPriceAsc(categoryId, pageable));
-        }
-
-        throw new CustomException(SORT_NOT_FOUND);
-    }
-
-    // 검색어 별 상품 리스트 조회
-    public SliceList<GetProductResponse> getProductsByKeyword(String keyword, Integer page, Integer size, Integer sort) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        // 기본 순
-        if (sort == 0) {
-            return getProductResponseSliceList(findByKeyword(keyword, pageable));
-        }
-
-        // 리뷰 많은 순
-        if (sort == 1) {
-            return getProductResponseSliceList(findByKeywordOrderByReviewCntDesc(keyword, pageable));
-        }
-
-        // 평점 높은 순
-        if (sort == 2) {
-            return getProductResponseSliceList(findByKeywordOrderByReviewAvgDesc(keyword, pageable));
-        }
-
-        // 가격 높은 순
-        if (sort == 3) {
-            return getProductResponseSliceList(findByKeywordOrderByPriceDesc(keyword, pageable));
-        }
-
-        // 가격 낮은 순
-        if (sort == 4) {
-            return getProductResponseSliceList(findByKeywordOrderByPriceAsc(keyword, pageable));
-        }
-
-        throw new CustomException(SORT_NOT_FOUND);
-
+        // 키워드 O
+        return getProductResponseSliceList(productRepository.findAllSliceByCategoryIdAndKeyword(categoryId, keyword, pageable));
     }
 
     // 상품 상세 조회
@@ -147,64 +82,30 @@ public class ProductService {
         return GetProductDetailResponse.from(product, options);
     }
 
-    private Slice<Product> findAll(Pageable pageable) {
-        return productRepository.findAllSlice(pageable);
-    }
-
-    private Slice<Product> findAllOrderByReviewCntDesc(Pageable pageable) {
-        return productRepository.findAllSliceOrderByReviewCntDesc(pageable);
-    }
-
-    private Slice<Product> findAllOrderByReviewAvgDesc(Pageable pageable) {
-        return productRepository.findAllSliceOrderByReviewAvgDesc(pageable);
-    }
-
-    private Slice<Product> findAllOrderByPriceDesc(Pageable pageable) {
-        return productRepository.findAllSliceOrderByPriceDesc(pageable);
-    }
-
-    private Slice<Product> findAllOrderByPriceAsc(Pageable pageable) {
-        return productRepository.findAllSliceOrderByPriceAsc(pageable);
-    }
-
-    private Slice<Product> findByCategoryId(Integer categoryId, Pageable pageable) {
-        return productRepository.findAllSliceByProductCategoryId(categoryId, pageable);
-    }
-
-    private Slice<Product> findByCategoryIdOrderByReviewCntDesc(Integer categoryId, Pageable pageable) {
-        return productRepository.findAllSliceByProductCategoryIdOrderByReviewCntDesc(categoryId, pageable);
-    }
-
-    private Slice<Product> findByCategoryIdOrderByReviewAvgDesc(Integer categoryId, Pageable pageable) {
-        return productRepository.findAllSliceByProductCategoryIdOrderByReviewAvgDesc(categoryId, pageable);
-    }
-
-    private Slice<Product> findByCategoryIdOrderByPriceDesc(Integer categoryId, Pageable pageable) {
-        return productRepository.findAllSliceByProductCategoryIdOrderByPriceDesc(categoryId, pageable);
-    }
-
-    private Slice<Product> findByCategoryIdOrderByPriceAsc(Integer categoryId, Pageable pageable) {
-        return productRepository.findAllSliceByProductCategoryIdOrderByPriceAsc(categoryId, pageable);
-    }
-
-    private Slice<Product> findByKeyword(String keyword, Pageable pageable) {
-        return productRepository.findAllSliceByKeyword(keyword, pageable);
-    }
-
-    private Slice<Product> findByKeywordOrderByReviewAvgDesc(String keyword, Pageable pageable) {
-        return productRepository.findAllSliceByKeywordOrderByReviewAvgDesc(keyword, pageable);
-    }
-
-    private Slice<Product> findByKeywordOrderByReviewCntDesc(String keyword, Pageable pageable) {
-        return productRepository.findAllSliceByKeywordOrderByReviewCntDesc(keyword, pageable);
-    }
-
-    private Slice<Product> findByKeywordOrderByPriceDesc(String keyword, Pageable pageable) {
-        return productRepository.findAllSliceByKeywordOrderByPriceDesc(keyword, pageable);
-    }
-
-    private Slice<Product> findByKeywordOrderByPriceAsc(String keyword, Pageable pageable) {
-        return productRepository.findAllSliceByKeywordOrderByPriceAsc(keyword, pageable);
+    // 정렬 객체
+    private Sort getSort(Integer sort) {
+        // 기본 순 (최신 순)
+        if (sort == 0) {
+            return Sort.by("id").descending();
+        }
+        // 리뷰 많은 순
+        if (sort == 1) {
+            return Sort.by("reviewCnt").descending();
+        }
+        // 평점 높은 순
+        if (sort == 2) {
+            return Sort.by("reviewAvg").descending();
+        }
+        // 가격 높은 순
+        if (sort == 3) {
+            return Sort.by("price").descending();
+        }
+        // 가격 낮은 순
+        if (sort == 4) {
+            return Sort.by("price").ascending();
+        }
+        // 예외
+        throw new CustomException(SORT_NOT_FOUND);
     }
 
     private SliceList<GetProductResponse> getProductResponseSliceList(Slice<Product> products) {
