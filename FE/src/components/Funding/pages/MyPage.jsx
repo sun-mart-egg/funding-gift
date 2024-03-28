@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import egg from "/imgs/egg3.jpg";
 import { IoLogOut } from "react-icons/io5";
 import { AiFillCamera } from "react-icons/ai";
+import axios from "axios";
+import { useNavigate } from "react-router";
 
 function MyPage() {
+  const navigate = useNavigate();
   // 상태: 사용자가 현재 수정 모드에 있는지 추적
   const [isEditMode, setIsEditMode] = useState(false);
   // 상태: 사용자 정보 (여기서는 이름만 사용)
@@ -26,6 +29,41 @@ function MyPage() {
   // 사용자 이름 변경 시 호출될 함수
   const handleNameChange = (event) => {
     setUserInfo({ ...userInfo, name: event.target.value });
+  };
+
+  // 로그아웃 로직
+  const logOut = () => {
+    // axios 요청
+    axios
+      .post(import.meta.env.VITE_BASE_URL + "/api/consumers/logout", null, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+        },
+      })
+
+      // 요청 성공시
+      .then((res) => {
+        console.log(res);
+        window.alert("로그아웃 했습니다.");
+        // console.log("로그아웃 했습니다.")
+        // 로컬 스토리지 초기화
+        localStorage.clear();
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error(err);
+        console.log("로그아웃 실패!");
+      });
+  };
+
+  // 회원탈퇴 관련 ( 카카오과의 연결을 끊음 )
+  const BYE_BYE_URL =
+    "https://j10d201.p.ssafy.io/oauth2/authorization/kakao?redirect_uri=http://localhost:5173&mode=unlink";
+  const signOut = () => {
+    localStorage.clear();
+    window.location.replace(BYE_BYE_URL);
+    window.alert("회원탈퇴 완료");
+    console.log("카카오측과의 연결을 끊었습니다.");
   };
 
   return (
@@ -88,7 +126,10 @@ function MyPage() {
               </p>
             </div>
           </div>
-          <button className="absolute bottom-16 right-[15%] pb-3 text-[12px] text-gray-300">
+          <button
+            className="absolute bottom-16 right-[15%] pb-3 text-[12px] text-gray-300"
+            onClick={signOut}
+          >
             회원 탈퇴
           </button>
           <div
@@ -113,7 +154,10 @@ function MyPage() {
               <p className="mr-1 px-2 font-cusFont5 text-[25px]">
                 {userInfo.name}
               </p>
-              <button className="flex flex-col items-center justify-center">
+              <button
+                className="flex flex-col items-center justify-center"
+                onClick={logOut}
+              >
                 <IoLogOut className="text-[25px]" />
                 <p className="text-[10px]">로그아웃</p>
               </button>
