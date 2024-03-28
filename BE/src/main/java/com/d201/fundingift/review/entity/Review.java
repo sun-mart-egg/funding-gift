@@ -16,7 +16,7 @@ import org.hibernate.annotations.SQLDelete;
 @ToString
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE review set deleted_at = CONVERT_TZ(NOW(), 'UTC', 'Asia/Seoul') where review_id = ?")
+@SQLDelete(sql = "UPDATE review set deleted_at = DATE_ADD(NOW(), INTERVAL 9 HOUR) where review_id = ?")
 public class Review extends BaseTime {
 
     @Id

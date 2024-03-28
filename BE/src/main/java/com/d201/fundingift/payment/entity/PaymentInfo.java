@@ -13,7 +13,7 @@ import org.hibernate.annotations.SQLDelete;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE payment_info set deleted_at = CONVERT_TZ(NOW(), 'UTC', 'Asia/Seoul') where payment_info_id = ?")
+@SQLDelete(sql = "UPDATE payment_info set deleted_at = DATE_ADD(NOW(), INTERVAL 9 HOUR) where payment_info_id = ?")
 public class PaymentInfo extends BaseTime {
 
     @Id
