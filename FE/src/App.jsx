@@ -30,6 +30,7 @@ import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
 import FundingMain from "./components/Funding/pages/FundingMain.jsx";
 import StoryPage from "./components/Funding/pages/StoryPage.jsx";
 import MyPage from "./components/Funding/pages/MyPage.jsx";
+
 function App() {
   return (
     <BrowserRouter>

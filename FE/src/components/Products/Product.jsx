@@ -13,6 +13,7 @@ import Categories7 from "/imgs/product_categories7.png";
 import Down from "/imgs/down.png";
 
 import ProductComponent from "./ProductComponent.jsx";
+import ScrollToTopButton from "../UI/ScrollToTop.jsx";
 
 function Product() {
 	const buttons = [
@@ -32,7 +33,6 @@ function Product() {
 	const [hasMore, setHasMore] = useState(true);
 
 	const handleSubmitSearch = () => {
-		setSearchSubmitted(true);
 	};
 
 	const observer = useRef();
@@ -104,28 +104,23 @@ function Product() {
 		const categoryIndex = id - 1;
 		const categoryMap = [' ', '1', '2', '3', '4', '5', '6'];
 		setCategoryId(categoryMap[categoryIndex]);
-		setSearchSubmitted(false);
-
 	};
 	useEffect(() => {
-		console.log(categoryId);
 	}, [categoryId]);
 
-
+  	// 토글 목록 보이기/숨기기 상태를 관리하는 state 변수 추가
+	const [toggleListVisible, setToggleListVisible] = useState(false);
 
 	const handleToggle = (selectedToggle) => {
 		setSelectedToggle(selectedToggle);
 		// 정렬 기준 업데이트
 		const sortMap = { "기본 순": "0", "리뷰 순": "1", "평점 순": "2", "가격 높은 순": "3", "가격 낮은 순": "4" };
 		setSort(sortMap[selectedToggle]);
+    setToggleListVisible(false);
 	};
 
 	useEffect(() => {
-		console.log(sort);
 	}, [sort]);
-
-	// 토글 목록 보이기/숨기기 상태를 관리하는 state 변수 추가
-	const [toggleListVisible, setToggleListVisible] = useState(false);
 
 	// 선택된 옵션을 관리하는 state 변수 추가
 	const [selectedToggle, setSelectedToggle] = useState("기본 순");
@@ -182,7 +177,7 @@ function Product() {
 							className="flex h-full w-full flex-col items-center"
 						>
 							<button
-								className={`flex h-[100%] w-[80%] items-center justify-center rounded-md 
+								className={`flex h-[100%] w-[80%] p-1 items-center justify-center rounded-md 
                   ${selectedButtonId === button.id && "bg-cusColor3"}`}
 								onClick={() => handleCategorySelection(button.id)}
 							>
@@ -214,9 +209,9 @@ function Product() {
 						</button>
 						{/* 토글 목록 */}
 						{toggleListVisible && (
-							<div className="absolute mt-2 flex-row rounded-md border border-gray-300 bg-white p-2 px-[15px] text-center text-[12px]">
+							<div className="absolute mt-2 w-[25%] flex-row rounded-md border border-gray-300 bg-white p-2 px-[15px] text-center text-[12px]">
 								<button
-									className="my-1 block w-full text-right"
+									className="my-1 block w-full text-center"
 									onClick={() => selectToggle("기본 순")}
 								>
 									<span
@@ -226,7 +221,7 @@ function Product() {
 									</span>
 								</button>
 								<button
-									className="my-1 block w-full text-right"
+									className="my-1 block w-full text-center"
 									onClick={() => selectToggle("리뷰 순")}
 								>
 									<span
@@ -236,7 +231,7 @@ function Product() {
 									</span>
 								</button>
 								<button
-									className="my-1 block w-full text-right"
+									className="my-1 block w-full text-center"
 									onClick={() => selectToggle("평점 순")}
 								>
 									<span
@@ -246,7 +241,7 @@ function Product() {
 									</span>
 								</button>
 								<button
-									className="my-1 block w-full text-right"
+									className="my-1 block w-full text-center"
 									onClick={() => selectToggle("가격 높은 순")}
 								>
 									<span
@@ -256,7 +251,7 @@ function Product() {
 									</span>
 								</button>
 								<button
-									className="my-1 block w-full text-right"
+									className="my-1 block w-full text-center"
 									onClick={() => selectToggle("가격 낮은 순")}
 								>
 									<span
@@ -272,6 +267,9 @@ function Product() {
 
 				{/* 물품 목록 */}
 				<ProductComponent categoryId={categoryId} keyword={keyword} sort={sort} />
+
+
+        <ScrollToTopButton />
 			</div>
 		</>
 	);

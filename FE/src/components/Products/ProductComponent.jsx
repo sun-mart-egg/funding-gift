@@ -8,7 +8,6 @@ import ImageComingSoon from '/imgs/image_coming_soon.png'
 import NoSearchResult from '/imgs/no_search_result.png'
 
 function ProductComponent({ categoryId, keyword, sort }) {
-  console.log('ProductComponent 렌더링');
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -99,12 +98,12 @@ function ProductComponent({ categoryId, keyword, sort }) {
           {/* 상품 정보 */}
           <div className="m-[1px] flex h-[30%] w-[100%] flex-col justify-center p-[10px] pl-2">
             <div>
-              <p>{product.productName}</p>
+              <p className='truncate'>{product.productName}</p>
               <p>{numberWithCommas(product.price)}원</p>
               <p className="flex items-center">
                 <img src={Star} alt="" className="h-[12px] w-[12px]" />
                 <span className="ml-1">
-                  {formatReviewNum(product.reviewCnt)}({product.reviewAvg})
+                  {formatReviewNum(product.reviewAvg)}({product.reviewCnt})
                 </span>
               </p>
             </div>
