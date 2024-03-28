@@ -5,7 +5,6 @@ import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift._common.response.SuccessType;
 import com.d201.fundingift.friend.dto.FriendDto;
 import com.d201.fundingift.friend.dto.response.GetKakaoFriendsResponse;
-import com.d201.fundingift.friend.entity.Friend;
 import com.d201.fundingift.friend.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,14 +36,8 @@ public class FriendController {
                     useReturnTypeSchema = true)
     })
     @GetMapping("/kakao")
-    public SuccessResponse<GetKakaoFriendsResponse> getKakaoFriendByAuthentication(Authentication authentication) {
-        GetKakaoFriendsResponse friendsResponse = friendService.getKakaoFriendByAuthentication(authentication);
-
-        // 로그에 친구의 닉네임 출력
-        for (FriendDto friend : friendsResponse.getElements()) {
-            log.info(friend.getProfileNickname());
-        }
-
+    public SuccessResponse<GetKakaoFriendsResponse> getKakaoFriendByAuthentication() {
+        GetKakaoFriendsResponse friendsResponse = friendService.getKakaoFriendByController();
         return ResponseUtils.ok(friendsResponse, SuccessType.GET_KAKAO_FRIEND_INFO_SUCCESS);
     }
 

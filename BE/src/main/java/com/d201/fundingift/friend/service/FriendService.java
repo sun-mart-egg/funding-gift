@@ -2,6 +2,7 @@ package com.d201.fundingift.friend.service;
 
 import com.d201.fundingift._common.jwt.JwtUtil;
 import com.d201.fundingift._common.jwt.RedisJwtRepository;
+import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import com.d201.fundingift.friend.dto.FriendDto;
@@ -19,7 +20,6 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.*;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
@@ -39,6 +39,7 @@ public class FriendService {
     private final ConsumerRepository consumerRepository;
     private final RedisJwtRepository redisJwtRepository;
     private final StringRedisTemplate stringRedisTemplate;
+    private final SecurityUtil securityUtil;
     private final JwtUtil jwtUtil;
 
     @PostConstruct
@@ -47,8 +48,8 @@ public class FriendService {
     }
     private static final String FRIENDS_LIST_SERVICE_URL = "https://kapi.kakao.com/v1/api/talk/friends";
 
-    public GetKakaoFriendsResponse getKakaoFriendByAuthentication(Authentication authentication) {
-        Long consumerId = Long.valueOf(jwtUtil.extractUserId(authentication));
+    public GetKakaoFriendsResponse getKakaoFriendByController() {
+        Long consumerId = Long.valueOf(securityUtil.getConsumerId());
         return getKakaoFriendsByConsumerId(consumerId);
     }
 
@@ -107,6 +108,11 @@ public class FriendService {
                     .totalCount(jsonResponse.get("total_count").getAsInt())
                     .favoriteCount(jsonResponse.get("favorite_count").getAsInt())
                     .build();
+
+            // 로그에 친구의 닉네임 출력
+            for (FriendDto friend : kakaoFriendsResponse.getElements()) {
+                log.info(friend.getProfileNickname());
+            }
 
             return kakaoFriendsResponse;
         } catch (HttpClientErrorException e) {

@@ -62,7 +62,7 @@ public class ConsumerController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public SuccessResponse<?> postLogoutUser() {
+    public SuccessResponse<Void> postLogoutUser() {
         log.info("ConsumerController.postLogoutUser");
         consumerService.logoutUser();
         // 로그아웃 성공 응답 반환
