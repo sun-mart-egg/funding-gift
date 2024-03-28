@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE consumer set deleted_at = CONVERT_TZ(NOW(), 'UTC', 'Asia/Seoul') where consumer_id = ?")
+@SQLDelete(sql = "UPDATE consumer set deleted_at = DATE_ADD(NOW(), INTERVAL 9 HOUR) where consumer_id = ?")
 public class Consumer extends BaseTime {
 
     @Id

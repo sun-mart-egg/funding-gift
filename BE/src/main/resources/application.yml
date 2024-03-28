@@ -37,6 +37,7 @@ spring:
               - profile_image
               - account_email
               - friends
+
             # redirect-uri: "http://localhost:8081/{action}/oauth2/code/{registrationId}" # 로컬 테스트 용
             redirect-uri: "https://j10d201.p.ssafy.io/{action}/oauth2/code/{registrationId}" # 배포 테스트 용
             client-name: Kakao
@@ -57,3 +58,16 @@ base-url: ${BASE_URL}
 
 jwt:
   secret: ${JWT_SECRET}
+
+cloud:
+  aws:
+    s3:
+      bucket: ${S3_BUCKET_NAME}
+    credentials:
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

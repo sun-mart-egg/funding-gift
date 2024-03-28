@@ -17,7 +17,7 @@ import java.util.List;
 @ToString
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE product_option set deleted_at = CONVERT_TZ(NOW(), 'UTC', 'Asia/Seoul') where product_option_id = ?")
+@SQLDelete(sql = "UPDATE product_option set deleted_at = DATE_ADD(NOW(), INTERVAL 9 HOUR) where product_option_id = ?")
 public class ProductOption extends BaseTime {
 
     @Id

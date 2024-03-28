@@ -57,6 +57,10 @@ dependencies {
 
 	// json
 	implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
+
+	// s3
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
 }
 
 tasks.named('test') {
