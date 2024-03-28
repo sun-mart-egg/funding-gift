@@ -10,7 +10,7 @@ function Card({ img, title, productName, startDate, endDate, progress }) {
       className="m-2 w-[45%] rounded-lg border-2 bg-white p-4 shadow-md"
     >
       <div className="product_img_div flex justify-center pb-2">
-        <img src={Egg} alt="" className="w-full" />
+        <img src={img} alt="" className="h-[200px]" />
       </div>
       <p className="product_title font-cusFont1 text-[14px]">{title}</p>
       <div className="h-[14px]">
