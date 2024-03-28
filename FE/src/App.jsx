@@ -29,7 +29,7 @@ import Home from "./components/Home/Home.jsx";
 import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
 import FundingMain from "./components/Funding/pages/FundingMain.jsx";
 import StoryPage from "./components/Funding/pages/StoryPage.jsx";
-
+import MyPage from "./components/Funding/pages/MyPage.jsx";
 import ProductDetailTemp from "./components/Products/ProductDetailTemp.jsx";
 
 function App() {
@@ -53,6 +53,7 @@ function App() {
             path="/friend-funding-detail"
             element={<FriendFundingDetail />}
           />
+          <Route path="/my-page" element={<MyPage />} />
 
           <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/make-funding-finish" element={<MakeFundingFinish />} />

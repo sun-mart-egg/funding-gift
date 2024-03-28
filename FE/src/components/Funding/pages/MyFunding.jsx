@@ -31,20 +31,22 @@ function MyFunding() {
         </div>
 
         <div id="rightSection" className="flex items-center space-x-0">
-          <div
+          <button
             id="friendButton"
             className="flex flex-col items-center space-y-1 p-2"
+            onClick={() => navigate("/friends")}
           >
             <BsPeopleFill size="20" />
             <p className="text-sm">친구</p>
-          </div>
-          <div
-            id="settingButton"
+          </button>
+
+          <button
+            onClick={() => navigate("/my-page")}
             className="flex flex-col items-center space-y-1 p-2"
           >
             <IoMdSettings size="20" />
             <p className="text-sm">설정</p>
-          </div>
+          </button>
         </div>
       </div>
       <div id="buttonSection" className="flex w-full justify-between  ">
