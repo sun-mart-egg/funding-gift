@@ -5,13 +5,45 @@ import CardList from "../component/CardList";
 import { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function MyFunding() {
   const navigate = useNavigate();
   const [buttonSelected, setButtonSelected] = useState(true);
+  const [myFundings, setMyFundings] = useState([]); // API로부터 받은 데이터를 저장할 상태
 
-  const handleClickButton = () => {
-    setButtonSelected(!buttonSelected);
+  const fetchMyFundings = async () => {
+    try {
+      const response = await axios.get(
+        import.meta.env.VITE_BASE_URL + "/api/fundings/my-fundings",
+        {
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2NyIsImlhdCI6MTcxMTYxMzgyMiwiZXhwIjoxNzExNzkzODIyfQ.Uqx-YSlRiI6Buiqdeh43Qel7F-hEbuKRxnmD-qQolBKbl8lX1CwGJ52NoAN3MPiKv71BJUzfLlaUtEcaaGw_WQ`,
+          },
+          params: {
+            page: 0,
+            size: 8,
+          },
+          paramsSerializer: (params) => {
+            // 직접 쿼리 스트링을 구성
+            return `page=${params.page}&size=${params.size}&sort=createdAt&sort=DESC`;
+          },
+        },
+      );
+      setMyFundings(response.data);
+      console.log("내가 만든 펀딩 데이터:", response.data);
+    } catch (error) {
+      console.error("내가 만든 펀딩을 불러오는데 실패했습니다.", error);
+    }
+  };
+
+  const handleClickButton = (e) => {
+    const buttonName = e.target.name;
+    setButtonSelected(buttonName === "myFunding");
+
+    if (buttonName === "myFunding") {
+      fetchMyFundings();
+    }
   };
 
   const handleCreateFundingClick = () => {
