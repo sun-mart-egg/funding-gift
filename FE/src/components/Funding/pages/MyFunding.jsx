@@ -2,7 +2,7 @@ import { BsPeopleFill } from "react-icons/bs";
 import { IoMdSettings } from "react-icons/io";
 import SearchBar from "../../UI/SearchBar";
 import CardList from "../component/CardList";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -30,12 +30,16 @@ function MyFunding() {
           },
         },
       );
-      setMyFundings(response.data);
-      console.log("내가 만든 펀딩 데이터:", response.data);
+      setMyFundings(response.data.data.data);
+      console.log(response.data.data.data);
     } catch (error) {
       console.error("내가 만든 펀딩을 불러오는데 실패했습니다.", error);
     }
   };
+
+  useEffect(() => {
+    fetchMyFundings();
+  }, []);
 
   const handleClickButton = (e) => {
     const buttonName = e.target.name;
@@ -91,7 +95,7 @@ function MyFunding() {
               : `w-3/6 border-b border-t border-cusColor3 p-4 text-xs`
           }
         >
-          내가 만든 펀딩 ({data.length})
+          내가 만든 펀딩 ({myFundings.length})
         </button>
         <button
           onClick={handleClickButton}
@@ -109,7 +113,11 @@ function MyFunding() {
       <div id="mainSection" className=" flex-center w-full flex-col p-4">
         <SearchBar />
 
-        {buttonSelected ? <CardList data={data} /> : <CardList data={data2} />}
+        {buttonSelected ? (
+          <CardList data={myFundings} />
+        ) : (
+          <CardList data={data2} />
+        )}
       </div>
       <button
         onClick={handleCreateFundingClick}
