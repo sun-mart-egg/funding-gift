@@ -100,4 +100,19 @@ public class ReviewController {
         return ResponseUtils.ok(UPDATE_REVIEW_SUCCESS);
     }
 
+    @Operation(summary = "리뷰 삭제",
+            description = """
+                          리뷰를 삭제합니다. \n
+                          Path Variable로 review-id 넣어주세요.
+                          """)
+    @ApiResponse(responseCode = "200",
+            description = "성공",
+            useReturnTypeSchema = true)
+    @DeleteMapping("/{review-id}")
+    public SuccessResponse<Void> deleteReview(@PathVariable("review-id") Long reviewId) {
+        log.info("[ReviewController.deleteReview]");
+        reviewService.deleteReview(reviewId);
+        return ResponseUtils.ok(DELETE_REVIEW_SUCCESS);
+    }
+
 }

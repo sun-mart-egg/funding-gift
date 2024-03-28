@@ -84,17 +84,31 @@ public class ReviewService {
 
     @Transactional
     public void updateReview(Long reviewId, PutReviewRequest request) {
-        log.info("updateReview : {}", request.toString());
+        log.info("updateReview : {}", reviewId);
+        log.info(request.toString());
 
         Consumer consumer = getConsumer();
         Review review = findReviewById(reviewId);
         validateReviewAndConsumer(review, consumer); // 작성자 일치하는지 검사
 
-        int oldStar = review.getStar();
+        // 상품 - 별점 상태 업데이트
+        review.getProduct().updateReview(review.getStar(), request.getStar());
         // 수정하기
         review.update(request);
-        // 리뷰 - 별점 상태 업데이트
-        review.getProduct().updateReview(oldStar, request.getStar());
+    }
+
+    @Transactional
+    public void deleteReview(Long reviewId) {
+        log.info("deleteReview: {}", reviewId);
+
+        Consumer consumer = getConsumer();
+        Review review = findReviewById(reviewId);
+        validateReviewAndConsumer(review, consumer); // 작성자 일치하는지 검사
+
+        // 상품 - 별점 상태 업데이트
+        review.getProduct().deleteReview(review.getStar());
+        // 삭제하기
+        reviewRepository.delete(review);
     }
 
     private Sort getSort(Integer sort) {
