@@ -54,6 +54,10 @@
     @apply relative flex h-screen max-w-[500px] flex-col items-center justify-center bg-white;
   }
 
+  .sub-title {
+    @apply flex justify-between pb-2 font-cusFont2 text-[18px];
+  }
+
   .header {
     @apply absolute top-0 z-10 flex h-full 
         max-h-[60px] w-full 
