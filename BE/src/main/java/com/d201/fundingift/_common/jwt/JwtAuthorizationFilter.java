@@ -61,14 +61,14 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
         logger.info("JwtAuthorizationFilter: Request processed");
 
+        // Todo : 리프레쉬 로직 작동 안 함. 신경 안 쓰는 중..
+
         // 토큰이 새롭게 발급되었다면, 해당 정보를 클라이언트에게 전달
         if (isTokenRefreshed) {
             response.addHeader("Access-Control-Expose-Headers", AUTHORIZATION_HEADER);
             logger.info("JwtAuthorizationFilter: New token added to response header");
         }
     }
-
-
 
     private String resolveToken(HttpServletRequest request) {
         String token = request.getHeader(AUTHORIZATION_HEADER);

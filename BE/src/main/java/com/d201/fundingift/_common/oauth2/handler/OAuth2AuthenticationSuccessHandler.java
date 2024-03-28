@@ -47,7 +47,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         targetUrl = determineTargetUrl(request, response, authentication);
 
         if (response.isCommitted()) {
-            logger.debug("Response has already been cimmitted. Unable to redirect to " + targetUrl);
+            logger.debug("Response has already been committed. Unable to redirect to " + targetUrl);
             return;
         }
 
@@ -77,8 +77,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         }
 
         String socialId = principal.getUserInfo().getId();
-        Optional<Consumer> findMember = consumerService.findBySocialId(socialId);
-
+        Optional<Consumer> findMember = consumerService.findBySocialId(socialId) ;
 
         // 로그인 버튼 눌렀을 시
         if ("login".equalsIgnoreCase(mode)) {
@@ -90,7 +89,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                     principal.getUserInfo().getAccessToken()
             );
 
-            // 가입 안 된 상태일 경우 -> 회원등록
+            // DB에 회원정보가 없을 경우 -> 회원등록
             if(findMember.isEmpty()){
                 Long consumerId = consumerService.saveOAuth2User(principal);
 
@@ -105,10 +104,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 // Redis 에 kakaoAccess 토큰 저장.
                 redisJwtRepository.saveKakaoAccessToken(consumerId, principal.getUserInfo().getAccessToken());
 
-                // 친구 추가 실행 (동의 있을 때만 없을 때 예외처리 해줘야함)
+                // 친구 추가 실행 (동의 있을 때만 없을 때 예외처리)
                 friendService.getKakaoFriendsByConsumerId(consumerId);
 
-                // 회원가입 페이지로 리다이렉트(예정)
+                // 회원가입 페이지로 리다이렉트
                 return UriComponentsBuilder.fromUriString(targetUrl)
                         .queryParam("access-token", accessToken)
                         .queryParam("consumer-id",consumerId)

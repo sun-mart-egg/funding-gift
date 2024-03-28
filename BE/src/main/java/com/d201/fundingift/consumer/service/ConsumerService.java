@@ -1,8 +1,6 @@
 package com.d201.fundingift.consumer.service;
 
 import com.d201.fundingift._common.exception.CustomException;
-import com.d201.fundingift._common.jwt.JwtRepository;
-import com.d201.fundingift._common.jwt.JwtUtil;
 import com.d201.fundingift._common.jwt.RedisJwtRepository;
 import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
 import com.d201.fundingift._common.util.SecurityUtil;
@@ -12,8 +10,6 @@ import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -55,11 +51,11 @@ public class ConsumerService {
 
     // socialId로 회원 찾기.
     public Optional<Consumer> findBySocialId(String socialId) {
-        return consumerRepository.findBySocialId(socialId);
+        return consumerRepository.findBySocialIdAndDeletedAtIsNull(socialId);
     }
 
     private Consumer findById(Long id) {
-        return consumerRepository.findById(id)
+        return consumerRepository.findByIdAndDeletedAtIsNull(id)
                 .orElseThrow((() -> new CustomException(USER_NOT_FOUND)));
     }
 
@@ -83,7 +79,7 @@ public class ConsumerService {
 
     // 소비자 프로필 조회
     public GetConsumerInfoByIdResponse getConsumerInfoById(Long consumerId) {
-        return GetConsumerInfoByIdResponse.from(consumerRepository.findById(consumerId)
+        return GetConsumerInfoByIdResponse.from(consumerRepository.findByIdAndDeletedAtIsNull(consumerId)
                 .orElseThrow((() -> new CustomException(USER_NOT_FOUND))));
     }
 
@@ -116,7 +112,7 @@ public class ConsumerService {
     @Transactional
     public void deleteConsumer(Long consumerId) {
         log.info("Attempting to delete consumer with ID: {}", consumerId);
-        consumerRepository.findById(consumerId).ifPresentOrElse(
+        consumerRepository.findByIdAndDeletedAtIsNull(consumerId).ifPresentOrElse(
                 consumer -> {
                     consumerRepository.delete(consumer);
                     log.info("Deleted consumer with ID: {}", consumerId);

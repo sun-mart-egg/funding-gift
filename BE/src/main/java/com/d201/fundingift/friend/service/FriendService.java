@@ -7,7 +7,7 @@ import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import com.d201.fundingift.friend.dto.FriendDto;
 import com.d201.fundingift.friend.dto.response.GetKakaoFriendsResponse;
 import com.d201.fundingift.friend.entity.Friend;
-import com.d201.fundingift.friend.repository.FriendRepository;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -15,7 +15,6 @@ import com.google.gson.reflect.TypeToken;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -39,7 +38,6 @@ public class FriendService {
 
     private final ConsumerRepository consumerRepository;
     private final RedisJwtRepository redisJwtRepository;
-    private final FriendRepository friendRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final JwtUtil jwtUtil;
 
@@ -47,7 +45,6 @@ public class FriendService {
     private void init() {
         hashOperations = redisTemplate.opsForHash();
     }
-
     private static final String FRIENDS_LIST_SERVICE_URL = "https://kapi.kakao.com/v1/api/talk/friends";
 
     public GetKakaoFriendsResponse getKakaoFriendByAuthentication(Authentication authentication) {
@@ -58,8 +55,7 @@ public class FriendService {
     public GetKakaoFriendsResponse getKakaoFriendsByConsumerId(Long consumerId) {
         log.info("사용자 ID는 : " + consumerId);
 
-        // 받아와서 입력 레디스
-        // 카카오 액세스 토큰 (데이터베이스에서 조회하는 로직으로 변경 필요)
+        // 카카오 액세스 토큰 가져오기
         String kakaoAccessToken = redisJwtRepository.getKakaoAccessToken(consumerId);
 
         try {
@@ -85,8 +81,9 @@ public class FriendService {
             Type listType = new TypeToken<List<FriendDto>>(){}.getType();
             List<FriendDto> friendList = gson.fromJson(jsonResponse.get("elements"), listType);
 
+            // Redis에 친구 추가.
             for (FriendDto f : friendList) {
-                consumerRepository.findBySocialId(f.getId().toString()).ifPresent(consumer -> {
+                consumerRepository.findBySocialIdAndDeletedAtIsNull(f.getId().toString()).ifPresent(consumer -> {
                     f.setConsumerId(consumer.getId());
                     Friend friend = Friend.builder()
                             .consumerId(consumerId)  // 이용자 ID
@@ -121,10 +118,7 @@ public class FriendService {
             }
             throw e; // 그 외의 경우 예외를 다시 발생시킵니다.
         }
-
-
     }
-
 
     public void saveFriend(Friend friend) {
         // consumerId와 toConsumerId를 조합하여 고유한 키 생성
@@ -136,6 +130,7 @@ public class FriendService {
 
         hashOperations.putAll(key, friendMap);
     }
+
     public List<FriendDto> getFriends(Long consumerId) {
         Set<String> keys = redisTemplate.keys("friend:" + consumerId + ":*");
         List<FriendDto> friendDtos = new ArrayList<>();
@@ -147,7 +142,7 @@ public class FriendService {
             Long toConsumerId = Long.valueOf((String) friendData.get("toConsumerId"));
             Boolean isFavorite = Boolean.valueOf((String) friendData.get("isFavorite"));
 
-            Optional<Consumer> consumerOptional = consumerRepository.findById(toConsumerId);
+            Optional<Consumer> consumerOptional = consumerRepository.findByIdAndDeletedAtIsNull(toConsumerId);
             // 기본값 설정
             String profileNickname = "Unknown";
             String profileThumbnailImage = "";
@@ -176,16 +171,17 @@ public class FriendService {
 
     @Transactional
     public void deleteAllFriendsByConsumerId(Long consumerId) {
+        // consumerId를 기반으로 모든 친구 관련 키 찾기
         Set<String> keys = stringRedisTemplate.keys("friend:" + consumerId + ":*");
         if (keys.isEmpty()) {
-            log.info("No friends found for consumerId: {}", consumerId);
+            // 해당 consumerId로 저장된 친구가 없는 경우
+            log.info("해당 consumerId({})로 저장된 친구가 없습니다.", consumerId);
             return;
         }
 
-        log.info("Deleting {} friends for consumerId: {}", keys.size(), consumerId);
+        // 찾은 키를 이용해 해당 사용자의 모든 친구 정보 삭제
+        log.info("consumerId({})에 대한 {}개의 친구 정보를 삭제합니다.", consumerId, keys.size());
         stringRedisTemplate.delete(keys);
-        log.info("Successfully deleted all friends for consumerId: {}", consumerId);
+        log.info("consumerId({})에 대한 모든 친구 정보가 성공적으로 삭제되었습니다.", consumerId);
     }
-
-
 }

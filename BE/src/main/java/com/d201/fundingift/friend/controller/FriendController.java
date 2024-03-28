@@ -46,8 +46,6 @@ public class FriendController {
             log.info(friend.getProfileNickname());
         }
 
-        // 친구 목록을 Redis에 저장하려면 여기에서 friendService.saveFriends를 호출합니다.
-        // 예: friendService.saveFriends(userId, friendList);
         return ResponseUtils.ok(friendsResponse, SuccessType.GET_KAKAO_FRIEND_INFO_SUCCESS);
     }
 
