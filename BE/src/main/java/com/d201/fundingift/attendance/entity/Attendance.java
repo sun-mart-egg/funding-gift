@@ -34,7 +34,7 @@ public class Attendance extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consumer_id", referencedColumnName = "consumer_id")
-    private Consumer consumer;
+    private Consumer consumer; //펀딩에 참여한 소비자
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "funding_id", referencedColumnName = "funding_id")
