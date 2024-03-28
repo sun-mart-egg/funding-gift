@@ -35,8 +35,10 @@ function MyFunding() {
             id="friendButton"
             className="flex flex-col items-center space-y-1 p-2"
           >
-            <BsPeopleFill size="20" />
-            <p className="text-sm">친구</p>
+            <button onClick={() => navigate("/friends")}>
+              <BsPeopleFill size="20" />
+              <p className="text-sm">친구</p>
+            </button>
           </div>
           <div
             id="settingButton"
