@@ -8,7 +8,6 @@ import ImageComingSoon from '/imgs/image_coming_soon.png'
 import NoSearchResult from '/imgs/no_search_result.png'
 
 function ProductComponent({ categoryId, keyword, sort }) {
-  console.log('ProductComponent 렌더링');
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -104,7 +103,7 @@ function ProductComponent({ categoryId, keyword, sort }) {
               <p className="flex items-center">
                 <img src={Star} alt="" className="h-[12px] w-[12px]" />
                 <span className="ml-1">
-                  {formatReviewNum(product.reviewCnt)}({product.reviewAvg})
+                  {formatReviewNum(product.reviewAvg)}({product.reviewCnt})
                 </span>
               </p>
             </div>
