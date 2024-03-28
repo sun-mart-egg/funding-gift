@@ -105,7 +105,7 @@ public class FundingService {
     }
 
     private ProductOption getProductOption(PostFundingRequest postFundingRequest) {
-        return productOptionRepository.findById(postFundingRequest.getProductOptionId())
+        return productOptionRepository.findByIdAndStatusIsActive(postFundingRequest.getProductOptionId())
                 .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_OPTION_NOT_FOUND));
     }
 
