@@ -30,7 +30,6 @@ import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
 import FundingMain from "./components/Funding/pages/FundingMain.jsx";
 import StoryPage from "./components/Funding/pages/StoryPage.jsx";
 import MyPage from "./components/Funding/pages/MyPage.jsx";
-import ProductDetailTemp from "./components/Products/ProductDetailTemp.jsx";
 
 function App() {
   return (
@@ -67,8 +66,6 @@ function App() {
           <Route path="/pay" element={<Paypage />} />
           <Route path="/wishlist/:userId" element={<Wishlist />} />
           <Route path="/brand/:brandId" element={<BrandStore />} />
-          {/* 삭제할예정 */}
-          <Route path="/producttemp/:productId" element={<ProductDetailTemp />} />
         </Route>
 
         <Route path="/login-callback" element={<LoginCallback />} />
