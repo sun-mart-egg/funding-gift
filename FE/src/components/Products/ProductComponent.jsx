@@ -98,7 +98,7 @@ function ProductComponent({ categoryId, keyword, sort }) {
           {/* 상품 정보 */}
           <div className="m-[1px] flex h-[30%] w-[100%] flex-col justify-center p-[10px] pl-2">
             <div>
-              <p>{product.productName}</p>
+              <p className='truncate'>{product.productName}</p>
               <p>{numberWithCommas(product.price)}원</p>
               <p className="flex items-center">
                 <img src={Star} alt="" className="h-[12px] w-[12px]" />
