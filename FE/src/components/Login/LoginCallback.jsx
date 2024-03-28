@@ -28,7 +28,7 @@ function LoginCallback() {
                 // nextPage의 값이 main이다 === 기존 회원
                 // 메인 페이지로 돌려보낸다.
                 if (nextPage === "main") {
-                    window.alert("이미 로그인 했습니다.")
+                    window.alert("이미 당신은 생선가게 회원😊")
                     return navigate("/")
                 }
 
