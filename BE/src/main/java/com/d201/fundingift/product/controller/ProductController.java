@@ -43,9 +43,9 @@ public class ProductController {
 
     @Operation(summary = "카테고리 별 상품 목록 조회",
             description = """
-                           카테고리 별 상품 목록을 조회합니다. 
-                           Query Parameter로 category-id, page, size, sort 넣어주세요. 
-                           category-id가 없으면 전체 목록을 조회합니다. 
+                           카테고리 별 상품 목록을 조회합니다. \n
+                           Query Parameter로 category-id, page, size, sort 넣어주세요. \n
+                           category-id가 없으면 전체 목록을 조회합니다. \n
                            결과로 data, page, size, hasNext를 반환합니다.
                            - data: 응답 데이터
                            - page: 현재 페이지 번호
@@ -77,7 +77,8 @@ public class ProductController {
 
     @Operation(summary = "키워드 별 상품 목록 조회",
             description = """
-                           키워드 별 상품 목록을 조회합니다. Query Parameter로 keyword, page, size, sort 넣어주세요. 
+                           키워드 별 상품 목록을 조회합니다. \n
+                           Query Parameter로 keyword, page, size, sort 넣어주세요. \n
                            결과로 data, page, size, hasNext를 반환합니다.
                            - data: 응답 데이터
                            - page: 현재 페이지 번호
