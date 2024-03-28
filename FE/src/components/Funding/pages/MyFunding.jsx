@@ -40,13 +40,14 @@ function MyFunding() {
               <p className="text-sm">친구</p>
             </button>
           </div>
-          <div
-            id="settingButton"
+
+          <button
+            onClick={() => navigate("/my-page")}
             className="flex flex-col items-center space-y-1 p-2"
           >
             <IoMdSettings size="20" />
             <p className="text-sm">설정</p>
-          </div>
+          </button>
         </div>
       </div>
       <div id="buttonSection" className="flex w-full justify-between  ">
