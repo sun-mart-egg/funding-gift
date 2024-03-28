@@ -67,7 +67,7 @@ function ProductDetail() {
 
   const handleFilterChange = (filter) => {
     setSelectedFilter(filter);
-  
+
     // Set reviewSort state based on selected filter
     switch (filter) {
       case "최신 순":
@@ -82,19 +82,24 @@ function ProductDetail() {
       default:
         setReviewSort(0); // Default case if none of the above
     }
-  
+
     setToggleListVisible(false); // Close the filter menu
   };
 
   // 댓글 정보 가져오기 API
   const [reviews, setReviews] = useState([]);
-  const [reviewOption, setReviewOption] = useState(1);
+  const [reviewOption, setReviewOption] = useState("");
   const [reviewSort, setReviewSort] = useState(0);
 
   useEffect(() => {
     const fetchReview = async () => {
       try {
-        const response = await fetch(`https://j10d201.p.ssafy.io/api/reviews?product-id=${productId}&product-option-id=${reviewOption}&page=0&size=10&sort=${reviewSort}`);
+        let url = `https://j10d201.p.ssafy.io/api/reviews?product-id=${productId}&page=0&size=10&sort=${reviewSort}`;
+        if (reviewOption !== null) {
+          url += `&product-option-id=${reviewOption}`;
+        }
+  
+        const response = await fetch(url);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -102,17 +107,37 @@ function ProductDetail() {
         if (json && json.data && json.data.data) {
           setReviews(json.data.data);
         } else {
-          // 여기서 적절한 처리를 해주면 됩니다.
           console.log("No review data available");
-          setReviews([]); // 예를 들어, 리뷰 데이터가 없으면 빈 배열을 설정
+          setReviews([]);
         }
       } catch (error) {
         console.error('Error fetching reviews:', error);
       }
     };
-
+  
     fetchReview();
   }, [productId, reviewOption, reviewSort]);
+
+  const [reviewOptionToggleVisible, setReviewOptionToggleVisible] = useState(false);
+
+  const getOptionNameById = (optionId) => {
+    // product가 존재하고 옵션이 있다면 해당 옵션의 이름을 반환합니다.
+    if (product && product.options) {
+      const option = product.options.find(option => option.id === optionId);
+      return option ? option.name : "";
+    }
+    return "";
+  };
+
+  const handleReviewOptionChange = (optionId) => {
+    // '전체' 옵션을 클릭했을 때 reviewOption을 null로 설정하여 모든 리뷰를 가져오도록 합니다.
+    if (optionId === "전체") {
+      setReviewOption(null);
+    } else {
+      setReviewOption(optionId);
+    }
+    setReviewOptionToggleVisible(false); // 토글 닫기
+  };
 
 
   return (
@@ -126,7 +151,7 @@ function ProductDetail() {
             <div className="mt-[70px]">
               {/* 이미지 들어갈 영역 */}
               <div className="flex h-[400px] w-[100%] justify-center mt-[30px] border-b-[2px] border-b-cusColor3">
-                <img src={SampleImage} alt="" className="max-h-full max-w-full" />
+                <img src={product.imageUrl} alt="" className="max-h-full max-w-full" />
               </div>
 
               {/* 이미지 하단 영역 */}
@@ -197,16 +222,46 @@ function ProductDetail() {
                   <div>
                     <span className="text-base">선물 후기 ({product.reviewCnt})</span>
                   </div>
-                  <div className="relative w-[40%] text-right">
+                  <div className="ml-[25%] flex relative w-[25%] text-right">
                     <button
-                      className="flex w-[100%] items-center justify-end  rounded-md text-right text-base"
+                      className="flex w-[100%] justify-end rounded-md text-base"
+                      onClick={() => setReviewOptionToggleVisible(!reviewOptionToggleVisible)}
+                    >
+                      {getOptionNameById(reviewOption) || "전체"}
+                      <img src={Down} alt="" className="mt-[5px] ml-[5px] h-4 w-4 invert" />
+                    </button>
+                    {reviewOptionToggleVisible && (
+                      <div className="absolute right-0 top-full w-[100%] rounded-md border border-gray-300 bg-white p-2 px-[3%] text-center text-xs">
+                        {/* Option for '전체' */}
+                        <p
+                          className={`${reviewOption === "" ? "bg-cusColor3 text-white" : ""} mb-1`}
+                          onClick={() => handleReviewOptionChange("")}
+                        >
+                          전체
+                        </p>
+                        {/* List of Product Options */}
+                        {product.options.map((option) => (
+                          <p
+                            key={option.id}
+                            className={`${reviewOption === option.id ? "bg-cusColor3 text-white" : ""} mb-1`}
+                            onClick={() => handleReviewOptionChange(option.id)}
+                          >
+                            {option.name}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className="relative w-[25%] text-right flex justify-center">
+                    <button
+                      className="flex w-[100%] justify-center  rounded-md text-right text-base"
                       onClick={toggleListVisibility}
                     >
                       {selectedFilter}
                       <img
                         src={Down}
                         alt=""
-                        className="ml-[5px] h-[14px] w-[10%] invert"
+                        className="mt-[5px] ml-[5px] h-[14px] w-[15%] invert"
                       />
                     </button>
                     {toggleListVisible && (
