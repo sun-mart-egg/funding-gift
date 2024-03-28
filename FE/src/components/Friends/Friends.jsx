@@ -8,9 +8,10 @@ import fish from "/imgs/fish.PNG"
 import axios from "axios";
 
 function Friends() {
-  const [isSearch, setIsSearch] = useState(false);
-  const [isFilter, setIsFilter] = useState(false);
-  const [friends, setFriends] = useState([])
+  const [isSearch, setIsSearch] = useState(false); // 검색창 on/off
+  const [isFilter, setIsFilter] = useState(false); // 필터창 on/off
+  const [friends, setFriends] = useState([]) // 친구목록 받아올 배열
+  const [userInput, setUserInput] = useState("") // 친구이름 검색
 
   const searchState = () => {
     setIsSearch((prevSearch) => !prevSearch);
@@ -18,6 +19,16 @@ function Friends() {
   const filterState = () => {
     setIsFilter((prevFilter) => !prevFilter);
   };
+
+  // 친구 이름 검색 입력에 대한 함수
+  const handleInput = (event) => {
+    setUserInput(event.target.value)
+  }
+
+  // 검색한 단어로 친구 찾기 (검색 필터링)
+  const filteredFriends = friends.filter((friend) => (
+    friend.profileNickname.includes(userInput)
+  ))
 
   // 카카오톡 친구목록 불러오는 api
   useEffect(() => {
@@ -38,8 +49,8 @@ function Friends() {
   }, [])
 
   return (
-    <div className="sub-layer top-[40px] justify-start">
-      <div className="flex flex-row justify-between w-full ">
+    <div className="justify-start sub-layer">
+      <div className="absolute flex flex-row justify-between w-full top-[40px]">
         <div className="flex flex-row items-center p-3 ">
           <p className=" p-2.5 font-cusFont3 text-lg font-bold">친구 {friends.length}</p>
           <button>
@@ -51,7 +62,9 @@ function Friends() {
           {isSearch ? (
             <input
               type="text"
-              className=" m-1 h-[25px] w-[160px] rounded-[10px] border border-cusColor3"
+              className=" m-1 p-2 h-[25px] w-[220px] rounded-[10px] border border-cusColor3"
+              value={userInput}
+              onChange={handleInput}
             />
           ) : (
             ""
@@ -71,9 +84,9 @@ function Friends() {
         </div>
       </div>
 
-      <div className='max-w-[500px] w-full h-full flex flex-col items-center justify-start'>
+      <div className='max-w-[500px] w-full max-h-[615px] h-full flex flex-col items-center justify-start top-[90px] fixed'>
         <div className="w-full h-full gap-3 overflow-y-scroll">
-          {friends.map((friend, index) => (
+          {filteredFriends.map((friend, index) => (
             <div key={index} className='flex flex-row items-center justify-between gap-3 m-2'>
               <div className='flex flex-row items-center gap-3'>
                 <img src={friend.profileThumbnailImage === "" ? fish : friend.profileThumbnailImage} alt="카톡프사" className='w-[100px] h-[100px] rounded-lg' />
