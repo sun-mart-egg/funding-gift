@@ -80,7 +80,7 @@ public class ReviewService {
 
         // 전체 옵션의 리뷰 반환
         if (productOptionId == null) {
-            getReviewResponseSliceList(reviewRepository.findAllSliceByProduct(product, pageable), consumer);
+            return getReviewResponseSliceList(reviewRepository.findAllSliceByProduct(product, pageable), consumer);
         }
 
         // 상품 옵션
