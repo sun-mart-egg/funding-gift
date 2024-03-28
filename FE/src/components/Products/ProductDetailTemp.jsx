@@ -27,7 +27,7 @@ function ProductDetailTemp() {
     params: productId,
     option: selectedOption,
   };
-  
+
   const handleClick = () => {
     if (selectedOption === null) {
       alert('옵션을 선택해주세요!');
@@ -248,20 +248,17 @@ function ProductDetailTemp() {
                       </div>
 
                       {/* 리뷰 이미지 */}
-                      {review.images1 && (
+                      {review.image1 && (
                         <div className="my-[20px] flex w-full">
-                          {review.images.map((image, index) => (
-                            <div
-                              key={index}
-                              className={`mx-[2.5%] h-[150px] w-[45%] rounded-md bg-gray-300`}
-                            >
-                              <img
-                                src={image}
-                                alt={`Review Image ${index + 1}`}
-                                className="h-full w-full rounded-md object-cover"
-                              />
-                            </div>
-                          ))}
+                          <div
+                            className={`mx-[2.5%] h-[150px] w-[45%] rounded-md bg-gray-300`}
+                          >
+                            <img
+                              src={review.image1}
+                              alt={`Review Image ${index + 1}`}
+                              className="h-full w-full rounded-md object-cover"
+                            />
+                          </div>
                         </div>
                       )}
 
