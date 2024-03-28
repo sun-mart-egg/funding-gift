@@ -4,7 +4,7 @@ import create from "zustand";
 const useFormDataStore = create((set) => ({
   formData: {
     minPrice: null,
-    targetPrice: 76000,
+    targetPrice: null,
     anniversaryDate: "",
     startDate: "",
     endDate: "",
@@ -19,8 +19,8 @@ const useFormDataStore = create((set) => ({
     zipCode: "",
     isPrivate: false,
     anniversaryCategoryId: 1,
-    productId: 3,
-    productOptionId: 1,
+    productId: null,
+    productOptionId: null,
   },
 
   // formData 상태를 업데이트하는 함수

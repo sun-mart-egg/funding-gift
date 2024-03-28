@@ -9,6 +9,11 @@ const anniversaryData = [
     anniversaryName: "생일",
     anniversaryDate: "2월 21일",
   },
+  {
+    name: "임수빈",
+    anniversaryName: "생일",
+    anniversaryDate: "2월 27일",
+  },
 ];
 
 export default anniversaryData;

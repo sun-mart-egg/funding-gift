@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useStore } from "../Store/MakeStore";
 import SampleImage from "/imgs/image_coming_soon.png";
 
 import Star from "/imgs/star.png";
@@ -8,10 +7,16 @@ import Heart from "/imgs/heart.png";
 import Down from "/imgs/down.png";
 import NoReview from "/imgs/no_review.png";
 
+import useProductStore from "../Store/ProductStore";
+import { useStore } from "../Store/MakeStore";
+import useFormDataStore from "../Store/FormDataStore";
+
 function ProductDetail() {
   const { productId } = useParams();
   const navigate = useNavigate();
-  const reset = useStore((state) => state.reset); // reset 함수를 가져옵니다.
+  const resetStore = useStore((state) => state.reset);
+  const resetProductData = useProductStore((state) => state.resetProductData);
+  const resetFormData = useFormDataStore((state) => state.resetFormData);
   const [selectedOption, setSelectedOption] = useState(null);
 
   // 옵션 토글 가시성 상태
@@ -32,7 +37,9 @@ function ProductDetail() {
     if (selectedOption === null) {
       alert("옵션을 선택해주세요!");
     } else {
-      reset(); // 상태 초기화
+      resetStore(); // useStore의 상태 초기화
+      resetProductData(); // useProductStore의 상태 초기화
+      resetFormData(); // useFormDataStore의 상태 초기화
       navigate("/make-funding-detail", { state: sendData });
     }
   };

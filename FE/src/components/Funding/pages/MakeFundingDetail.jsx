@@ -6,9 +6,19 @@ import egg from "/imgs/egg3.jpg";
 import { useStore } from "../../Store/MakeStore";
 import useFormDataStore from "../../Store/FormDataStore";
 import { createFunding } from "../api/CreateFundingAPI";
+import { useLocation } from "react-router-dom";
+import useProductStore from "../../Store/ProductStore";
 
 function MakeFundingDetail() {
   const [accessToken, setAccessToken] = useState("");
+  const navigate = useNavigate(); // useNavigate 훅 사용
+  const location = useLocation(); // useLocation 훅 사용
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const ref = useRef(null); // DatePicker에 대한 ref를 생성합니다.
+  const { formData, updateFormData } = useFormDataStore();
+  const { product, setProduct } = useProductStore();
+  const { option, setOption } = useProductStore();
+
   const {
     contentIndex,
     setContentIndex,
@@ -16,12 +26,6 @@ function MakeFundingDetail() {
     selectedAddress,
     selectedAccount,
   } = useStore(); // Zustand에서 상태를 가져옵니다.
-
-  const { formData, updateFormData } = useFormDataStore();
-
-  const navigate = useNavigate(); // useNavigate 훅 사용
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const ref = useRef(null); // DatePicker에 대한 ref를 생성합니다.
 
   const CustomInput = forwardRef(({ value, onClick }, ref) => (
     <button
@@ -32,10 +36,42 @@ function MakeFundingDetail() {
       선택
     </button>
   ));
+  // product 상태가 변경될 때마다 실행되는 useEffect 그냥 데이터 확인용
+  useEffect(() => {
+    if (product) {
+      console.log("product : " + product.imageUrl);
+      console.log("option : " + option);
+
+      updateFormData("targetPrice", product.price);
+      updateFormData("productId", product.productId);
+      updateFormData("productOptionId", option);
+    }
+  }, [product]);
 
   useEffect(() => {
     const token = localStorage.getItem("access-token");
     setAccessToken(token);
+
+    console.log(location.state);
+
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(
+          `https://j10d201.p.ssafy.io/api/products/${location.state.params}`,
+        );
+        const json = await response.json();
+        setProduct(json.data); // 'data' 속성에 접근하여 상태에 저장
+      } catch (error) {
+        console.error("Error fetching product:", error);
+      }
+    };
+
+    // product가 null이면 fetchProduct 실행
+    if (!product && location.state.params) {
+      console.log("목록 가져오는거 실행했습니다.");
+      setOption(location.state.option);
+      fetchProduct();
+    }
 
     if (selectedAnniversary) {
       updateFormData("anniversaryDate", selectedAnniversary.anniversaryDate);
@@ -109,6 +145,10 @@ function MakeFundingDetail() {
 
   // 현재 보여줄 컨텐츠를 결정하는 함수
   const renderContent = () => {
+    if (!product) {
+      // product가 로드되지 않았을 때 표시할 내용
+      return <div>상품 정보를 불러오는 중...</div>;
+    }
     switch (contentIndex) {
       case 0:
         return (
@@ -117,12 +157,13 @@ function MakeFundingDetail() {
               id="imgSection"
               className="mb-8 flex w-2/3 items-center justify-center text-center"
             >
-              <img src={egg} alt="" className="mx-auto" />
+              <img src={product.imageUrl} alt="" className="w-24" />
             </div>
             <div id="itemInfo">
-              <p className="p-2 font-cusFont2 text-xl"> 고오급 계란</p>
-              <p>760,000</p>
-              <p>로 선물은 만들어 볼까요?</p>
+              <p className="p-2 font-cusFont2 text-xl">{product.productName}</p>
+              <p> {product.price} 원</p>
+
+              <p className="pt-2"> 선물은 만들어 볼까요?</p>
             </div>
           </div>
         );
@@ -298,10 +339,11 @@ function MakeFundingDetail() {
 
       case 4:
         console.log(formData);
+
         return (
           <div className="flex flex-col items-center justify-center text-[12px]">
-            <img src={egg} alt="" className="mb-4 w-[50%]" />
-            <p className="mb-1">고오급 계란</p>
+            <img src={product.imageUrl} alt="" className="mb-4 w-[50%]" />
+            <p className="mb-1">{product.productName}</p>
             <p className="mb-1">
               {formData.isPrivate
                 ? "친한 친구에게만 공개하기"
