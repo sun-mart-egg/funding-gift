@@ -8,7 +8,6 @@ import ImageComingSoon from '/imgs/image_coming_soon.png'
 import NoSearchResult from '/imgs/no_search_result.png'
 
 function ProductComponent({ categoryId, keyword, sort }) {
-  console.log('ProductComponent 렌더링');
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -90,21 +89,20 @@ function ProductComponent({ categoryId, keyword, sort }) {
           className="m-2 h-[58.5%] w-[45%] flex-col rounded-md text-[12px]"
         >
           {/* 이미지 */}
-          <div className="h-[70%] w-[100%] text-center">
+          <div className="w-full relative pt-[100%] rounded-md"> {/* paddingTop is same as width to maintain 1:1 aspect ratio */}
             <Link to={`/product/${product.productId}`}>
-              <p className='font-cusFont4'>이미지 준비중입니다!</p>
-              <img src={ImageComingSoon} alt="" className="h-full w-full rounded-md border border-gray-300 shadow" />
+              <img src={product.imgUrl || ImageComingSoon} alt="" className="absolute top-0 left-0 w-[100%] h-[100%] object-cover rounded-md"/>
             </Link>
           </div>
           {/* 상품 정보 */}
           <div className="m-[1px] flex h-[30%] w-[100%] flex-col justify-center p-[10px] pl-2">
             <div>
-              <p>{product.productName}</p>
+              <p className='truncate'>{product.productName}</p>
               <p>{numberWithCommas(product.price)}원</p>
               <p className="flex items-center">
                 <img src={Star} alt="" className="h-[12px] w-[12px]" />
                 <span className="ml-1">
-                  {formatReviewNum(product.reviewCnt)}({product.reviewAvg})
+                  {formatReviewNum(product.reviewAvg)}({product.reviewCnt})
                 </span>
               </p>
             </div>

@@ -7,9 +7,10 @@ function CardList({ data }) {
         <Card
           key={index}
           title={data.title}
-          name={data.name}
-          date={data.date}
-          progress={data.progress}
+          productName={data.productName}
+          startDate={data.startDate}
+          endDate={data.endDate}
+          progress={0}
         />
       ))}
     </div>
