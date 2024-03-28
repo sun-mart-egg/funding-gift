@@ -37,7 +37,7 @@ const useFormDataStore = create((set) => ({
     set({
       formData: {
         minPrice: null,
-        targetPrice: null,
+        targetPrice: 760000,
         anniversaryDate: "",
         startDate: "",
         endDate: "",

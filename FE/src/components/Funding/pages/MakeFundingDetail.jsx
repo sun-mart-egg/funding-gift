@@ -1,5 +1,5 @@
 import React, { useState, useRef, forwardRef, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom"; // useNavigate 사용
+import { useNavigate } from "react-router-dom"; // useNavigate 사용
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import egg from "/imgs/egg3.jpg";
@@ -8,8 +8,7 @@ import useFormDataStore from "../../Store/FormDataStore";
 import { createFunding } from "../api/CreateFundingAPI";
 
 function MakeFundingDetail() {
-  const [searchParams] = useSearchParams();
-
+  const [accessToken, setAccessToken] = useState("");
   const {
     contentIndex,
     setContentIndex,
@@ -35,9 +34,9 @@ function MakeFundingDetail() {
   ));
 
   useEffect(() => {
-    async function getTokens() {
-      const accessToken = await searchParams.get("access-token");
-    }
+    const token = localStorage.getItem("access-token");
+    setAccessToken(token);
+
     if (selectedAnniversary) {
       updateFormData("anniversaryDate", selectedAnniversary.anniversaryDate);
     }
@@ -59,8 +58,8 @@ function MakeFundingDetail() {
       setContentIndex(contentIndex + 1);
     } else {
       try {
-        const token = "";
-        const result = await createFunding(formData, token);
+        console.log(accessToken);
+        const result = await createFunding(formData, accessToken);
         console.log("Response from the server:", result);
         navigate("/make-funding-finish");
       } catch (error) {

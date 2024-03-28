@@ -7,6 +7,7 @@ async function createFunding(formData, token) {
     anniversaryDate: currentDateTime,
   };
 
+  console.log(JSON.stringify(modifiedFormData));
   const response = await fetch(
     import.meta.env.VITE_BASE_URL + "/api/fundings",
     {
