@@ -26,17 +26,17 @@ public class AttendanceService {
     public void postAttendance(PostAttendanceRequest postAttendanceRequest) {
         Consumer consumer = getConsumer();
 
-        //펀딩 존재 여부, 펀딩 상태 확인
+        //펀딩 존재 여부
         Funding funding = getFunding(postAttendanceRequest.getFundingId());
 
+        //펀딩 상태 확인
         checkingFundingStatus(String.valueOf(funding.getFundingStatus()));
 
-        /**
-         * TODO : 결제 정보 관련 확인 해야함.
-         */
+        //최소 금액 만족 확인
+        checkingFundingMinPrice(funding.getMinPrice(), postAttendanceRequest.getPrice());
 
-        //펀딩한 금액 더하기
-        funding.addSumPrice(postAttendanceRequest.getPrice());
+        //펀딩한 금액 더하기,목표 금액 달성시 상태 변경,                                                                                                  목표 금액 이상인 경우 예외
+        checkingFundingTargetPrice(postAttendanceRequest.getPrice(), funding);
 
         attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding));
     }
@@ -58,4 +58,18 @@ public class AttendanceService {
             throw new CustomException(ErrorType.FUNDING_FINISHED);
     }
 
+    private void checkingFundingMinPrice(Integer minPrice, Integer price) {
+        if(price < minPrice)
+            throw new CustomException(ErrorType. FUNDING_NOT_VERIFY_MIN_PRICE);
+    }
+
+    private void checkingFundingTargetPrice(Integer price, Funding funding) {
+        Integer targetPrice = funding.addSumPrice(price);
+
+        if(targetPrice > funding.getTargetPrice())
+            throw new CustomException(ErrorType.FUNDING_OVER_TARGET_PRICE);
+
+        if(targetPrice.equals(funding.getTargetPrice()))
+            funding.changeStatus("SUCCESS");
+    }
 }
