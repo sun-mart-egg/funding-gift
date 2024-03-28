@@ -17,6 +17,9 @@ public class GetProductResponse {
     @Schema(description = "상품 이름", example = "더마비 데일리 모이스처 바디로션 400ml")
     private String productName;
 
+    @Schema(description = "상품 이미지", example = "상품 이미지")
+    private String imgUrl;
+
     @Schema(description = "상품 가격", example = "16580")
     private Integer price;
 
@@ -27,9 +30,10 @@ public class GetProductResponse {
     private Double reviewAvg;
 
     @Builder
-    private GetProductResponse(Long productId, String productName, Integer price, Integer reviewCnt, Double reviewAvg) {
+    private GetProductResponse(Long productId, String productName, String imgUrl, Integer price, Integer reviewCnt, Double reviewAvg) {
         this.productId = productId;
         this.productName = productName;
+        this.imgUrl = imgUrl;
         this.price = price;
         this.reviewCnt = reviewCnt;
         this.reviewAvg = reviewAvg;
@@ -39,6 +43,7 @@ public class GetProductResponse {
         return builder()
                 .productId(product.getId())
                 .productName(product.getName())
+                .imgUrl(product.getImage())
                 .price(product.getPrice())
                 .reviewCnt(product.getReviewCnt())
                 .reviewAvg(product.getReviewAvg())
