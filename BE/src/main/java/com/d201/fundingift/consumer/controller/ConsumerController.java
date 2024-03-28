@@ -68,4 +68,13 @@ public class ConsumerController {
         // 로그아웃 성공 응답 반환
         return ResponseUtils.ok(SuccessType.LOGOUT_SUCCESS);
     }
+
+    // 카카오 함께 로그아웃
+    @PostMapping("/logout/kakao")
+    public SuccessResponse<Void> getKakaoLogoutUser() {
+        log.info("ConsumerController.getKakaoLogoutUser");
+        consumerService.kakaoLogoutUser();
+        // 로그아웃 성공 응답 반환
+        return ResponseUtils.ok(SuccessType.LOGOUT_SUCCESS);
+    }
 }

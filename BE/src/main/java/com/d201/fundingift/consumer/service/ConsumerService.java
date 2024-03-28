@@ -10,14 +10,17 @@ import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Optional;
 
@@ -34,6 +37,12 @@ public class ConsumerService {
     private final RedisJwtRepository redisJwtRepository;
     private final SecurityUtil securityUtil;
     private final RestTemplate restTemplate;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    private String kakaoClientId;
+
+    @Value("${kakao.logout-redirect-uri}")
+    private String kakaoLogoutRedirectUri;
 
     // 회원가입
     @Transactional
@@ -85,21 +94,18 @@ public class ConsumerService {
 
     public void logoutUser() {
         Long consumerId = Long.valueOf(securityUtil.getConsumer().getId());
-        String kakaoAccessToken = redisJwtRepository.getKakaoAccessToken(consumerId);
-        log.info("logoutUser: "+consumerId);
-        log.info("kakaoAccessToken: "+kakaoAccessToken);
-
-        // 1. 카카오 로그아웃 API 호출  전체 삭제인지?
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + kakaoAccessToken);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<String> response = restTemplate.postForEntity("https://kapi.kakao.com/v1/user/logout", entity, String.class);
-
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            // 에러 처리
-            throw new RuntimeException("Failed to logout from Kakao");
-        }
+        log.info("logoutUser: {}", consumerId);
+//        // 1. 카카오 로그아웃 API 호출  전체 삭제인지?
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.set("Authorization", "Bearer " + kakaoAccessToken);
+//        HttpEntity<String> entity = new HttpEntity<>(headers);
+//
+//        ResponseEntity<String> response = restTemplate.postForEntity("https://kapi.kakao.com/v1/user/logout", entity, String.class);
+//
+//        if (!response.getStatusCode().is2xxSuccessful()) {
+//            // 에러 처리
+//            throw new RuntimeException("Failed to logout from Kakao");
+//        }
 
         // 2. 로컬 로그아웃 처리: 토큰 무효화
         // 레디스에서 해당 사용자의 액세스 토큰 및 리프레시 토큰 및 카카오 액세스 토큰 삭제
@@ -107,6 +113,31 @@ public class ConsumerService {
         redisJwtRepository.deleteRefreshToken(consumerId);
         redisJwtRepository.deleteKakaoAccessToken(consumerId);
 
+    }
+
+    public void kakaoLogoutUser() {
+      // 레디스에서 카카오 액세스 토큰 조회
+        Long consumerId = Long.valueOf(securityUtil.getConsumer().getId());
+        String kakaoAccessToken = redisJwtRepository.getKakaoAccessToken(consumerId);
+        log.info("logoutUser: {}",consumerId);
+        log.info("kakaoAccessToken: {}",kakaoAccessToken);
+        if (kakaoAccessToken == null) {
+            throw new IllegalStateException("Kakao access token not found.");
+        }
+
+        // 카카오 로그아웃 URL 생성
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl("https://kauth.kakao.com/oauth/logout")
+                .queryParam("client_id", kakaoClientId)
+                .queryParam("logout_redirect_uri", kakaoLogoutRedirectUri);
+
+
+        // 카카오 로그아웃 API 호출
+        ResponseEntity<String> response = restTemplate.getForEntity(uriBuilder.toUriString(), String.class);
+
+        // 302 응답을 정상 처리로 간주
+        if (response.getStatusCode() != HttpStatus.FOUND) {
+            throw new RuntimeException("Failed to logout from Kakao: " + response.getStatusCode());
+        }
     }
 
     @Transactional
