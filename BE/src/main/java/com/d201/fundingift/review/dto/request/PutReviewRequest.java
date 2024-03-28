@@ -1,23 +1,16 @@
 package com.d201.fundingift.review.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Range;
 
 @ToString
 @Getter
-@Schema(name = "PostReviewRequest", description = "리뷰 생성 요청")
-public class PostReviewRequest {
-
-    @NotNull(message = "productId: 값이 null 이 아니어야 합니다.")
-    @Schema(description = "상품 ID", example = "1")
-    private Long productId;
-
-    @NotNull(message = "productOptionId: 값이 null 이 아니어야 합니다.")
-    @Schema(description = "상품 옵션 ID", example = "1")
-    private Long productOptionId;
+public class PutReviewRequest {
 
     @NotNull(message = "star: 값이 null 이 아니어야 합니다.")
     @Range(min = 1, max = 5, message = "star: 값이 1에서 5 사이여야 합니다.")

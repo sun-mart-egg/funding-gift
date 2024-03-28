@@ -1,7 +1,6 @@
 package com.d201.fundingift.review.service;
 
 import com.d201.fundingift._common.exception.CustomException;
-import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.S3Uploader;
 import com.d201.fundingift._common.util.SecurityUtil;
@@ -11,6 +10,7 @@ import com.d201.fundingift.product.entity.ProductOption;
 import com.d201.fundingift.product.repository.ProductOptionRepository;
 import com.d201.fundingift.product.repository.ProductRepository;
 import com.d201.fundingift.review.dto.request.PostReviewRequest;
+import com.d201.fundingift.review.dto.request.PutReviewRequest;
 import com.d201.fundingift.review.dto.response.GetReviewResponse;
 import com.d201.fundingift.review.entity.Review;
 import com.d201.fundingift.review.repository.ReviewRepository;
@@ -27,8 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
-import static com.d201.fundingift._common.response.ErrorType.PRODUCT_OPTION_MISMATCH;
-import static com.d201.fundingift._common.response.ErrorType.SORT_NOT_FOUND;
+import static com.d201.fundingift._common.response.ErrorType.*;
 
 @Slf4j
 @Service
@@ -44,7 +43,7 @@ public class ReviewService {
 
     @Transactional
     public void postReview(PostReviewRequest request, MultipartFile image1, MultipartFile image2) throws IOException {
-        log.info(request.toString());
+        log.info("postReview : {}", request.toString());
 
         Consumer consumer = getConsumer();
         Product product = findProductById(request.getProductId());
@@ -83,6 +82,21 @@ public class ReviewService {
                                             getConsumerOrNull());
     }
 
+    @Transactional
+    public void updateReview(Long reviewId, PutReviewRequest request) {
+        log.info("updateReview : {}", request.toString());
+
+        Consumer consumer = getConsumer();
+        Review review = findReviewById(reviewId);
+        validateReviewAndConsumer(review, consumer); // 작성자 일치하는지 검사
+
+        int oldStar = review.getStar();
+        // 수정하기
+        review.update(request);
+        // 리뷰 - 별점 상태 업데이트
+        review.getProduct().updateReview(oldStar, request.getStar());
+    }
+
     private Sort getSort(Integer sort) {
         // 최신 순
         if (sort == 0) {
@@ -99,6 +113,7 @@ public class ReviewService {
         // 예외
         throw new CustomException(SORT_NOT_FOUND);
     }
+
     private SliceList<GetReviewResponse> getReviewResponseSliceList(Slice<Review> reviews, Consumer consumer) {
         return SliceList.from(reviews.stream().map(r -> GetReviewResponse.from(r, consumer)).collect(Collectors.toList()),
                 reviews.getPageable(),
@@ -108,18 +123,29 @@ public class ReviewService {
     // 상품
     private Product findProductById(Long productId) {
         return productRepository.findById(productId)
-                .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
     }
 
     // 상품 옵션
     private ProductOption findProductOptionById(Long productOptionId) {
         return productOptionRepository.findByIdAndStatusIsNotInactive(productOptionId)
-                .orElseThrow(() -> new CustomException(ErrorType.PRODUCT_OPTION_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(PRODUCT_OPTION_NOT_FOUND));
+    }
+
+    private Review findReviewById(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CustomException(REVIEW_NOT_FOUND));
     }
 
     private void validateProductOption(Product product, ProductOption productOption) {
         if (productOption.getProduct().getId() != product.getId()) {
             throw new CustomException(PRODUCT_OPTION_MISMATCH);
+        }
+    }
+
+    private void validateReviewAndConsumer(Review review, Consumer consumer) {
+        if (!review.getConsumer().equals(consumer)) {
+            throw new CustomException(USER_UNAUTHORIZED);
         }
     }
 
