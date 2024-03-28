@@ -51,10 +51,10 @@ public class AttendanceService {
     }
 
     private void checkingFundingStatus(String fundingStatus) {
-        if("NOT_STARTED".equals(fundingStatus))
+        if("PRE_PROGRESS".equals(fundingStatus))
             throw new CustomException(ErrorType.FUNDING_NOT_STARTED);
 
-        if("FUNDING_FINISHED".equals(fundingStatus))
+        if("SUCCESS".equals(fundingStatus) || "FAIL".equals(fundingStatus))
             throw new CustomException(ErrorType.FUNDING_FINISHED);
     }
 
