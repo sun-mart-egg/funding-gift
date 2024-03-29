@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import egg from "/imgs/egg3.jpg";
 import { IoLogOut } from "react-icons/io5";
 import { AiFillCamera } from "react-icons/ai";
@@ -18,9 +18,45 @@ function MyPage() {
     zipCode: "123456",
     accountBank: "하나은행",
     accountNo: "1231231231231",
+    img: { egg },
     // 추가 정보가 있다면 여기에 포함할 수 있습니다.
   });
 
+  //사용자 정보 받아오기
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get(
+          import.meta.env.VITE_BASE_URL + "/api/consumers",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+            },
+          },
+        );
+
+        // 응답 데이터 콘솔에 출력
+        console.log("Received user info:", response.data.data.profileImageUrl);
+
+        // API 응답으로부터 받은 데이터로 userInfo 상태 업데이트
+        setUserInfo({
+          ...userInfo,
+          name: response.data.data.name,
+          // anniversaryDate: response.data.anniversaryDate,
+          // defaultAddr: response.data.defaultAddr,
+          // detailAddr: response.data.detailAddr,
+          // zipCode: response.data.zipCode,
+          // accountBank: response.data.accountBank,
+          // accountNo: response.data.accountNo,
+          img: response.data.data.profileImageUrl,
+        });
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
   // 수정 버튼 클릭 시 호출될 함수
   const handleEditClick = () => {
     setIsEditMode(!isEditMode);
@@ -73,15 +109,19 @@ function MyPage() {
         // 수정 모드 활성화 시 보여줄 UI
         <>
           <div className="head absolute top-20 flex w-full items-center px-6">
-            <div className="relative mr-4 w-[26.5%]">
-              <img src={egg} alt="" className="w-full rounded-full" />
+            <div className="relative mr-4 ">
+              <img
+                src={userInfo.img}
+                alt=""
+                className=" h-[80px] w-[80px] rounded-full"
+              />
               {/* 절대 위치를 사용한 카메라 아이콘 */}
               <AiFillCamera
                 className="absolute bottom-0 right-1 text-[20px] text-[#9B9B9B]"
                 style={{ bottom: "-10px", right: "1px" }}
               />
             </div>
-            <div className="flex w-full justify-between">
+            <div className="flex w-[70%] justify-between">
               <input
                 type="text"
                 value={userInfo.name}
@@ -90,7 +130,7 @@ function MyPage() {
               />
             </div>
           </div>
-          <div className="content absolute top-44 w-full px-6 font-cusFont3">
+          <div className="content absolute top-52 w-full px-6 font-cusFont3">
             <div className="birthday">
               <div className="sub-title">
                 <p>생일</p>{" "}
@@ -149,9 +189,13 @@ function MyPage() {
       ) : (
         <>
           {/* head 입니다. */}
-          <div className="head absolute top-20 flex w-full items-center px-6">
-            <img src={egg} alt="" className="mr-4 w-[20%]  rounded-full" />
-            <div className="flex w-full justify-between ">
+          <div className="head absolute top-20  flex w-full items-center px-6">
+            <img
+              src={userInfo.img}
+              alt=""
+              className=" mr-4 h-[80px] w-[80px] rounded-full"
+            />
+            <div className="flex w-[70%] justify-between ">
               <p className="mr-1 px-2 font-cusFont5 text-[25px]">
                 {userInfo.name}
               </p>
@@ -166,7 +210,7 @@ function MyPage() {
           </div>
 
           {/* Content 입니다. */}
-          <div className="content absolute top-44 w-full px-6">
+          <div className="content absolute top-52 w-full px-6">
             <div className="birthday">
               <div className="sub-title">
                 <p>생일</p>
