@@ -22,6 +22,9 @@ public class ProductCategory {
     @Column(name = "product_category_id", nullable = false)
     private Integer id;
 
+    @Column(nullable = false)
+    private String image;
+
     @Column(nullable = false, length = 10)
     private String name;
 
@@ -30,10 +33,5 @@ public class ProductCategory {
 
     @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
-
-    @Builder
-    private ProductCategory(String name) {
-        this.name = name;
-    }
 
 }
