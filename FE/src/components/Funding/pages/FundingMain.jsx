@@ -55,7 +55,7 @@ function FundingMain() {
       name: "고오급 케이크",
       date: "2024.4.15 ~ 2024.4.22",
       progress: 20,
-      img: "/imgs/egg3.jpg",
+      img: "/imgs/product_sample.png",
     },
     {
       id: 5,
