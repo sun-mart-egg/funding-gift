@@ -157,6 +157,14 @@ public class Funding extends BaseTime {
 
     }
 
+    public Integer addSumPrice(Integer price) {
+        return this.sumPrice += price;
+    }
+
+    public void changeStatus(String status) {
+        this.fundingStatus = FundingStatus.valueOf(status);
+    }
+
     public String getAnniversaryDateToString() {
         return anniversaryDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }

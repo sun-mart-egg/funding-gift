@@ -17,6 +17,7 @@ public enum SuccessType {
     CREATE_FUNDING_SUCCESS("펀딩 등록에 성공하였습니다."),
     GET_MY_FUNDINGS_SUCCESS("내 펀딩 목록 조회에 성공하였습니다."),
     GET_FRIEND_FUNDINGS_SUCCESS("친구 펀딩 목록 조회에 성공하였습니다."),
+    POST_ATTENDANCE_SUCCESS("펀딩 참여에 성공하였습니다."),
 
     // 상품
     GET_PRODUCT_CATEGORIES_SUCCESS("상품 카테고리 목록 조회에 성공하였습니다."),

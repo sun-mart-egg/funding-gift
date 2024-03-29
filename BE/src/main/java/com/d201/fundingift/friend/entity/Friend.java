@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class Friend implements Serializable {
 
     @Id
-    private Long friendId;
+    private String id; //friend:consumerId:toConsumerId
     @Indexed
     private Long consumerId;
     @Indexed
@@ -22,7 +22,8 @@ public class Friend implements Serializable {
     private Boolean isFavorite;
 
     @Builder
-    private Friend(Long consumerId, Long toConsumerId, Boolean isFavorite) {
+    private Friend(String id, Long consumerId, Long toConsumerId, Boolean isFavorite) {
+        this.id = id;
         this.consumerId = consumerId;
         this.toConsumerId = toConsumerId;
         this.isFavorite = isFavorite;
