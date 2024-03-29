@@ -4,8 +4,10 @@ function AddressCard({
   name,
   nickname,
   isDefault,
-  phone,
-  address,
+  phoneNumber,
+  defaultAddr,
+  detailAddr,
+  zipCode,
   isSelected,
   onSelect,
 }) {
@@ -37,8 +39,13 @@ function AddressCard({
         </div>
       </div>
 
-      <p className="mx-2 mb-2">{phone}</p>
-      <p className="mx-2 mb-2">{address}</p>
+      <p className="mx-2 mb-2">{phoneNumber}</p>
+      <div className="mb-2 flex">
+        <p className="mx-1">{defaultAddr}</p>
+        <p className="mx-1">{detailAddr}</p>
+        <p className="mx-1">{zipCode}</p>
+      </div>
+
       <div id="buttonSection" className="flex">
         <button className="mx-2  flex w-[45pt] justify-center rounded-md bg-[#9B9B9B] text-white">
           수정

@@ -1,4 +1,11 @@
-function AccountCard({ name, isDefault, onSelect, account, bank, isSelected }) {
+function AccountCard({
+  name,
+  isDefault,
+  onSelect,
+  accountNo,
+  accountBank,
+  isSelected,
+}) {
   return (
     <div className="cursor-pointer flex-col items-center justify-center border-b border-black   py-2">
       <div id="adressCardHead" className="flex  items-center justify-between">
@@ -26,8 +33,8 @@ function AccountCard({ name, isDefault, onSelect, account, bank, isSelected }) {
         </div>
       </div>
 
-      <p className="mx-2 mb-2">{bank}</p>
-      <p className="mx-2 mb-2">{account}</p>
+      <p className="mx-2 mb-2">{accountBank}</p>
+      <p className="mx-2 mb-2">{accountNo}</p>
       <div id="buttonSection" className="flex">
         <button className="mx-2  flex w-[45pt] justify-center rounded-md bg-[#9B9B9B] text-white">
           수정

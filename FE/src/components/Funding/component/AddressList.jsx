@@ -29,8 +29,10 @@ function AddressList({ listData }) {
           name={item.name}
           nickname={item.nickname}
           isDefault={item.isDefault}
-          phone={item.phone}
-          address={item.address}
+          phoneNumber={item.phoneNumber}
+          defaultAddr={item.defaultAddr}
+          detailAddr={item.detailAddr}
+          zipCode={item.zipCode}
           isSelected={index === selectedAddressIndex}
           onSelect={() => handleSelect(index)} // onSelect prop 추가
         />

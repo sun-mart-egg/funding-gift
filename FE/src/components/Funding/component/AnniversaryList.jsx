@@ -6,6 +6,7 @@ function AnniversaryList({ listData }) {
   // listData 상태 관리
   const { selectedAnniversaryIndex } = useStore();
   const [data, setData] = useState(listData);
+
   const setSelectedAnniversaryIndex = useStore(
     (state) => state.setSelectedAnniversaryIndex,
   );
@@ -29,9 +30,9 @@ function AnniversaryList({ listData }) {
       {data.map((item, index) => (
         <AnniversaryCard
           key={index}
-          anniversary={item.anniversary}
           name={item.name}
-          date={item.date}
+          anniversaryName={item.anniversaryName}
+          anniversaryDate={item.anniversaryDate}
           isSelected={index === selectedAnniversaryIndex} // 현재 카드가 선택된 상태인지 판단
           onSelect={() => handleSelect(index)} // onSelect prop 추가
         />

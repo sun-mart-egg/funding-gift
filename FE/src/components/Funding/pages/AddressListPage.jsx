@@ -9,15 +9,19 @@ function AddressListPage() {
   const data = [
     {
       name: "신시은",
-      phone: "010-4948-7118",
-      address: "아슬란",
+      phoneNumber: "010-4948-7118",
+      defaultAddr: "아슬란",
+      detailAddr: "502호",
+      zipCode: "39432",
       isDefault: true,
       nickname: "마이구미",
     },
     {
       name: "박창준",
-      phone: "010-2669-8294",
-      address: "무지개빌",
+      phoneNumber: "010-2669-8294",
+      defaultAddr: "무지개빌",
+      detailAddr: "302호",
+      zipCode: "111111",
       isDefault: false,
       nickname: "창준쓰집",
     },
