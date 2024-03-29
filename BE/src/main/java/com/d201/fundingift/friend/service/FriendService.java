@@ -137,7 +137,8 @@ public class FriendService {
         hashOperations.putAll(key, friendMap);
     }
 
-    public List<FriendDto> getFriends(Long consumerId) {
+    public List<FriendDto> getFriends() {
+        Long consumerId = Long.valueOf(securityUtil.getConsumerId());
         Set<String> keys = redisTemplate.keys("friend:" + consumerId + ":*");
         List<FriendDto> friendDtos = new ArrayList<>();
 
@@ -177,17 +178,21 @@ public class FriendService {
 
     @Transactional
     public void deleteAllFriendsByConsumerId(Long consumerId) {
-        // consumerId를 기반으로 모든 친구 관련 키 찾기
-        Set<String> keys = stringRedisTemplate.keys("friend:" + consumerId + ":*");
-        if (keys.isEmpty()) {
-            // 해당 consumerId로 저장된 친구가 없는 경우
-            log.info("해당 consumerId({})로 저장된 친구가 없습니다.", consumerId);
-            return;
+        // consumerId를 기준으로 생성한 모든 친구 관계 삭제
+        Set<String> keysConsumer = stringRedisTemplate.keys("friend:" + consumerId + ":*");
+        if (!keysConsumer.isEmpty()) {
+            log.info("consumerId({})가 생성한 {}개의 친구 관계를 삭제합니다.", consumerId, keysConsumer.size());
+            stringRedisTemplate.delete(keysConsumer);
         }
 
-        // 찾은 키를 이용해 해당 사용자의 모든 친구 정보 삭제
-        log.info("consumerId({})에 대한 {}개의 친구 정보를 삭제합니다.", consumerId, keys.size());
-        stringRedisTemplate.delete(keys);
-        log.info("consumerId({})에 대한 모든 친구 정보가 성공적으로 삭제되었습니다.", consumerId);
+        // 다른 사용자가 consumerId를 친구로 추가한 모든 친구 관계 삭제
+        Set<String> keysFriends = stringRedisTemplate.keys("friend:*:" + consumerId);
+        if (!keysFriends.isEmpty()) {
+            log.info("다른 사용자가 consumerId({})를 추가한 {}개의 친구 관계를 삭제합니다.", consumerId, keysFriends.size());
+            stringRedisTemplate.delete(keysFriends);
+        }
+
+        log.info("consumerId({})와 관련된 모든 친구 정보가 성공적으로 삭제되었습니다.", consumerId);
     }
+
 }
