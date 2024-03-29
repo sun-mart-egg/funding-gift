@@ -14,18 +14,23 @@ public class GetProductCategoryResponse {
     @Schema(description = "카테고리 ID", example = "1")
     private int categoryId;
 
+    @Schema(description = "카테고리 이미지", example = "-")
+    private String categoryImage;
+
     @Schema(description = " 카테고리 이름", example = "패션")
     private String categoryName;
 
     @Builder
-    private GetProductCategoryResponse(int categoryId, String categoryName) {
+    private GetProductCategoryResponse(int categoryId, String categoryImage, String categoryName) {
         this.categoryId = categoryId;
+        this.categoryImage = categoryImage;
         this.categoryName = categoryName;
     }
 
     public static GetProductCategoryResponse from(ProductCategory productCategory) {
         return builder()
                 .categoryId(productCategory.getId())
+                .categoryImage(productCategory.getImage())
                 .categoryName(productCategory.getName())
                 .build();
     }
