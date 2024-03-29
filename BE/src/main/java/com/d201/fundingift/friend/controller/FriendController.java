@@ -41,12 +41,12 @@ public class FriendController {
         return ResponseUtils.ok(friendsResponse, SuccessType.GET_KAKAO_FRIEND_INFO_SUCCESS);
     }
 
-    @Operation(summary = "친구 목록 조회",
-            description = "ID에 해당하는 소비자의 친구정보를 조회합니다. `Token`"
+    @Operation(summary = "내 친구 목록 조회 (소비자)",
+            description = "내 친구들의 친구정보를 조회합니다. `Token`"
     )
-    @GetMapping("/{consumer-id}")
-    public ResponseEntity<List<FriendDto>> getFriends(@PathVariable("consumer-id") Long consumerId) {
-        List<FriendDto> friendDtos = friendService.getFriends(consumerId);
+    @GetMapping()
+    public ResponseEntity<List<FriendDto>> getFriends() {
+        List<FriendDto> friendDtos = friendService.getFriends();
         return ResponseEntity.ok(friendDtos);
     }
 }
