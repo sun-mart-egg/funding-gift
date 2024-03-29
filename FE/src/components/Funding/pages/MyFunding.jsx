@@ -13,6 +13,42 @@ function MyFunding() {
   const [myFundings, setMyFundings] = useState([]); // API로부터 받은 데이터를 저장할 상태
   const [isLoading, setIsLoading] = useState(true);
 
+  const [userInfo, setUserInfo] = useState({
+    name: "신시은",
+    img: null,
+    // 추가 정보가 있다면 여기에 포함할 수 있습니다.
+  });
+
+  //사용자 정보 받아오기
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get(
+          import.meta.env.VITE_BASE_URL + "/api/consumers",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+            },
+          },
+        );
+
+        // 응답 데이터 콘솔에 출력
+        console.log("Received user info:", response.data.data.profileImageUrl);
+
+        // API 응답으로부터 받은 데이터로 userInfo 상태 업데이트
+        setUserInfo({
+          ...userInfo,
+          name: response.data.data.name,
+          img: response.data.data.profileImageUrl,
+        });
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem("access-token");
     if (!token) {
@@ -63,14 +99,17 @@ function MyFunding() {
 
   return (
     <div className="main-layer ">
-      <div id="profileSection" className="m-2 flex w-full justify-between p-2">
+      <div
+        id="profileSection"
+        className=" flex w-full justify-between p-2 px-6"
+      >
         <div id="leftSection" className="flex items-center space-x-4">
           <img
-            src="src\components\Funding\assets\egg3.jpg"
+            src={userInfo.img}
             alt="프로필"
-            className="h-16 w-16 rounded-full border-2 border-gray-300"
+            className="h-[80px] w-[80px] rounded-full  border-gray-300"
           />
-          <p className="font-cusFont5 text-xl">김싸피</p>
+          <p className="font-cusFont5 text-xl">{userInfo.name}</p>
         </div>
 
         <div id="rightSection" className="flex items-center space-x-0">
