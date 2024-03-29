@@ -18,6 +18,7 @@ function ProductDetail() {
   const resetProductData = useProductStore((state) => state.resetProductData);
   const resetFormData = useFormDataStore((state) => state.resetFormData);
   const [selectedOption, setSelectedOption] = useState(null);
+  const token = localStorage.getItem("access-token")
 
   // 옵션 토글 가시성 상태
   const [optionToggleVisible, setOptionToggleVisible] = useState(false);
@@ -55,7 +56,9 @@ function ProductDetail() {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          `https://j10d201.p.ssafy.io/api/products/${productId}`,
+          import.meta.env.VITE_BASE_URL + `/api/products/${productId}`, {
+            headers: {Authorization: `Bearer ${token}`}
+          }
         );
         const json = await response.json();
         setProduct(json.data); // 'data' 속성에 접근하여 상태에 저장
@@ -103,18 +106,21 @@ function ProductDetail() {
   useEffect(() => {
     const fetchReview = async () => {
       try {
-        let url = `https://j10d201.p.ssafy.io/api/reviews?product-id=${productId}&page=0&size=10&sort=${reviewSort}`;
+        let url = import.meta.env.VITE_BASE_URL + `/api/reviews?product-id=${productId}&page=0&size=10&sort=${reviewSort}`;
         if (reviewOption !== null) {
           url += `&product-option-id=${reviewOption}`;
         }
 
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          headers: {Authorization: `Bearer ${token}`}
+        });
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const json = await response.json();
         if (json && json.data && json.data.data) {
           setReviews(json.data.data);
+          console.log(json.data.data)
         } else {
           console.log("No review data available");
           setReviews([]);
@@ -189,8 +195,8 @@ function ProductDetail() {
                       선택된 옵션:{" "}
                       {selectedOption
                         ? product.options.find(
-                            (option) => option.id === selectedOption,
-                          )?.name
+                          (option) => option.id === selectedOption,
+                        )?.name
                         : "옵션 선택 안 함"}
                     </button>
 
@@ -243,12 +249,12 @@ function ProductDetail() {
 
                 {/*후기 수, 정렬순서 토글, 필터 */}
                 <div className="mt-2 flex h-[50px] w-[100%] items-center justify-between">
-                  <div>
+                  <div className="w-[26%]">
                     <span className="text-base">
                       선물 후기 ({product.reviewCnt})
                     </span>
                   </div>
-                  <div className="relative ml-[25%] flex w-[25%] text-right">
+                  <div className="relative ml-[20%] flex w-[25%] text-right">
                     <button
                       className="flex w-[100%] justify-end rounded-md text-base"
                       onClick={() =>
@@ -259,7 +265,7 @@ function ProductDetail() {
                       <img
                         src={Down}
                         alt=""
-                        className="ml-[5px] mt-[5px] h-4 w-4 invert"
+                        className="ml-[5px] mt-[5px] h-[14px] w-[15px] invert"
                       />
                     </button>
                     {reviewOptionToggleVisible && (
@@ -284,7 +290,7 @@ function ProductDetail() {
                       </div>
                     )}
                   </div>
-                  <div className="relative flex w-[25%] justify-center text-right">
+                  <div className="relative flex w-[28%] justify-center text-right">
                     <button
                       className="flex w-[100%] justify-center  rounded-md text-right text-base"
                       onClick={toggleListVisibility}
@@ -293,7 +299,7 @@ function ProductDetail() {
                       <img
                         src={Down}
                         alt=""
-                        className="ml-[5px] mt-[5px] h-[14px] w-[15%] invert"
+                        className="ml-[5px] mt-[5px] h-[14px] w-[15px] invert"
                       />
                     </button>
                     {toggleListVisible && (
@@ -339,6 +345,7 @@ function ProductDetail() {
                             />
                           </div>
                           <div className="w-[100%]">
+                            <p className="mb-[5px]">{review.writerName}</p>
                             <div className="flex items-center">
                               <img
                                 src={Star}
@@ -349,36 +356,65 @@ function ProductDetail() {
                             </div>
                             <div>{review.name}</div>
                           </div>
+                          <div className="w-[20%]">
+                            {review.isMe && (<div>삭제</div>)}
+                          </div>
                         </div>
 
                         {/* 리뷰 이미지 */}
-                        {review.image1 && (
-                          <div className="my-[20px] flex w-full">
-                            <div
-                              className={`mx-[2.5%] h-[150px] w-[45%] rounded-md bg-gray-300`}
-                            >
-                              <img
-                                src={review.image1}
-                                alt="Review Image1"
-                                className="h-full w-full rounded-md object-cover"
-                              />
+                        <div className="w-full flex">
+                          {review.image2 && !review.image1 && (
+                            <div className="my-[20px] flex w-full">
+                              <div
+                                className={`mx-[2.5%] h-[150px] w-[50%] rounded-md bg-gray-300`}
+                              >
+                                <img
+                                  src={review.image2}
+                                  alt="Review Image2"
+                                  className="h-full w-full rounded-md object-cover"
+                                />
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
 
-                        {review.image2 && (
-                          <div className="my-[20px] flex w-full">
-                            <div
-                              className={`mx-[2.5%] h-[150px] w-[45%] rounded-md bg-gray-300`}
-                            >
-                              <img
-                                src={review.image2}
-                                alt="Review Image2"
-                                className="h-full w-full rounded-md object-cover"
-                              />
+                          {review.image1 && !review.image2 && (
+                            <div className="my-[20px] flex w-full">
+                              <div
+                                className={`mx-[2.5%] h-[150px] w-[50%] rounded-md bg-gray-300`}
+                              >
+                                <img
+                                  src={review.image1}
+                                  alt="Review Image1"
+                                  className="h-full w-full rounded-md object-cover"
+                                />
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
+
+                          {review.image1 && review.image2 && (
+                            <div className="my-[20px] flex w-full">
+                              <div
+                                className={`mx-[2.5%] h-[150px] w-[100%] rounded-md bg-gray-300`}
+                              >
+                                <img
+                                  src={review.image1}
+                                  alt="Review Image1"
+                                  className="h-full w-full rounded-md object-cover"
+                                />
+                              </div>
+                              <div
+                                className={`mx-[2.5%] h-[150px] w-[100%] rounded-md bg-gray-300`}
+                              >
+                                <img
+                                  src={review.image2}
+                                  alt="Review Image2"
+                                  className="h-full w-full rounded-md object-cover"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
 
                         {/* 리뷰 내용 */}
                         <div className="ml-7-1 mb-2 h-[100px] w-[100%] rounded-md border-[2px] p-2">
