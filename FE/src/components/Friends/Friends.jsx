@@ -50,7 +50,7 @@ function Friends() {
   }, []);
 
   return (
-    <div className="sub-layer justify-start">
+    <div className="justify-start sub-layer">
       <div className="absolute top-[40px] flex w-full flex-row justify-between">
         <div className="flex flex-row items-center p-3 ">
           <p className=" p-2.5 font-cusFont3 text-lg font-bold">
@@ -65,7 +65,7 @@ function Friends() {
           {isSearch ? (
             <input
               type="text"
-              className=" m-1 h-[25px] w-[220px] rounded-[10px] border border-cusColor3 p-2"
+              className=" m-1 h-[25px] w-[155px] rounded-[10px] border border-cusColor3 p-2"
               value={userInput}
               onChange={handleInput}
             />
@@ -88,11 +88,11 @@ function Friends() {
       </div>
 
       <div className="fixed top-[90px] flex h-full max-h-[calc(100vh-90px)] w-full max-w-[500px] flex-col items-center justify-start">
-        <div className="h-full w-full gap-3 overflow-y-scroll">
+        <div className="w-full h-full gap-3 overflow-y-scroll">
           {filteredFriends.map((friend, index) => (
             <div
               key={index}
-              className="m-2 flex flex-row items-center justify-between gap-3"
+              className="flex flex-row items-center justify-between gap-3 m-2"
             >
               <div className="flex flex-row items-center gap-3">
                 <img
@@ -104,7 +104,7 @@ function Friends() {
                   alt="카톡프사"
                   className="h-[100px] w-[100px] rounded-lg"
                 />
-                <h1 className="signup-font text-xl font-bold">
+                <h1 className="text-xl font-bold signup-font">
                   {friend.profileNickname}
                 </h1>
               </div>
