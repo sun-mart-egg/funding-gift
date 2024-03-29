@@ -23,8 +23,4 @@ public class PostAttendanceRequest {
     @NotNull(message = "fundingId: 값이 null 이 아니어야 합니다.")
     @Schema(description = "펀딩 ID", example = "1")
     private Long fundingId;
-
-    @NotNull(message = "paymentInfoId: 값이 null 이 아니어야 합니다.")
-    @Schema(description = "결제 내역 ID", example = "1")
-    private Long paymentInfoId;
 }
