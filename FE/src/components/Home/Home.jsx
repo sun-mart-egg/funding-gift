@@ -5,6 +5,9 @@ import { useNavigate } from "react-router-dom";
 import CatIcon from "/imgs/cat.PNG";
 import FishIcon from "/imgs/fish.PNG";
 
+import ImageComingSoon from "/imgs/image_coming_soon.png"
+import ImageComingSoon2 from "/imgs/image_coming_soon2.png"
+
 import ScrollToTop from "../UI/ScrollToTop";
 
 function Home() {
@@ -16,9 +19,12 @@ function Home() {
         <SearchBar />
       </div>
 
-      <div className="mt-[20px] h-[150px] w-[95%] rounded-md bg-gray-100 p-5">
+      {/* <div className="mt-[20px] h-[150px] w-[95%] rounded-md p-5">
         배너 들어갈 자리에요
-      </div>
+        <img src={ImageComingSoon} alt="" className="w-full h-[100%] object-cover"/>
+      </div> */}
+      <p className="font-cusFont4 mt-[20px]">이미지가 준비 중이에요</p>
+      <img src={ImageComingSoon2} alt="" className="h-[150px] w-[95%] rounded-md object-cover"/>
 
       <div className="flex w-[95%]">
         <div
@@ -38,17 +44,17 @@ function Home() {
 
       <div className="mt-[20px] w-[95%] text-left">
         <p className="font-cusFont5 text-2xl">추천 상품</p>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-gray-100 p-5">
-          <p className="">추천 상품이 들어갈 예정입니다!</p>
+        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
+          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
         </div>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-gray-100 p-5">
-          <p className="">추천 상품이 들어갈 예정입니다!</p>
+        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
+          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
         </div>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-gray-100 p-5">
-          <p className="">추천 상품이 들어갈 예정입니다!</p>
+        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
+          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
         </div>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-gray-100 p-5">
-          <p className="">추천 상품이 들어갈 예정입니다!</p>
+        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
+          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
         </div>
       </div>
 

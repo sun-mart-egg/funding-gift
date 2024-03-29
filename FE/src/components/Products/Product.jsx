@@ -209,7 +209,7 @@ function Product() {
 						</button>
 						{/* 토글 목록 */}
 						{toggleListVisible && (
-							<div className="absolute mt-2 w-[25%] flex-row rounded-md border border-gray-300 bg-white p-2 px-[15px] text-center text-[12px]">
+							<div className="absolute right-0 z-50 mt-2 w-[40%] flex-row rounded-md border border-gray-300 bg-white p-2 px-[15px] text-center text-[12px]">
 								<button
 									className="my-1 block w-full text-center"
 									onClick={() => selectToggle("기본 순")}
