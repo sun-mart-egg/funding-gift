@@ -2,7 +2,6 @@ import React, { useState, useRef, forwardRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // useNavigate 사용
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import egg from "/imgs/egg3.jpg";
 import { useStore } from "../../Store/MakeStore";
 import useFormDataStore from "../../Store/FormDataStore";
 import { createFunding } from "../api/CreateFundingAPI";
