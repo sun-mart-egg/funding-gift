@@ -30,8 +30,8 @@ function AccounList({ listData }) {
           key={index}
           name={item.name}
           isDefault={item.isDefault}
-          bank={item.bank}
-          account={item.account}
+          accountBank={item.accountBank}
+          accountNo={item.accountNo}
           isSelected={index === selectedAccountIndex}
           onSelect={() => handleSelect(index)} // onSelect prop 추가
         />
