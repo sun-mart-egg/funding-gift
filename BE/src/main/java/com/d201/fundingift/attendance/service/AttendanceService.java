@@ -7,12 +7,15 @@ import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
 import com.d201.fundingift.attendance.entity.Attendance;
 import com.d201.fundingift.attendance.repository.AttendanceRepository;
 import com.d201.fundingift.consumer.entity.Consumer;
+import com.d201.fundingift.friend.repository.FriendRepository;
 import com.d201.fundingift.funding.entity.Funding;
 import com.d201.fundingift.funding.repository.FundingRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
     private final FundingRepository fundingRepository;
+    private final FriendRepository friendRepository;
     private final SecurityUtil securityUtil;
 
     @Transactional
@@ -32,10 +36,19 @@ public class AttendanceService {
         //펀딩 상태 확인
         checkingFundingStatus(String.valueOf(funding.getFundingStatus()));
 
+        //펀딩 참여자의 친구목록에 펀딩 생성자가 있는지 확인
+        checkingFriend(consumer.getId(), funding.getConsumer().getId());
+
+        //펀딩 생성자가 본인의 친구만 참여 가능하도록 설정 하였는지 확인
+        if(funding.getIsPrivate()) {
+            //펀딩 참여자가 펀딩 생성자의 친구인지 확인
+            checkingFriend(funding.getConsumer().getId(), consumer.getId());
+        }
+
         //최소 금액 만족 확인
         checkingFundingMinPrice(funding.getMinPrice(), postAttendanceRequest.getPrice());
 
-        //펀딩한 금액 더하기,목표 금액 달성시 상태 변경,                                                                                                  목표 금액 이상인 경우 예외
+        //펀딩한 금액 더하기,목표 금액 달성시 상태 변경                                                                                                  목표 금액 이상인 경우 예외
         checkingFundingTargetPrice(postAttendanceRequest.getPrice(), funding);
 
         attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding));
@@ -56,6 +69,11 @@ public class AttendanceService {
 
         if("SUCCESS".equals(fundingStatus) || "FAIL".equals(fundingStatus))
             throw new CustomException(ErrorType.FUNDING_FINISHED);
+    }
+
+    private void checkingFriend(Long consumerId, Long toConsumerId) {
+        friendRepository.findById(consumerId + ":" + toConsumerId)
+                .orElseThrow(() -> new CustomException(ErrorType.FRIEND_NOT_FOUND));
     }
 
     private void checkingFundingMinPrice(Integer minPrice, Integer price) {
