@@ -107,7 +107,7 @@ function MyFunding() {
           <img
             src={userInfo.img}
             alt="프로필"
-            className="h-[80px] w-[80px] rounded-full  border-gray-300"
+            className="h-[60px] w-[60px] rounded-full  border-gray-300"
           />
           <p className="font-cusFont5 text-xl">{userInfo.name}</p>
         </div>
@@ -173,10 +173,9 @@ function MyFunding() {
       </div>
       <button
         onClick={handleCreateFundingClick}
-        className="hover:bg-cusColor3-dark fixed bottom-20 right-4 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-cusColor3 text-white shadow-lg"
+        className="hover:bg-cusColor3-dark fixed bottom-24 right-4 flex h-12 w-12 flex-col items-center justify-center rounded-full bg-cusColor3 text-white shadow-lg"
       >
         <AiOutlinePlus size="20" />
-        <p className="text-xs">펀딩만들기</p>
       </button>
     </div>
   );
