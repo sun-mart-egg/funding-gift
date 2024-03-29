@@ -120,7 +120,6 @@ function ProductDetail() {
         const json = await response.json();
         if (json && json.data && json.data.data) {
           setReviews(json.data.data);
-          console.log(json.data.data)
         } else {
           console.log("No review data available");
           setReviews([]);
@@ -131,7 +130,7 @@ function ProductDetail() {
     };
 
     fetchReview();
-  }, [productId, reviewOption, reviewSort]);
+  }, [productId, reviewOption, reviewSort, reviews]);
 
   const [reviewOptionToggleVisible, setReviewOptionToggleVisible] =
     useState(false);
@@ -153,6 +152,23 @@ function ProductDetail() {
       setReviewOption(optionId);
     }
     setReviewOptionToggleVisible(false); // 토글 닫기
+  };
+
+  // 댓글 삭제
+
+  const handleDeleteReview = (reviewId) => {
+    fetch(import.meta.env.VITE_BASE_URL +`/api/reviews/${reviewId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // 인증 토큰이 필요한 경우
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      fetchReview();
+    })
+    .catch((error) => console.error('Error:', error));
   };
 
   return (
@@ -357,7 +373,7 @@ function ProductDetail() {
                             <div>{review.name}</div>
                           </div>
                           <div className="w-[20%]">
-                            {review.isMe && (<div>삭제</div>)}
+                            {review.isMe && (<div onClick={() => handleDeleteReview((review.reviewId))} className="text-red-500">삭제</div>)}
                           </div>
                         </div>
 
