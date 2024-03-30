@@ -44,7 +44,7 @@ public class FriendController {
     @Operation(summary = "내 친구 목록 조회 (소비자)",
             description = "내 친구들의 친구정보를 조회합니다. `Token`"
     )
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<FriendDto>> getFriends() {
         List<FriendDto> friendDtos = friendService.getFriends();
         return ResponseEntity.ok(friendDtos);

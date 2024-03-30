@@ -106,7 +106,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
                 // 친구 추가 실행 (동의 있을 때만 없을 때 예외처리)
                 friendService.getKakaoFriendsByConsumerId(consumerId);
-
+                log.info("friendService.getKakaoFriendsByConsumerId {}",consumerId);
                 // 회원가입 페이지로 리다이렉트
                 return UriComponentsBuilder.fromUriString(targetUrl)
                         .queryParam("access-token", accessToken)

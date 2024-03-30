@@ -1,5 +1,6 @@
 package com.d201.fundingift.friend.service;
 
+import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.jwt.JwtUtil;
 import com.d201.fundingift._common.jwt.RedisJwtRepository;
 import com.d201.fundingift._common.util.SecurityUtil;
@@ -28,6 +29,9 @@ import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Type;
 import java.util.*;
+
+import static com.d201.fundingift._common.response.ErrorType.KAKAO_FRIEND_NOT_FOUND;
+import static com.d201.fundingift._common.response.ErrorType.USER_NOT_FOUND;
 
 @Service
 @Slf4j
@@ -120,59 +124,40 @@ public class FriendService {
 
             return kakaoFriendsResponse;
         } catch (HttpClientErrorException e) {
-            handleHttpClientErrorException(e, consumerId);
+            new CustomException(KAKAO_FRIEND_NOT_FOUND);
             return null; // 적절한 예외 처리 또는 로그 출력 후 null 반환
         }
     }
 
-    private void handleHttpClientErrorException(HttpClientErrorException e, Long consumerId) {
-        if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
-            log.warn("카카오 친구 목록 접근 권한이 없습니다. 사용자 ID: " + consumerId);
-            // 추가적인 예외 처리 또는 사용자 안내 로직
-        } else {
-            throw e; // 그 외의 경우 예외를 다시 발생시킵니다.
-        }
-    }
-
-
     public List<FriendDto> getFriends() {
         Long consumerId = Long.valueOf(securityUtil.getConsumerId());
-        Set<String> keys = redisTemplate.keys("friend:" + consumerId + ":*");
+        log.info("Retrieving friends for consumerId: {}", consumerId);
+
+        List<Friend> friends = friendRepository.findByConsumerId(consumerId); // FriendRepository에서 consumerId로 조회
+        log.info("Found {} friends for consumerId: {}", friends.size(), consumerId);
+
         List<FriendDto> friendDtos = new ArrayList<>();
 
-        for (String key : keys) {
-            Map<Object, Object> friendData = hashOperations.entries(key);
+        for (Friend friend : friends) {
+            Optional<Consumer> consumerOptional = consumerRepository.findByIdAndDeletedAtIsNull(friend.getToConsumerId());
 
-            // 레디스에서 가져온 데이터로부터 필요한 정보 추출 및 설정
-            Long toConsumerId = Long.valueOf((String) friendData.get("toConsumerId"));
-            Boolean isFavorite = Boolean.valueOf((String) friendData.get("isFavorite"));
-
-            Optional<Consumer> consumerOptional = consumerRepository.findByIdAndDeletedAtIsNull(toConsumerId);
-            // 기본값 설정
-            String profileNickname = "Unknown";
+            String profileNickname = "탈퇴한 회원";
             String profileThumbnailImage = "";
+
             if (consumerOptional.isPresent()) {
                 Consumer consumer = consumerOptional.get();
-                // consumer 객체를 사용하는 로직
-                profileNickname = consumer.getName(); // 사용자 이름으로 닉네임 설정
-                profileThumbnailImage = consumer.getProfileImageUrl(); // 프로필 이미지 URL 설정
-            } else {
-                // consumer 객체를 찾을 수 없는 경우의 처리 로직
+                profileNickname = consumer.getName();
+                profileThumbnailImage = consumer.getProfileImageUrl();
             }
 
-            FriendDto friendDto = FriendDto.builder()
-                    .id(null) // 카카오 소셜 ID는 여기서는 설정하지 않음
-                    .consumerId(toConsumerId)
-                    .favorite(isFavorite)
-                    .profileNickname(profileNickname)
-                    .profileThumbnailImage(profileThumbnailImage)
-                    .build();
-
+            // FriendDto 생성
+            FriendDto friendDto = FriendDto.from(friend, profileNickname, profileThumbnailImage);
             friendDtos.add(friendDto);
         }
 
         return friendDtos;
     }
+
 
     @Transactional
     public void deleteAllFriendsByConsumerId(Long consumerId) {

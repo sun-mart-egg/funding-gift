@@ -31,6 +31,7 @@ public enum ErrorType {
 
     //친구
     FRIEND_NOT_FOUND(HttpStatus.BAD_REQUEST, "내 친구가 아닙니다."),
+    KAKAO_FRIEND_NOT_FOUND(HttpStatus.BAD_REQUEST, "카카오 친구목록 조회에 실패하였습니다."),
 
     // 펀딩
     ANNIVERSARY_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 기념일 카테고리를 찾을 수 없습니다."),

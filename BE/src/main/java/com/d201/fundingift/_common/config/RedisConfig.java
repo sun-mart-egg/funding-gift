@@ -1,5 +1,6 @@
 package com.d201.fundingift._common.config;
 
+import com.d201.fundingift.friend.entity.Friend;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -7,6 +8,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -39,5 +41,16 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         return redisTemplate;
     }
+    @Bean
+    public RedisTemplate<String, Friend> friendRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Friend> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Friend.class));
+        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Friend.class));
+        return template;
+    }
+
+
 
 }

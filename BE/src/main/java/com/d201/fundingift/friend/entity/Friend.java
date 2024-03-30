@@ -17,6 +17,7 @@ public class Friend implements Serializable {
     private String id; //friend:consumerId:toConsumerId
     @Indexed
     private Long consumerId;
+
     @Indexed
     private Long toConsumerId;
     @Indexed
