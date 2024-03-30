@@ -44,6 +44,26 @@ public class WishlistService {
         wishlistRepository.save(Wishlist.from(request, consumerId));
     }
 
+    @Transactional
+    public void deleteWishlistItem(WishlistRequest request) {
+        // 소비자
+        Long consumerId = getConsumerId();
+
+        // 상품, 상품 옵션 유효성 검사
+        validateProductAndOption(request.getProductId(), request.getProductOptionId());
+
+        // 위시리스트
+        Wishlist wishlist = findByConsumerIdAndRequest(consumerId, request);
+
+        // 위시리스트 존재하지 않는 경우
+        if (wishlist == null) {
+            throw new CustomException(WISHLIST_NOT_FOUND);
+        }
+
+        // 위시리스트 저장
+        wishlistRepository.delete(wishlist);
+    }
+
     private void validateProductAndOption(Long productId, Long productOptionId) {
         if (!findProductById(productId).equals(findProductOptionById(productOptionId).getProduct())) {
             throw new CustomException(PRODUCT_OPTION_MISMATCH);

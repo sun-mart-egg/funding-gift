@@ -6,12 +6,10 @@ import com.d201.fundingift.wishlist.dto.request.WishlistRequest;
 import com.d201.fundingift.wishlist.service.WishlistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.d201.fundingift._common.response.SuccessType.CREATE_WISHLIST_SUCCESS;
+import static com.d201.fundingift._common.response.SuccessType.DELETE_WISHLIST_SUCCESS;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,4 +25,12 @@ public class WishlistController {
         wishlistService.createWishlistItem(request);
         return ResponseUtils.ok(CREATE_WISHLIST_SUCCESS);
     }
+
+    @DeleteMapping("")
+    public SuccessResponse<Void> deleteWishlistItem(@RequestBody WishlistRequest request) {
+        log.info("[WishlistController.deleteWishlistItem]");
+        wishlistService.deleteWishlistItem(request);
+        return ResponseUtils.ok(DELETE_WISHLIST_SUCCESS);
+    }
+
 }
