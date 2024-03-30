@@ -61,10 +61,10 @@ public class ConsumerController {
     }
     @Operation(summary = "회원가입 추가정보 등록",
             description = "회원가입 시 필요한 추가정보를 입력 받습니다. `Token` \n" +
-                    "ex)\n" +
-                    "phoneNumber : 01026698294 (최대 20)\n" +
-                    "birthyear : 1996 (yyyy)\n" +
-                    "phoneNumber : 0221 (mmdd)\n" +
+                    "ex) \n" +
+                    "phoneNumber : 01026698294 (최대 20) / \n" +
+                    "birthyear : 1996 (yyyy) / \n" +
+                    "phoneNumber : 0221 (mmdd) / \n" +
                     "gender : male (male or female)\n"
     )
     @ApiResponses(value = {
@@ -74,15 +74,18 @@ public class ConsumerController {
     })
     // 회원가입 추가정보 등록.
     @PutMapping("/info/sign-up")
-    public SuccessResponse<Void> updateConsumerInfo(@RequestParam String phoneNumber,
-                                                   @RequestParam String birthyear,
-                                                   @RequestParam String birthday,
-                                                   @RequestParam String gender
+    public SuccessResponse<Void> updateConsumerInfo(@RequestParam (required = false) String phoneNumber,
+                                                   @RequestParam (required = false) String birthyear,
+                                                   @RequestParam (required = false) String birthday,
+                                                   @RequestParam (required = false) String gender
                                                    ) {
         consumerService.updateConsumerInfo(phoneNumber, birthyear, birthday, gender);
         return ResponseUtils.ok(SuccessType.PUT_CONSUMER_ADDITION_INFO_SUCCESS);
     }
 
+    @Operation(summary = "소비자 로그아웃",
+            description = "Redis의 저장된 토큰을 모두 삭제하여 로그아웃 합니다. `Token`"
+    )
     // 로그아웃
     @PostMapping("/logout")
     public SuccessResponse<Void> postLogoutUser() {
