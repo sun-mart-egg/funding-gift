@@ -1,9 +1,11 @@
 import { useEffect } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
+import { useCookies } from "react-cookie"
 
 function LoginCallback() {
     const [searchParams] = useSearchParams()
     const navigate = useNavigate()
+    const [cookies, setCookie] = useCookies(["access-token", "consumer-id"])
 
     useEffect(() => {
         async function getTokens() {
@@ -18,12 +20,14 @@ function LoginCallback() {
             if (accessToken !== null) {
                 localStorage.setItem("access-token", accessToken)
                 localStorage.setItem("consumer-id", consumerId)
+                setCookie("access-token", accessToken)
+                setCookie("consumer-id", consumerId)
                 console.log("토큰 : ", accessToken)
                 console.log("멤버 ID : ", consumerId)
             }
 
             // localStroage에서 access-token을 받아왔다면
-            if (localStorage.getItem("access-token")) {
+            if (cookies["access-token"]) {
 
                 // nextPage의 값이 main이다 === 기존 회원
                 // 메인 페이지로 돌려보낸다.
