@@ -8,6 +8,7 @@ public enum SuccessType {
     LOGIN_SUCCESS("로그인에 성공하였습니다."),
     LOGOUT_SUCCESS("로그아웃에 성공하였습니다."),
     GET_CONSUMER_INFO_SUCCESS("사용자 정보 조회에 성공하였습니다."),
+    PUT_CONSUMER_ADDITION_INFO_SUCCESS("추가 정보 입력에 성공하였습니다."),
 
     // 친구
     GET_KAKAO_FRIEND_INFO_SUCCESS("카카오 친구 목록 조회에 성공하였습니다."),

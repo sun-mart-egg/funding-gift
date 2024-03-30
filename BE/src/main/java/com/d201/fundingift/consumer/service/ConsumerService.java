@@ -108,6 +108,15 @@ public class ConsumerService {
         redisJwtRepository.deleteKakaoAccessToken(consumerId);
 
     }
+    @Transactional
+    public void updateConsumerInfo(String phoneNumber, String birthyear, String birthday, String gender) {
+        Long consumerId = Long.valueOf(securityUtil.getConsumer().getId());
+        Consumer consumer = consumerRepository.findById(consumerId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        log.info("{} 사용자의 추가 정보 기입",consumerId);
+        consumer.updateInfoSignUp(phoneNumber, birthyear, birthday, gender);
+        consumerRepository.save(consumer);
+    }
 
     @Transactional
     public void deleteConsumer(Long consumerId) {

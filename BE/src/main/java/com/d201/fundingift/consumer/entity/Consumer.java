@@ -76,4 +76,11 @@ public class Consumer extends BaseTime {
         this.gender = gender;
     }
 
+    public void updateInfoSignUp(String phoneNumber, String birthyear, String birthday, String gender) {
+        this.phoneNumber = phoneNumber;
+        this.birthyear = birthyear;
+        this.birthday = birthday;
+        this.gender = gender;
+    }
+
 }

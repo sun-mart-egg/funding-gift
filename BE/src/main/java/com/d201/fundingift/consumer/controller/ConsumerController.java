@@ -59,6 +59,29 @@ public class ConsumerController {
         log.info("ConsumerController.getConsumerProfile");
         return ResponseUtils.ok(consumerService.getConsumerInfoById(consumerId), SuccessType.GET_CONSUMER_INFO_SUCCESS); // 여기서 SuccessType은 상황에 맞게 조정
     }
+    @Operation(summary = "회원가입 추가정보 등록",
+            description = "회원가입 시 필요한 추가정보를 입력 받습니다. `Token` \n" +
+                    "ex)\n" +
+                    "phoneNumber : 01026698294 (최대 20)\n" +
+                    "birthyear : 1996 (yyyy)\n" +
+                    "phoneNumber : 0221 (mmdd)\n" +
+                    "gender : male (male or female)\n"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true)
+    })
+    // 회원가입 추가정보 등록.
+    @PutMapping("/info/sign-up")
+    public SuccessResponse<Void> updateConsumerInfo(@RequestParam String phoneNumber,
+                                                   @RequestParam String birthyear,
+                                                   @RequestParam String birthday,
+                                                   @RequestParam String gender
+                                                   ) {
+        consumerService.updateConsumerInfo(phoneNumber, birthyear, birthday, gender);
+        return ResponseUtils.ok(SuccessType.PUT_CONSUMER_ADDITION_INFO_SUCCESS);
+    }
 
     // 로그아웃
     @PostMapping("/logout")
