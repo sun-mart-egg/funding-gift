@@ -31,8 +31,8 @@ public class Friend implements Serializable {
         this.isFavorite = isFavorite;
     }
 
-    public void updateIsFavorite(Boolean flag) {
-        this.isFavorite = flag;
+    public void toggleFavorite() {
+        this.isFavorite = !this.isFavorite;
     }
 
     // Friend 엔티티 내에 추가

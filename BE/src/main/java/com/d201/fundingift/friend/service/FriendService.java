@@ -30,8 +30,7 @@ import org.springframework.web.client.RestTemplate;
 import java.lang.reflect.Type;
 import java.util.*;
 
-import static com.d201.fundingift._common.response.ErrorType.KAKAO_FRIEND_NOT_FOUND;
-import static com.d201.fundingift._common.response.ErrorType.USER_NOT_FOUND;
+import static com.d201.fundingift._common.response.ErrorType.*;
 
 @Service
 @Slf4j
@@ -158,6 +157,19 @@ public class FriendService {
         return friendDtos;
     }
 
+    @Transactional
+    public void toggleFavorite(Long toConsumerId) {
+        Long consumerId = Long.valueOf(securityUtil.getConsumerId());
+        log.info("consumerId {}",consumerId);
+        log.info("toConsumerId {}",toConsumerId);
+        Friend friend = friendRepository.findByConsumerIdAndToConsumerId(consumerId, toConsumerId);
+        if (friend != null) {
+            friend.toggleFavorite();
+            friendRepository.save(friend);
+        } else {
+            throw new CustomException(FRIEND_RELATIONSHIP_NOT_FOUND);
+        }
+    }
 
     @Transactional
     public void deleteAllFriendsByConsumerId(Long consumerId) {
