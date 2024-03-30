@@ -30,6 +30,10 @@ public enum SuccessType {
     GET_REVIEWS_BY_PRODUCT_SUCCESS("상품 별 리뷰 목록 조회에 성공하였습니다."),
     UPDATE_REVIEW_SUCCESS("리뷰 수정에 성공하였습니다."),
     DELETE_REVIEW_SUCCESS("리뷰 삭제에 성공하였습니다."),
+
+    // 위시리스트
+    CREATE_WISHLIST_SUCCESS("위시리스트 등록에 성공하였습니다."),
+    DELETE_WISHLIST_SUCCESS("위시리스트 삭제에 성공하였습니다."),
     ;
 
     private final String msg;
