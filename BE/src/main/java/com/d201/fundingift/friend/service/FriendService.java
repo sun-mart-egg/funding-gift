@@ -9,6 +9,7 @@ import com.d201.fundingift.friend.dto.FriendDto;
 import com.d201.fundingift.friend.dto.response.GetKakaoFriendsResponse;
 import com.d201.fundingift.friend.entity.Friend;
 
+import com.d201.fundingift.friend.repository.FriendRepository;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -38,6 +39,7 @@ public class FriendService {
 
     private final ConsumerRepository consumerRepository;
     private final RedisJwtRepository redisJwtRepository;
+    private final FriendRepository friendRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final SecurityUtil securityUtil;
     private final JwtUtil jwtUtil;
@@ -83,16 +85,12 @@ public class FriendService {
             List<FriendDto> friendList = gson.fromJson(jsonResponse.get("elements"), listType);
 
             // Redis에 친구 추가.
-            for (FriendDto f : friendList) {
-                consumerRepository.findBySocialIdAndDeletedAtIsNull(f.getId().toString()).ifPresent(consumer -> {
-                    f.setConsumerId(consumer.getId());
-                    Friend friend = Friend.builder()
-                            .consumerId(consumerId)  // 이용자 ID
-                            .toConsumerId(consumer.getId())  // 친구의 사용자 ID
-                            .isFavorite(f.getFavorite())
-                            .build();
-
-                    saveFriend(friend);
+            for (FriendDto friendDto : friendList) {
+                consumerRepository.findBySocialIdAndDeletedAtIsNull(friendDto.getId().toString()).ifPresent(consumer -> {
+                    friendDto.setConsumerId(consumer.getId());
+                    // Friend 객체 생성 후 저장
+                    Friend friend = Friend.fromFriendDto(consumerId, friendDto, consumer.getId());
+                    friendRepository.save(friend);
                 });
             }
 
@@ -124,17 +122,6 @@ public class FriendService {
             }
             throw e; // 그 외의 경우 예외를 다시 발생시킵니다.
         }
-    }
-
-    public void saveFriend(Friend friend) {
-        // consumerId와 toConsumerId를 조합하여 고유한 키 생성
-        String key = "friend:" + friend.getConsumerId() + ":" + friend.getToConsumerId();
-        Map<String, Object> friendMap = new HashMap<>();
-        friendMap.put("consumerId", String.valueOf(friend.getConsumerId()));
-        friendMap.put("toConsumerId", String.valueOf(friend.getToConsumerId()));
-        friendMap.put("isFavorite", String.valueOf(friend.getIsFavorite()));
-
-        hashOperations.putAll(key, friendMap);
     }
 
     public List<FriendDto> getFriends() {
