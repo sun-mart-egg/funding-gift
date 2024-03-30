@@ -4,7 +4,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useStore } from "../../Store/MakeStore";
 import useFormDataStore from "../../Store/FormDataStore";
-import { createFunding } from "../api/CreateFundingAPI";
+import { createFunding } from "../api/FundingAPI";
 import { useLocation } from "react-router-dom";
 import useProductStore from "../../Store/ProductStore";
 
