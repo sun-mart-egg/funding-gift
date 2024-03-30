@@ -4,6 +4,7 @@ import com.d201.fundingift._common.entity.BaseTime;
 import com.d201.fundingift.account.entity.Account;
 import com.d201.fundingift.address.entity.Address;
 import com.d201.fundingift.attendance.entity.Attendance;
+import com.d201.fundingift.consumer.dto.request.PutConsumerInfoRequestDto;
 import com.d201.fundingift.interest.entity.Interest;
 import com.d201.fundingift.review.entity.Review;
 import jakarta.persistence.*;
@@ -76,11 +77,13 @@ public class Consumer extends BaseTime {
         this.gender = gender;
     }
 
-    public void updateInfoSignUp(String phoneNumber, String birthyear, String birthday, String gender) {
-        this.phoneNumber = phoneNumber;
-        this.birthyear = birthyear;
-        this.birthday = birthday;
-        this.gender = gender;
+    public void updateInfo(PutConsumerInfoRequestDto dto) {
+        this.name = dto.getName();
+        this.email = dto.getEmail();
+        this.phoneNumber = dto.getPhoneNumber();
+        this.birthyear = dto.getBirthyear();
+        this.birthday = dto.getBirthday();
+        this.gender = dto.getGender();
     }
 
 }
