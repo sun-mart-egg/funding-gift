@@ -407,15 +407,15 @@ function MakeFundingDetail() {
             <>
               <button
                 onClick={handlePrev}
-                style={{ width: "calc(40% - 10px)" }} // 버튼 너비 조정
-                className="common-btn border-cus border border-cusColor3 bg-white text-black "
+                style={{ width: "calc(45%)" }} // 버튼 너비 조정
+                className="common-btn border-cus h-[45px] border border-cusColor3 bg-white text-black "
               >
                 이전
               </button>
               <button
                 onClick={handleNext}
-                style={{ width: "calc(40% - 10px)" }} // 버튼 너비 조정
-                className="common-btn"
+                style={{ width: "calc(45%)" }} // 버튼 너비 조정
+                className=" common-btn h-[45px]"
               >
                 다음
               </button>
@@ -424,7 +424,7 @@ function MakeFundingDetail() {
             <button
               onClick={handleNext}
               style={{ width: "calc(75% )" }} // 버튼 너비 조정
-              className="common-btn"
+              className="common-btn h-[45px]"
             >
               다음
             </button>
