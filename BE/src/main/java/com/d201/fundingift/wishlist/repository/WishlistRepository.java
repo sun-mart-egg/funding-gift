@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface WishlistRepository extends CrudRepository<Wishlist, Long> {
 
-    Optional<Wishlist> findByConsumerId(Long consumerId);
     Optional<Wishlist> findByConsumerIdAndProductIdAndProductOptionId(Long consumerId, Long productId, Long productOptionId);
 
 }

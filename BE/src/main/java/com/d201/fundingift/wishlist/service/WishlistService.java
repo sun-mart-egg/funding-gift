@@ -2,6 +2,9 @@ package com.d201.fundingift.wishlist.service;
 
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.util.SecurityUtil;
+import com.d201.fundingift.product.entity.Product;
+import com.d201.fundingift.product.entity.ProductOption;
+import com.d201.fundingift.product.repository.ProductOptionRepository;
 import com.d201.fundingift.product.repository.ProductRepository;
 import com.d201.fundingift.wishlist.dto.request.WishlistRequest;
 import com.d201.fundingift.wishlist.entity.Wishlist;
@@ -11,8 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.d201.fundingift._common.response.ErrorType.PRODUCT_NOT_FOUND;
-import static com.d201.fundingift._common.response.ErrorType.WISHLIST_DUPLICATED;
+import static com.d201.fundingift._common.response.ErrorType.*;
 
 @Slf4j
 @Service
@@ -22,6 +24,7 @@ public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
     private final ProductRepository productRepository;
+    private final ProductOptionRepository productOptionRepository;
     private final SecurityUtil securityUtil;
 
     @Transactional
@@ -29,8 +32,8 @@ public class WishlistService {
         // 소비자
         Long consumerId = getConsumerId();
 
-        // 상품 ID 유효성 검사
-        validateProductId(request.getProductId());
+        // 상품, 상품 옵션 유효성 검사
+        validateProductAndOption(request.getProductId(), request.getProductOptionId());
 
         // 위시리스트 이미 존재하는 경우
         if (findByConsumerIdAndRequest(consumerId, request) != null) {
@@ -41,9 +44,20 @@ public class WishlistService {
         wishlistRepository.save(Wishlist.from(request, consumerId));
     }
 
-    private void validateProductId(Long productId) {
-        productRepository.findById(productId)
+    private void validateProductAndOption(Long productId, Long productOptionId) {
+        if (!findProductById(productId).equals(findProductOptionById(productOptionId).getProduct())) {
+            throw new CustomException(PRODUCT_OPTION_MISMATCH);
+        }
+    }
+
+    private Product findProductById(Long productId) {
+        return productRepository.findById(productId)
                 .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+    }
+
+    private ProductOption findProductOptionById(Long productOptionId) {
+        return productOptionRepository.findByIdAndStatusIsNotInactive(productOptionId)
+                .orElseThrow(() -> new CustomException(PRODUCT_OPTION_NOT_FOUND));
     }
 
     private Long getConsumerId() {

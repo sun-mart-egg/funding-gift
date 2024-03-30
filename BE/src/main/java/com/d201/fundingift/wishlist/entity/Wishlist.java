@@ -14,11 +14,15 @@ import java.io.Serializable;
 public class Wishlist implements Serializable {
 
     @Id
-    private Long wishlistId;
+    private String wishlistId;
+
     @Indexed
     private Long consumerId;
+
     @Indexed
     private Long productId;
+
+    @Indexed
     private Long productOptionId;
 
     @Builder
