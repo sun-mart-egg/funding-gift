@@ -2,8 +2,9 @@ package com.d201.fundingift.wishlist.controller;
 
 import com.d201.fundingift._common.response.ErrorResponse;
 import com.d201.fundingift._common.response.ResponseUtils;
+import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.response.SuccessResponse;
-import com.d201.fundingift.wishlist.dto.request.WishlistRequest;
+import com.d201.fundingift.wishlist.dto.WishlistDto;
 import com.d201.fundingift.wishlist.service.WishlistService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,8 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
-import static com.d201.fundingift._common.response.SuccessType.CREATE_WISHLIST_SUCCESS;
-import static com.d201.fundingift._common.response.SuccessType.DELETE_WISHLIST_SUCCESS;
+import static com.d201.fundingift._common.response.SuccessType.*;
 
 @Tag(name = "wishlists", description = "위시리스트 관련 API")
 @Slf4j
@@ -38,13 +38,12 @@ public class WishlistController {
             description = "토큰이 없는 경우 / 잘못된 productId / 잘못된 productOptionId / 상품과 상품 옵션이 매칭 되지 않는 경우",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @PostMapping("")
-    public SuccessResponse<Void> createWishlistItem(@RequestBody WishlistRequest request) {
+    public SuccessResponse<Void> createWishlistItem(@RequestBody WishlistDto request) {
         log.info("[WishlistController.createWishlistItem]");
         wishlistService.createWishlistItem(request);
         return ResponseUtils.ok(CREATE_WISHLIST_SUCCESS);
     }
 
-    @DeleteMapping("")
     @Operation(summary = "위시리스트 삭제",
             description = """
                            `token` \n
@@ -56,10 +55,35 @@ public class WishlistController {
     @ApiResponse(responseCode = "400",
             description = "토큰이 없는 경우 / 잘못된 productId / 잘못된 productOptionId / 상품과 상품 옵션이 매칭 되지 않는 경우",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    public SuccessResponse<Void> deleteWishlistItem(@RequestBody WishlistRequest request) {
+    @DeleteMapping("")
+    public SuccessResponse<Void> deleteWishlistItem(@RequestBody WishlistDto request) {
         log.info("[WishlistController.deleteWishlistItem]");
         wishlistService.deleteWishlistItem(request);
         return ResponseUtils.ok(DELETE_WISHLIST_SUCCESS);
     }
 
+    @Operation(summary = "위시리스트 조회",
+            description = """
+                           `token` \n
+                           유저의 위시리스트 목록을 조회합니다. \n
+                           Query Parameter로 page, size 넣어주세요.
+                           결과로 data, page, size, hasNext를 반환합니다.
+                           - data: 응답 데이터
+                           - page: 현재 페이지 번호
+                           - size: 현재 데이터 개수
+                           - hasNext: 다음 페이지 존재 여부
+                           """)
+    @ApiResponse(responseCode = "200",
+            description = "성공",
+            useReturnTypeSchema = true)
+    @ApiResponse(responseCode = "400",
+            description = "토큰이 없는 경우",
+            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    @GetMapping("")
+    public SuccessResponse<SliceList<WishlistDto>> getWishlists
+                (@Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam Integer page,
+                 @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam Integer size) {
+        log.info("[WishlistController.getWishlists]");
+        return ResponseUtils.ok(wishlistService.getWishlists(page, size), GET_WISHLISTS_SUCCESS);
+    }
 }

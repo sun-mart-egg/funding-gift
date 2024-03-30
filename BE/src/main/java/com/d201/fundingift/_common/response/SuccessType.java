@@ -34,6 +34,7 @@ public enum SuccessType {
     // 위시리스트
     CREATE_WISHLIST_SUCCESS("위시리스트 등록에 성공하였습니다."),
     DELETE_WISHLIST_SUCCESS("위시리스트 삭제에 성공하였습니다."),
+    GET_WISHLISTS_SUCCESS("위시리스트 목록 조회에 성공하였습니다."),
     ;
 
     private final String msg;

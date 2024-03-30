@@ -1,18 +1,24 @@
 package com.d201.fundingift.wishlist.service;
 
 import com.d201.fundingift._common.exception.CustomException;
+import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.entity.ProductOption;
 import com.d201.fundingift.product.repository.ProductOptionRepository;
 import com.d201.fundingift.product.repository.ProductRepository;
-import com.d201.fundingift.wishlist.dto.request.WishlistRequest;
+import com.d201.fundingift.wishlist.dto.WishlistDto;
 import com.d201.fundingift.wishlist.entity.Wishlist;
 import com.d201.fundingift.wishlist.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 import static com.d201.fundingift._common.response.ErrorType.*;
 
@@ -28,7 +34,7 @@ public class WishlistService {
     private final SecurityUtil securityUtil;
 
     @Transactional
-    public void createWishlistItem(WishlistRequest request) {
+    public void createWishlistItem(WishlistDto request) {
         // 소비자
         Long consumerId = getConsumerId();
 
@@ -45,7 +51,7 @@ public class WishlistService {
     }
 
     @Transactional
-    public void deleteWishlistItem(WishlistRequest request) {
+    public void deleteWishlistItem(WishlistDto request) {
         // 소비자
         Long consumerId = getConsumerId();
 
@@ -64,6 +70,21 @@ public class WishlistService {
         wishlistRepository.delete(wishlist);
     }
 
+    public SliceList<WishlistDto> getWishlists(Integer page, Integer size) {
+        // 소비자
+        Long consumerId = getConsumerId();
+
+        // 페이징
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 조회
+        Slice<Wishlist> wishlists = wishlistRepository.findAllSliceByConsumerId(consumerId, pageable);
+
+        // 결과 반환 (수정 필요)
+        return SliceList.from(wishlists.stream().map(WishlistDto::from).collect(Collectors.toList()),
+                                wishlists.getPageable(),
+                                wishlists.hasNext());
+    }
     private void validateProductAndOption(Long productId, Long productOptionId) {
         if (!findProductById(productId).equals(findProductOptionById(productOptionId).getProduct())) {
             throw new CustomException(PRODUCT_OPTION_MISMATCH);
@@ -84,7 +105,7 @@ public class WishlistService {
         return securityUtil.getConsumerId();
     }
 
-    private Wishlist findByConsumerIdAndRequest(Long consumerId, WishlistRequest request) {
+    private Wishlist findByConsumerIdAndRequest(Long consumerId, WishlistDto request) {
         return wishlistRepository.findByConsumerIdAndProductIdAndProductOptionId
                         (consumerId, request.getProductId(), request.getProductOptionId())
                         .orElse(null);
