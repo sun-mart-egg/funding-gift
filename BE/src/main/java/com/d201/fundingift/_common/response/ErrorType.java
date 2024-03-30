@@ -51,6 +51,10 @@ public enum ErrorType {
 
     // 리뷰
     REVIEW_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 리뷰를 찾을 수 없습니다."),
+
+    // 위시리스트
+    WISHLIST_DUPLICATED(HttpStatus.BAD_REQUEST, "이미 위시리스트에 등록된 상품입니다."),
+    WISHLIST_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 위시리스트를 찾을 수 없습니다."),
     ;
 
     private HttpStatus httpStatus;

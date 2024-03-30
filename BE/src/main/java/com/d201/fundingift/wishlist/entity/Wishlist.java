@@ -1,5 +1,6 @@
 package com.d201.fundingift.wishlist.entity;
 
+import com.d201.fundingift.wishlist.dto.request.WishlistRequest;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -13,10 +14,15 @@ import java.io.Serializable;
 public class Wishlist implements Serializable {
 
     @Id
-    private Long wishlistId;
+    private String wishlistId;
+
     @Indexed
     private Long consumerId;
+
+    @Indexed
     private Long productId;
+
+    @Indexed
     private Long productOptionId;
 
     @Builder
@@ -24,6 +30,14 @@ public class Wishlist implements Serializable {
         this.consumerId = consumerId;
         this.productId = productId;
         this.productOptionId = productOptionId;
+    }
+
+    public static Wishlist from(WishlistRequest request, Long consumerId) {
+        return builder()
+                .consumerId(consumerId)
+                .productId(request.getProductId())
+                .productOptionId(request.getProductOptionId())
+                .build();
     }
 
 }
