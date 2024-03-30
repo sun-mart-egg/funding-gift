@@ -60,69 +60,80 @@ public class FriendService {
 
         // 카카오 액세스 토큰 가져오기
         String kakaoAccessToken = redisJwtRepository.getKakaoAccessToken(consumerId);
+        List<FriendDto> allFriends = new ArrayList<>();
+        String nextUrl = FRIENDS_LIST_SERVICE_URL;
+
+        // totalCount와 favoriteCount 초기화
+        int totalCount = 0;
+        int favoriteCount = 0;
 
         try {
-            // 카카오 API에 요청
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + kakaoAccessToken);
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<String> response = restTemplate.exchange(
-                    FRIENDS_LIST_SERVICE_URL,
-                    HttpMethod.GET,
-                    entity,
-                    String.class
-            );
+            // 반복하여 모든 친구 정보 가져오기
+            while (nextUrl != null) {
+                HttpEntity<String> entity = new HttpEntity<>(headers);
+                ResponseEntity<String> response = restTemplate.exchange(
+                        nextUrl,
+                        HttpMethod.GET,
+                        entity,
+                        String.class
+                );
 
-            // 최상위 JSON 객체 파싱
-            JsonObject jsonResponse = JsonParser.parseString(response.getBody()).getAsJsonObject();
+                // JSON 응답 파싱
+                JsonObject jsonResponse = JsonParser.parseString(response.getBody()).getAsJsonObject();
 
-            // "elements" 키에 해당하는 JSON 배열을 가져와서 List<FriendDto>로 변환
-            Gson gson = new Gson();
-            Type listType = new TypeToken<List<FriendDto>>(){}.getType();
-            List<FriendDto> friendList = gson.fromJson(jsonResponse.get("elements"), listType);
+                // 친구 정보 파싱 및 추가
+                Gson gson = new Gson();
+                Type listType = new TypeToken<List<FriendDto>>(){}.getType();
+                List<FriendDto> friendList = gson.fromJson(jsonResponse.get("elements"), listType);
+                allFriends.addAll(friendList);
 
-            // Redis에 친구 추가.
-            for (FriendDto friendDto : friendList) {
-                consumerRepository.findBySocialIdAndDeletedAtIsNull(friendDto.getId().toString()).ifPresent(consumer -> {
-                    friendDto.setConsumerId(consumer.getId());
-                    // Friend 객체 생성 후 저장
-                    Friend friend = Friend.fromFriendDto(consumerId, friendDto, consumer.getId());
-                    friendRepository.save(friend);
-                });
-            }
+                // totalCount와 favoriteCount 업데이트
+                totalCount = jsonResponse.get("total_count").getAsInt();
+                favoriteCount = jsonResponse.get("favorite_count").getAsInt();
 
-            String afterUrl = null;
-            if (jsonResponse.has("after_url") && !jsonResponse.get("after_url").isJsonNull()) {
-                afterUrl = jsonResponse.get("after_url").getAsString();
+                // Redis에 친구 추가 (로직 동일하게 유지)
+                for (FriendDto friendDto : friendList) {
+                    consumerRepository.findBySocialIdAndDeletedAtIsNull(friendDto.getId().toString()).ifPresent(consumer -> {
+                        friendDto.setConsumerId(consumer.getId());
+                        Friend friend = Friend.fromFriendDto(consumerId, friendDto, consumer.getId());
+                        log.info("Creating Friend with ID: " + friend.getId());
+                        log.info("다음과 친구가 되었습니다: " + consumer.getId());
+                        friendRepository.save(friend);
+                    });
+                }
+
+                // 다음 페이지 URL 업데이트
+                nextUrl = jsonResponse.has("after_url") && !jsonResponse.get("after_url").isJsonNull()
+                        ? jsonResponse.get("after_url").getAsString() : null;
             }
 
             // GetKakaoFriendsResponse 객체 생성
-            GetKakaoFriendsResponse kakaoFriendsResponse = GetKakaoFriendsResponse.builder()
-                    .afterUrl(afterUrl)
-                    .elements(friendList)
-                    .totalCount(jsonResponse.get("total_count").getAsInt())
-                    .favoriteCount(jsonResponse.get("favorite_count").getAsInt())
-                    .build();
+            GetKakaoFriendsResponse kakaoFriendsResponse = GetKakaoFriendsResponse.from(allFriends, totalCount, favoriteCount);
 
             // 로그에 친구의 닉네임 출력
-            for (FriendDto friend : kakaoFriendsResponse.getElements()) {
-                log.info(friend.getProfileNickname());
-            }
+            allFriends.forEach(friend -> log.info(friend.getProfileNickname()));
 
             return kakaoFriendsResponse;
         } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
-                log.warn("카카오 친구 목록 접근 권한이 없습니다. 사용자 ID: " + consumerId);
-                // 필요한 경우 사용자에게 권한 부여 요청 등의 추가 조치를 안내할 수 있습니다.
-                // 여기에서는 빈 목록을 반환하거나, 권한 없음을 나타내는 응답을 반환할 수 있습니다.
-                return null; // 빈 응답 객체 반환
-            }
+            handleHttpClientErrorException(e, consumerId);
+            return null; // 적절한 예외 처리 또는 로그 출력 후 null 반환
+        }
+    }
+
+    private void handleHttpClientErrorException(HttpClientErrorException e, Long consumerId) {
+        if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
+            log.warn("카카오 친구 목록 접근 권한이 없습니다. 사용자 ID: " + consumerId);
+            // 추가적인 예외 처리 또는 사용자 안내 로직
+        } else {
             throw e; // 그 외의 경우 예외를 다시 발생시킵니다.
         }
     }
+
 
     public List<FriendDto> getFriends() {
         Long consumerId = Long.valueOf(securityUtil.getConsumerId());

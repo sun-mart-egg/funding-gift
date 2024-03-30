@@ -33,4 +33,13 @@ public class GetKakaoFriendsResponse {
         this.totalCount = totalCount;
         this.favoriteCount = favoriteCount;
     }
+
+    public static GetKakaoFriendsResponse from(List<FriendDto> elements, int totalCount, int favoriteCount) {
+        return GetKakaoFriendsResponse.builder()
+                .elements(elements)
+                .totalCount(totalCount)
+                .favoriteCount(favoriteCount)
+                .build();
+    }
+
 }
