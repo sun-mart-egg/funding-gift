@@ -62,7 +62,7 @@ function MyFunding() {
     fetchMyFundings(token, setMyFundings, setIsLoading);
   }, []);
 
-  //버튼 클릭 시 바뀌는 거.
+  //버튼 클릭 시 api 불러오는거 연결
   const handleClickButton = (e) => {
     const token = localStorage.getItem("access-token");
     const buttonName = e.target.name;
