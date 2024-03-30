@@ -32,7 +32,7 @@ function InputProfile() {
   };
 
   return (
-    <div className="sub-layer gap-3">
+    <div className="sub-layer gap-4">
       <img src={SignupLogo} alt="회원가입로고" className="m-3" />
       <div className="flex w-[330px] justify-between">
         <input

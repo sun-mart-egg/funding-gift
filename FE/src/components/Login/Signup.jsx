@@ -24,7 +24,7 @@ function Signup() {
   };
 
   return (
-    <div className="sub-layer gap-3">
+    <div className="sub-layer gap-4">
       <img src={SignupLogo} alt="회원가입로고" className="m-3" />
       <p className="signup-font">물건을 받을 주소를 입력해주세용</p>
 
