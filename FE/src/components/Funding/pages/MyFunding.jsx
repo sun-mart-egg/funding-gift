@@ -62,6 +62,7 @@ function MyFunding() {
     fetchMyFundings(token, setMyFundings, setIsLoading);
   }, []);
 
+  //버튼 클릭 시 바뀌는 거.
   const handleClickButton = (e) => {
     const token = localStorage.getItem("access-token");
     const buttonName = e.target.name;
