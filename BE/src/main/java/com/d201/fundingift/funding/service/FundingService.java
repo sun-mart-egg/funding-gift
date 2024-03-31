@@ -9,6 +9,7 @@ import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import com.d201.fundingift.friend.entity.Friend;
 import com.d201.fundingift.friend.repository.FriendRepository;
 import com.d201.fundingift.funding.dto.request.PostFundingRequest;
+import com.d201.fundingift.funding.dto.response.GetFundingDetailResponse;
 import com.d201.fundingift.funding.dto.response.GetFundingResponse;
 import com.d201.fundingift.funding.entity.AnniversaryCategory;
 import com.d201.fundingift.funding.entity.Funding;
@@ -133,6 +134,33 @@ public class FundingService {
         }
     }
 
+    //펀딩 상세 조회
+    public GetFundingDetailResponse getFundingDetailResponse(Long fundingId) {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        Funding funding = getFunding(fundingId);
+        Long fundingConsumerId = funding.getConsumer().getId();
+
+        //내 펀딩인지 확인
+        if(!Objects.equals(myConsumerId, fundingConsumerId)) {
+
+            //보려는 펀딩 목록의 대상이 자신의 친구인지 확인
+            checkingFriend(myConsumerId, fundingConsumerId);
+
+            //글 허용범위가 펀딩 생성자의 친한 친구 인지 확인
+            if(funding.getIsPrivate()) {
+                checkingIsFavoriteFriendOrElseThrow(fundingConsumerId, myConsumerId);
+            }
+        }
+
+        return GetFundingDetailResponse.from(funding);
+    }
+
+    private Funding getFunding(Long fundingId) {
+        return fundingRepository.findById(fundingId)
+                .orElseThrow(() -> new CustomException(ErrorType.FUNDING_NOT_FOUND));
+    }
+
     //제품과 제품 옵션이 맞는지 확인
     private void checkingProductAndProductOptionIsSame(Product product, ProductOption productOption) {
 
@@ -196,6 +224,11 @@ public class FundingService {
 
         //보려는 펀딩 목록의 대상에 본인이 친구가 아니거나 친한 친구가 아닌 경우 -> false
         return friend.isPresent() && friend.get().getIsFavorite();
+    }
+
+    private void checkingIsFavoriteFriendOrElseThrow(Long toConsumerId, Long consumerId) {
+        friendRepository.findById(toConsumerId + ":" + consumerId)
+                .orElseThrow(() -> new CustomException(ErrorType.FRIEND_NOT_IS_FAVORITE));
     }
 
     private AnniversaryCategory getAnniversaryCategory(PostFundingRequest postFundingRequest) {

@@ -6,6 +6,7 @@ import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift.funding.dto.request.PostFundingRequest;
+import com.d201.fundingift.funding.dto.response.GetFundingDetailResponse;
 import com.d201.fundingift.funding.dto.response.GetFundingResponse;
 import com.d201.fundingift.funding.service.FundingService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -125,5 +126,25 @@ public class FundingController {
             @RequestParam(name="consumer-id") Long consumerId
     ) {
         return ResponseUtils.ok(fundingService.getFundingsStory(consumerId), GET_FUNDINGS_STORY_SUCCESS);
+    }
+
+    @Operation(summary = "펀딩 상세 조회",
+            description = """
+                           `token` \n
+                           펀딩 상세 조회입니다. \n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부 / 보려는 펀딩 목록의 대상이 자신의 친구가 아닐 경우/ 펀딩 생성자의 친한 친구만 보도록 설정했을 때 그렇지 않은 경우",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
+    @GetMapping("/detail/{funding-id}")
+    public SuccessResponse<GetFundingDetailResponse> getFundingDetailResponse(@PathVariable(required = true, name = "funding-id") Long fundingId) {
+        return ResponseUtils.ok(fundingService.getFundingDetailResponse(fundingId), GET_FUNDING_DETAIL_SUCCESS);
     }
 }
