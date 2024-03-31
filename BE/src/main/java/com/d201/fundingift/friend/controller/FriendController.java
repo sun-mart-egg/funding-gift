@@ -53,7 +53,7 @@ public class FriendController {
     @Operation(summary = "친한친구 설정 변경",
             description = "해당 친구와의 친한친구 관계를 토글합니다. `Token`"
     )
-    @PatchMapping("/{to-consumer-id}/toggle-favorite")
+    @PutMapping("/{to-consumer-id}/toggle-favorite")
     public ResponseEntity<?> toggleFavorite(@PathVariable("to-consumer-id") Long toConsumerId) {
         friendService.toggleFavorite(toConsumerId);
         return ResponseEntity.ok().build();

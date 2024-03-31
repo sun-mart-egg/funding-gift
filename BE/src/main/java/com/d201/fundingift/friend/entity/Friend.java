@@ -36,7 +36,7 @@ public class Friend implements Serializable {
     }
 
     // Friend 엔티티 내에 추가
-    public static Friend fromFriendDto(Long consumerId, FriendDto friendDto, Long toConsumerId) {
+    public static Friend from(Long consumerId, FriendDto friendDto, Long toConsumerId) {
         return Friend.builder()
                 .id(consumerId + ":" + toConsumerId)
                 .consumerId(consumerId)

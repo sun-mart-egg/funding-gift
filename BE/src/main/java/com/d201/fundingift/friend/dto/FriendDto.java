@@ -26,7 +26,6 @@ public class FriendDto {
 
     public static FriendDto from(Friend friend, String profileNickname, String profileThumbnailImage) {
         return FriendDto.builder()
-                .id(null) // 카카오 소셜 ID는 여기서는 설정하지 않음
                 .consumerId(friend.getToConsumerId())
                 .favorite(friend.getIsFavorite())
                 .profileNickname(profileNickname)

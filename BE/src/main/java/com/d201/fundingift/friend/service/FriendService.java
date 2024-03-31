@@ -103,7 +103,7 @@ public class FriendService {
                 for (FriendDto friendDto : friendList) {
                     consumerRepository.findBySocialIdAndDeletedAtIsNull(friendDto.getId().toString()).ifPresent(consumer -> {
                         friendDto.setConsumerId(consumer.getId());
-                        Friend friend = Friend.fromFriendDto(consumerId, friendDto, consumer.getId());
+                        Friend friend = Friend.from(consumerId, friendDto, consumer.getId());
                         log.info("Creating Friend with ID: " + friend.getId());
                         log.info("다음과 친구가 되었습니다: " + consumer.getId());
                         friendRepository.save(friend);
@@ -162,7 +162,7 @@ public class FriendService {
         Long consumerId = Long.valueOf(securityUtil.getConsumerId());
         log.info("consumerId {}",consumerId);
         log.info("toConsumerId {}",toConsumerId);
-        Friend friend = friendRepository.findByConsumerIdAndToConsumerId(consumerId, toConsumerId);
+        Friend friend = friendRepository.findByConsumerIdAndToConsumerId(consumerId, toConsumerId).orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
         if (friend != null) {
             friend.toggleFavorite();
             friendRepository.save(friend);
