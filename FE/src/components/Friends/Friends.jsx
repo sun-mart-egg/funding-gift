@@ -41,11 +41,11 @@ function Friends() {
       .then((res) => {
         console.log(res.data.data.elements);
         setFriends(res.data.data.elements);
-        console.log("친구목록 받아왔다.");
+        console.log("친구목록 받아오기 성공!");
       })
       .catch((err) => {
         console.error(err);
-        console.log("안 된다 ㅠㅠ");
+        console.log("친구목록 받아오기 실패!");
       });
   }, []);
 
