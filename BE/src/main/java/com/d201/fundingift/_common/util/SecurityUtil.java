@@ -18,8 +18,13 @@ import java.util.Optional;
 public class SecurityUtil {
 
     private final ConsumerRepository consumerRepository;
+
     public Long getConsumerId() {
         return existConsumer(getConsumerIdOrElseThrow());
+    }
+
+    public Long getConsumerIdOrNull() {
+        return getConsumerIdOrElseNull();
     }
 
     public Consumer getConsumer() {
