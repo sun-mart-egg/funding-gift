@@ -2,6 +2,7 @@ package com.d201.fundingift.product.service;
 
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.SliceList;
+import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.product.dto.response.GetProductCategoryResponse;
 import com.d201.fundingift.product.dto.response.GetProductDetailResponse;
 import com.d201.fundingift.product.dto.response.GetProductOptionResponse;
@@ -10,6 +11,8 @@ import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.repository.ProductCategoryRepository;
 import com.d201.fundingift.product.repository.ProductOptionRepository;
 import com.d201.fundingift.product.repository.ProductRepository;
+import com.d201.fundingift.wishlist.entity.Wishlist;
+import com.d201.fundingift.wishlist.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +36,8 @@ public class ProductService {
     private final ProductCategoryRepository productCategoryRepository;
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
-
+    private final WishlistRepository wishlistRepository;
+    private final SecurityUtil securityUtil;
 
     // 카테고리 리스트 조회
     public List<GetProductCategoryResponse> getCategories() {
@@ -78,8 +82,10 @@ public class ProductService {
         Product product = findByProductId(productId);
         // 해당 상품의 옵션
         List<GetProductOptionResponse> options = getOptions(product);
+        // 위시리스트 여부
+        boolean isWishlist = getIsWishlist(productId);
         // 반환
-        return GetProductDetailResponse.from(product, options);
+        return GetProductDetailResponse.from(product, options, isWishlist);
     }
 
     // 정렬 객체
@@ -123,6 +129,16 @@ public class ProductService {
     private Product findByProductId(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
+    }
+
+    private boolean getIsWishlist(Long productId) {
+        Long consumerId = securityUtil.getConsumerIdOrNull();
+
+        if (consumerId == null) {
+            return false;
+        }
+
+        return wishlistRepository.findByConsumerIdAndProductId(consumerId, productId).isPresent();
     }
 
     private void validateCategoryId(Integer categoryId) {
