@@ -1,5 +1,6 @@
 package com.d201.fundingift.friend.entity;
 
+import com.d201.fundingift.friend.dto.FriendDto;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -16,6 +17,7 @@ public class Friend implements Serializable {
     private String id; //friend:consumerId:toConsumerId
     @Indexed
     private Long consumerId;
+
     @Indexed
     private Long toConsumerId;
     @Indexed
@@ -29,8 +31,17 @@ public class Friend implements Serializable {
         this.isFavorite = isFavorite;
     }
 
-    public void updateIsFavorite(Boolean flag) {
-        this.isFavorite = flag;
+    public void toggleFavorite() {
+        this.isFavorite = !this.isFavorite;
     }
 
+    // Friend 엔티티 내에 추가
+    public static Friend from(Long consumerId, FriendDto friendDto, Long toConsumerId) {
+        return Friend.builder()
+                .id(consumerId + ":" + toConsumerId)
+                .consumerId(consumerId)
+                .toConsumerId(toConsumerId)
+                .isFavorite(friendDto.getFavorite())
+                .build();
+    }
 }

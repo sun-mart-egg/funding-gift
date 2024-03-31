@@ -44,9 +44,18 @@ public class FriendController {
     @Operation(summary = "내 친구 목록 조회 (소비자)",
             description = "내 친구들의 친구정보를 조회합니다. `Token`"
     )
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<List<FriendDto>> getFriends() {
         List<FriendDto> friendDtos = friendService.getFriends();
         return ResponseEntity.ok(friendDtos);
+    }
+
+    @Operation(summary = "친한친구 설정 변경",
+            description = "해당 친구와의 친한친구 관계를 토글합니다. `Token`"
+    )
+    @PutMapping("/{to-consumer-id}/toggle-favorite")
+    public ResponseEntity<?> toggleFavorite(@PathVariable("to-consumer-id") Long toConsumerId) {
+        friendService.toggleFavorite(toConsumerId);
+        return ResponseEntity.ok().build();
     }
 }

@@ -1,5 +1,6 @@
 package com.d201.fundingift.friend.service;
 
+import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.jwt.JwtUtil;
 import com.d201.fundingift._common.jwt.RedisJwtRepository;
 import com.d201.fundingift._common.util.SecurityUtil;
@@ -9,6 +10,7 @@ import com.d201.fundingift.friend.dto.FriendDto;
 import com.d201.fundingift.friend.dto.response.GetKakaoFriendsResponse;
 import com.d201.fundingift.friend.entity.Friend;
 
+import com.d201.fundingift.friend.repository.FriendRepository;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -28,6 +30,8 @@ import org.springframework.web.client.RestTemplate;
 import java.lang.reflect.Type;
 import java.util.*;
 
+import static com.d201.fundingift._common.response.ErrorType.*;
+
 @Service
 @Slf4j
 @Transactional(readOnly = true)
@@ -38,6 +42,7 @@ public class FriendService {
 
     private final ConsumerRepository consumerRepository;
     private final RedisJwtRepository redisJwtRepository;
+    private final FriendRepository friendRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final SecurityUtil securityUtil;
     private final JwtUtil jwtUtil;
@@ -58,118 +63,94 @@ public class FriendService {
 
         // 카카오 액세스 토큰 가져오기
         String kakaoAccessToken = redisJwtRepository.getKakaoAccessToken(consumerId);
+        List<FriendDto> allFriends = new ArrayList<>();
+        String nextUrl = FRIENDS_LIST_SERVICE_URL;
+
+        // totalCount와 favoriteCount 초기화
+        int totalCount = 0;
+        int favoriteCount = 0;
 
         try {
-            // 카카오 API에 요청
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + kakaoAccessToken);
             headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<String> response = restTemplate.exchange(
-                    FRIENDS_LIST_SERVICE_URL,
-                    HttpMethod.GET,
-                    entity,
-                    String.class
-            );
+            // 반복하여 모든 친구 정보 가져오기
+            while (nextUrl != null) {
+                HttpEntity<String> entity = new HttpEntity<>(headers);
+                ResponseEntity<String> response = restTemplate.exchange(
+                        nextUrl,
+                        HttpMethod.GET,
+                        entity,
+                        String.class
+                );
 
-            // 최상위 JSON 객체 파싱
-            JsonObject jsonResponse = JsonParser.parseString(response.getBody()).getAsJsonObject();
+                // JSON 응답 파싱
+                JsonObject jsonResponse = JsonParser.parseString(response.getBody()).getAsJsonObject();
 
-            // "elements" 키에 해당하는 JSON 배열을 가져와서 List<FriendDto>로 변환
-            Gson gson = new Gson();
-            Type listType = new TypeToken<List<FriendDto>>(){}.getType();
-            List<FriendDto> friendList = gson.fromJson(jsonResponse.get("elements"), listType);
+                // 친구 정보 파싱 및 추가
+                Gson gson = new Gson();
+                Type listType = new TypeToken<List<FriendDto>>(){}.getType();
+                List<FriendDto> friendList = gson.fromJson(jsonResponse.get("elements"), listType);
+                allFriends.addAll(friendList);
 
-            // Redis에 친구 추가.
-            for (FriendDto f : friendList) {
-                consumerRepository.findBySocialIdAndDeletedAtIsNull(f.getId().toString()).ifPresent(consumer -> {
-                    f.setConsumerId(consumer.getId());
-                    Friend friend = Friend.builder()
-                            .consumerId(consumerId)  // 이용자 ID
-                            .toConsumerId(consumer.getId())  // 친구의 사용자 ID
-                            .isFavorite(f.getFavorite())
-                            .build();
+                // totalCount와 favoriteCount 업데이트
+                totalCount = jsonResponse.get("total_count").getAsInt();
+                favoriteCount = jsonResponse.get("favorite_count").getAsInt();
 
-                    saveFriend(friend);
-                });
-            }
+                // Redis에 친구 추가 (로직 동일하게 유지)
+                for (FriendDto friendDto : friendList) {
+                    consumerRepository.findBySocialIdAndDeletedAtIsNull(friendDto.getId().toString()).ifPresent(consumer -> {
+                        friendDto.setConsumerId(consumer.getId());
+                        Friend friend = Friend.from(consumerId, friendDto, consumer.getId());
+                        log.info("Creating Friend with ID: " + friend.getId());
+                        log.info("다음과 친구가 되었습니다: " + consumer.getId());
+                        friendRepository.save(friend);
+                    });
+                }
 
-            String afterUrl = null;
-            if (jsonResponse.has("after_url") && !jsonResponse.get("after_url").isJsonNull()) {
-                afterUrl = jsonResponse.get("after_url").getAsString();
+                // 다음 페이지 URL 업데이트
+                nextUrl = jsonResponse.has("after_url") && !jsonResponse.get("after_url").isJsonNull()
+                        ? jsonResponse.get("after_url").getAsString() : null;
             }
 
             // GetKakaoFriendsResponse 객체 생성
-            GetKakaoFriendsResponse kakaoFriendsResponse = GetKakaoFriendsResponse.builder()
-                    .afterUrl(afterUrl)
-                    .elements(friendList)
-                    .totalCount(jsonResponse.get("total_count").getAsInt())
-                    .favoriteCount(jsonResponse.get("favorite_count").getAsInt())
-                    .build();
+            GetKakaoFriendsResponse kakaoFriendsResponse = GetKakaoFriendsResponse.from(allFriends, totalCount, favoriteCount);
 
             // 로그에 친구의 닉네임 출력
-            for (FriendDto friend : kakaoFriendsResponse.getElements()) {
-                log.info(friend.getProfileNickname());
-            }
+            allFriends.forEach(friend -> log.info(friend.getProfileNickname()));
 
             return kakaoFriendsResponse;
         } catch (HttpClientErrorException e) {
-            if (e.getStatusCode() == HttpStatus.FORBIDDEN) {
-                log.warn("카카오 친구 목록 접근 권한이 없습니다. 사용자 ID: " + consumerId);
-                // 필요한 경우 사용자에게 권한 부여 요청 등의 추가 조치를 안내할 수 있습니다.
-                // 여기에서는 빈 목록을 반환하거나, 권한 없음을 나타내는 응답을 반환할 수 있습니다.
-                return null; // 빈 응답 객체 반환
-            }
-            throw e; // 그 외의 경우 예외를 다시 발생시킵니다.
+            new CustomException(KAKAO_FRIEND_NOT_FOUND);
+            return null; // 적절한 예외 처리 또는 로그 출력 후 null 반환
         }
-    }
-
-    public void saveFriend(Friend friend) {
-        // consumerId와 toConsumerId를 조합하여 고유한 키 생성
-        String key = "friend:" + friend.getConsumerId() + ":" + friend.getToConsumerId();
-        Map<String, Object> friendMap = new HashMap<>();
-        friendMap.put("consumerId", String.valueOf(friend.getConsumerId()));
-        friendMap.put("toConsumerId", String.valueOf(friend.getToConsumerId()));
-        friendMap.put("isFavorite", String.valueOf(friend.getIsFavorite()));
-
-        hashOperations.putAll(key, friendMap);
     }
 
     public List<FriendDto> getFriends() {
         Long consumerId = Long.valueOf(securityUtil.getConsumerId());
-        Set<String> keys = redisTemplate.keys("friend:" + consumerId + ":*");
+        log.info("Retrieving friends for consumerId: {}", consumerId);
+
+        List<Friend> friends = friendRepository.findByConsumerId(consumerId); // FriendRepository에서 consumerId로 조회
+        log.info("Found {} friends for consumerId: {}", friends.size(), consumerId);
+
         List<FriendDto> friendDtos = new ArrayList<>();
 
-        for (String key : keys) {
-            Map<Object, Object> friendData = hashOperations.entries(key);
+        for (Friend friend : friends) {
+            Optional<Consumer> consumerOptional = consumerRepository.findByIdAndDeletedAtIsNull(friend.getToConsumerId());
 
-            // 레디스에서 가져온 데이터로부터 필요한 정보 추출 및 설정
-            Long toConsumerId = Long.valueOf((String) friendData.get("toConsumerId"));
-            Boolean isFavorite = Boolean.valueOf((String) friendData.get("isFavorite"));
-
-            Optional<Consumer> consumerOptional = consumerRepository.findByIdAndDeletedAtIsNull(toConsumerId);
-            // 기본값 설정
-            String profileNickname = "Unknown";
+            String profileNickname = "탈퇴한 회원";
             String profileThumbnailImage = "";
+
             if (consumerOptional.isPresent()) {
                 Consumer consumer = consumerOptional.get();
-                // consumer 객체를 사용하는 로직
-                profileNickname = consumer.getName(); // 사용자 이름으로 닉네임 설정
-                profileThumbnailImage = consumer.getProfileImageUrl(); // 프로필 이미지 URL 설정
-            } else {
-                // consumer 객체를 찾을 수 없는 경우의 처리 로직
+                profileNickname = consumer.getName();
+                profileThumbnailImage = consumer.getProfileImageUrl();
             }
 
-            FriendDto friendDto = FriendDto.builder()
-                    .id(null) // 카카오 소셜 ID는 여기서는 설정하지 않음
-                    .consumerId(toConsumerId)
-                    .favorite(isFavorite)
-                    .profileNickname(profileNickname)
-                    .profileThumbnailImage(profileThumbnailImage)
-                    .build();
-
+            // FriendDto 생성
+            FriendDto friendDto = FriendDto.from(friend, profileNickname, profileThumbnailImage);
             friendDtos.add(friendDto);
         }
 
@@ -177,20 +158,28 @@ public class FriendService {
     }
 
     @Transactional
+    public void toggleFavorite(Long toConsumerId) {
+        Long consumerId = Long.valueOf(securityUtil.getConsumerId());
+        log.info("consumerId {}",consumerId);
+        log.info("toConsumerId {}",toConsumerId);
+        Friend friend = friendRepository.findByConsumerIdAndToConsumerId(consumerId, toConsumerId).orElseThrow(() -> new CustomException(FRIEND_NOT_FOUND));
+        if (friend != null) {
+            friend.toggleFavorite();
+            friendRepository.save(friend);
+        } else {
+            throw new CustomException(FRIEND_RELATIONSHIP_NOT_FOUND);
+        }
+    }
+
+    @Transactional
     public void deleteAllFriendsByConsumerId(Long consumerId) {
         // consumerId를 기준으로 생성한 모든 친구 관계 삭제
-        Set<String> keysConsumer = stringRedisTemplate.keys("friend:" + consumerId + ":*");
-        if (!keysConsumer.isEmpty()) {
-            log.info("consumerId({})가 생성한 {}개의 친구 관계를 삭제합니다.", consumerId, keysConsumer.size());
-            stringRedisTemplate.delete(keysConsumer);
-        }
+        friendRepository.deleteByConsumerId(consumerId);
+        log.info("consumerId({})가 생성한 모든 친구 관계를 삭제했습니다.", consumerId);
 
         // 다른 사용자가 consumerId를 친구로 추가한 모든 친구 관계 삭제
-        Set<String> keysFriends = stringRedisTemplate.keys("friend:*:" + consumerId);
-        if (!keysFriends.isEmpty()) {
-            log.info("다른 사용자가 consumerId({})를 추가한 {}개의 친구 관계를 삭제합니다.", consumerId, keysFriends.size());
-            stringRedisTemplate.delete(keysFriends);
-        }
+        friendRepository.deleteByToConsumerId(consumerId);
+        log.info("다른 사용자가 consumerId({})를 추가한 모든 친구 관계를 삭제했습니다.", consumerId);
 
         log.info("consumerId({})와 관련된 모든 친구 정보가 성공적으로 삭제되었습니다.", consumerId);
     }
