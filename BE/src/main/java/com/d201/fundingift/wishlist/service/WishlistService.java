@@ -4,10 +4,9 @@ import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.product.entity.Product;
-import com.d201.fundingift.product.entity.ProductOption;
-import com.d201.fundingift.product.repository.ProductOptionRepository;
 import com.d201.fundingift.product.repository.ProductRepository;
-import com.d201.fundingift.wishlist.dto.WishlistDto;
+import com.d201.fundingift.wishlist.dto.request.WishlistRequest;
+import com.d201.fundingift.wishlist.dto.response.GetWishlistResponse;
 import com.d201.fundingift.wishlist.entity.Wishlist;
 import com.d201.fundingift.wishlist.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,37 +31,39 @@ public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
     private final ProductRepository productRepository;
-    private final ProductOptionRepository productOptionRepository;
     private final SecurityUtil securityUtil;
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Transactional
-    public void createWishlistItem(WishlistDto request) {
+    public void createWishlistItem(WishlistRequest request) {
         // 소비자
         Long consumerId = getConsumerId();
 
-        // 상품, 상품 옵션 유효성 검사
-        validateProductAndOption(request.getProductId(), request.getProductOptionId());
+        // 상품 ID
+        Long productId = request.getProductId();
+
+        // 상품 유효성 검사
+        validateProductId(productId);
 
         // 위시리스트 이미 존재하는 경우
-        if (findByConsumerIdAndRequest(consumerId, request) != null) {
+        if (findByConsumerIdAndProductId(consumerId, productId) != null) {
             throw new CustomException(WISHLIST_DUPLICATED);
         }
 
         // 위시리스트 저장
-        wishlistRepository.save(Wishlist.from(request, consumerId));
+        wishlistRepository.save(Wishlist.of(consumerId, productId));
     }
 
     @Transactional
-    public void deleteWishlistItem(WishlistDto request) {
+    public void deleteWishlistItem(WishlistRequest request) {
         // 소비자
         Long consumerId = getConsumerId();
 
-        // 상품, 상품 옵션 유효성 검사
-        validateProductAndOption(request.getProductId(), request.getProductOptionId());
+        // 상품 유효성 검사
+        validateProductId(request.getProductId());
 
         // 위시리스트
-        Wishlist wishlist = findByConsumerIdAndRequest(consumerId, request);
+        Wishlist wishlist = findByConsumerIdAndProductId(consumerId, request.getProductId());
 
         // 위시리스트 존재하지 않는 경우
         if (wishlist == null) {
@@ -73,7 +74,7 @@ public class WishlistService {
         wishlistRepository.delete(wishlist);
     }
 
-    public SliceList<WishlistDto> getWishlists(Integer page, Integer size) {
+    public SliceList<GetWishlistResponse> getWishlists(Integer page, Integer size) {
         // 소비자
         Long consumerId = getConsumerId();
 
@@ -101,15 +102,21 @@ public class WishlistService {
         return true;
     }
 
-    private void validateProductAndOption(Long productId, Long productOptionId) {
-        if (!findProductById(productId).equals(findProductOptionById(productOptionId).getProduct())) {
-            throw new CustomException(PRODUCT_OPTION_MISMATCH);
-        }
+    private void validateProductId(Long productId) {
+        productRepository.findById(productId)
+                .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
     }
 
     private List<Object> getWishlistDtos(Long consumerId, Pageable pageable) {
+        // 위시리스트 조회
         Slice<Wishlist> wishlists = findAllWishlistByConsumerId(consumerId, pageable);
-        return wishlists.stream().map(WishlistDto::from).collect(Collectors.toList());
+
+        // 상품 목록
+        List<Product> products = wishlists.stream()
+                .map(w -> findProductById(w.getProductId())).collect(Collectors.toList());
+
+        // dto로 반환
+        return products.stream().map(GetWishlistResponse::from).collect(Collectors.toList());
     }
 
     private Slice<Wishlist> findAllWishlistByConsumerId(Long consumerId, Pageable pageable) {
@@ -121,18 +128,12 @@ public class WishlistService {
                 .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
     }
 
-    private ProductOption findProductOptionById(Long productOptionId) {
-        return productOptionRepository.findByIdAndStatusIsNotInactive(productOptionId)
-                .orElseThrow(() -> new CustomException(PRODUCT_OPTION_NOT_FOUND));
-    }
-
     private Long getConsumerId() {
         return securityUtil.getConsumerId();
     }
 
-    private Wishlist findByConsumerIdAndRequest(Long consumerId, WishlistDto request) {
-        return wishlistRepository.findByConsumerIdAndProductIdAndProductOptionId
-                        (consumerId, request.getProductId(), request.getProductOptionId())
+    private Wishlist findByConsumerIdAndProductId(Long consumerId, Long productId) {
+        return wishlistRepository.findByConsumerIdAndProductId(consumerId, productId)
                         .orElse(null);
     }
 
