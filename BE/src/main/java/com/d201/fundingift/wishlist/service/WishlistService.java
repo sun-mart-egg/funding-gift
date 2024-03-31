@@ -15,9 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.d201.fundingift._common.response.ErrorType.*;
@@ -32,6 +34,7 @@ public class WishlistService {
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final SecurityUtil securityUtil;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Transactional
     public void createWishlistItem(WishlistDto request) {
@@ -79,12 +82,24 @@ public class WishlistService {
 
         // 조회
         Slice<Wishlist> wishlists = wishlistRepository.findAllSliceByConsumerId(consumerId, pageable);
+        List<Object> wishlistDtos = wishlists.stream().map(WishlistDto::from).collect(Collectors.toList());
 
-        // 결과 반환 (수정 필요)
-        return SliceList.from(wishlists.stream().map(WishlistDto::from).collect(Collectors.toList()),
-                                wishlists.getPageable(),
-                                wishlists.hasNext());
+        // 전체 개수
+        Long cnt = redisTemplate.opsForSet().size("wishlist:consumerId:" + consumerId);
+        log.info("cnt: {}", cnt);
+
+        boolean hasNext = true;
+        if (wishlistDtos.size() < size) {
+            hasNext = false;
+        }
+        else if (page * size + wishlistDtos.size() >= cnt) {
+            hasNext = false;
+        }
+
+        // 결과 반환
+        return SliceList.of(wishlistDtos, page, wishlistDtos.size(), hasNext);
     }
+
     private void validateProductAndOption(Long productId, Long productOptionId) {
         if (!findProductById(productId).equals(findProductOptionById(productOptionId).getProduct())) {
             throw new CustomException(PRODUCT_OPTION_MISMATCH);
