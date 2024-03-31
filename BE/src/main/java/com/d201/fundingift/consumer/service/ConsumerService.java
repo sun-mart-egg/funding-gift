@@ -4,6 +4,7 @@ import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.jwt.RedisJwtRepository;
 import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
 import com.d201.fundingift._common.util.SecurityUtil;
+import com.d201.fundingift.consumer.dto.request.PutConsumerInfoRequestDto;
 import com.d201.fundingift.consumer.dto.response.GetConsumerInfoByIdResponse;
 import com.d201.fundingift.consumer.dto.response.GetConsumerMyInfoResponse;
 import com.d201.fundingift.consumer.entity.Consumer;
@@ -107,6 +108,15 @@ public class ConsumerService {
         redisJwtRepository.deleteRefreshToken(consumerId);
         redisJwtRepository.deleteKakaoAccessToken(consumerId);
 
+    }
+    @Transactional
+    public void updateConsumerInfo(PutConsumerInfoRequestDto putConsumerInfoRequestDto) {
+        Long consumerId = Long.valueOf(securityUtil.getConsumer().getId());
+        Consumer consumer = consumerRepository.findById(consumerId)
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        log.info("{} 사용자의 추가 정보 기입",consumerId);
+        consumer.updateInfo(putConsumerInfoRequestDto);
+        consumerRepository.save(consumer);
     }
 
     @Transactional
