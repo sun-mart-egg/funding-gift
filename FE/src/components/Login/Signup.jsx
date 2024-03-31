@@ -67,7 +67,7 @@ function Signup() {
       </div>
 
       <div className=" flex h-[50px] w-[330px] flex-row justify-between rounded-[5px] border-[2.5px] p-3">
-        <input type="text" placeholder="상세주소" className="signup-font" value={detailAddr} onChange={handleDetailAddress}/>
+        <input type="text" placeholder="상세주소" className="signup-font w-full" value={detailAddr} onChange={handleDetailAddress}/>
       </div>
 
       <Link to={"/signupFin"} className="common-btn max-w-[284px] max-h-[50px] w-full h-full">

@@ -38,7 +38,7 @@ function LoginCallback() {
 
                 // 그게 아니다 === 신규회원
                 else {
-                    return navigate("/signup")
+                    return navigate("/input-profile")
                 }
             }
 
