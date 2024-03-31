@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class GetMyAttendanceDetailsResponse {
+public class GetAttendanceDetailResponse {
 
     @Schema(description = "펀딩 참여 고유번호", example = "1")
     private Long attendanceId;
@@ -30,7 +30,7 @@ public class GetMyAttendanceDetailsResponse {
     private String consumerName;
 
     @Builder
-    private GetMyAttendanceDetailsResponse(Long attendanceId, String sendMessageTitle, String sendMessage, String receiveMessage, Integer price, Long consumerId, String consumerName) {
+    private GetAttendanceDetailResponse(Long attendanceId, String sendMessageTitle, String sendMessage, String receiveMessage, Integer price, Long consumerId, String consumerName) {
         this.attendanceId = attendanceId;
         this.sendMessageTitle = sendMessageTitle;
         this.sendMessage = sendMessage;
@@ -40,8 +40,8 @@ public class GetMyAttendanceDetailsResponse {
         this.consumerName = consumerName;
     }
 
-    public static GetMyAttendanceDetailsResponse from(Attendance attendance) {
-        return GetMyAttendanceDetailsResponse.builder()
+    public static GetAttendanceDetailResponse from(Attendance attendance) {
+        return GetAttendanceDetailResponse.builder()
                 .attendanceId(attendance.getId())
                 .sendMessageTitle(attendance.getSendMessageTitle())
                 .sendMessage(attendance.getSendMessage())
