@@ -7,6 +7,7 @@ import Login from "./components/Login/LoginPage.jsx";
 import LoginCallback from "./components/Login/LoginCallback.jsx";
 import Signup from "./components/Login/Signup.jsx";
 import SignupFinish from "./components/Login/SignupFinish.jsx";
+import InputProfile from "./components/Login/InputProfile.jsx";
 
 import Calendar from "./components/Friends/Calendar.jsx";
 import Friends from "./components/Friends/Friends.jsx";
@@ -47,6 +48,7 @@ function App() {
         <Route element={<SubLayout />}>
           <Route path="/login-page" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/input-profile" element={<InputProfile />} />
           <Route path="/signupFin" element={<SignupFinish />} />
           <Route path="/make-funding-main" element={<MakeFundingMain />} />
           <Route path="/my-funding-detail" element={<MyFundingDetail />} />
