@@ -34,8 +34,11 @@ public class GetFundingResponse {
     @Schema(description = "공개 여부", example = "true")
     private Boolean isPrivate;
 
-    @Schema(description = "기념일 종류", example = "1")
+    @Schema(description = "기념일 고유번호", example = "1")
     private Integer anniversaryCategoryId;
+
+    @Schema(description = "기념일명", example = "생일")
+    private String anniversaryCategoryName;
 
     @Schema(description = "제품 고유번호", example = "1")
     private Long productId;
@@ -50,7 +53,7 @@ public class GetFundingResponse {
     private String fundingStatus;
 
     @Builder
-    private GetFundingResponse(Long fundingId, Integer targetPrice, Integer sumPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, Long productId, String productName, String productImage, String fundingStatus) {
+    private GetFundingResponse(Long fundingId, Integer targetPrice, Integer sumPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, String anniversaryCategoryName, Long productId, String productName, String productImage, String fundingStatus) {
         this.fundingId = fundingId;
         this.targetPrice = targetPrice;
         this.sumPrice = sumPrice;
@@ -60,6 +63,7 @@ public class GetFundingResponse {
         this.title = title;
         this.isPrivate = isPrivate;
         this.anniversaryCategoryId = anniversaryCategoryId;
+        this.anniversaryCategoryName = anniversaryCategoryName;
         this.productId = productId;
         this.productName = productName;
         this.productImage = productImage;
@@ -77,6 +81,7 @@ public class GetFundingResponse {
                 .title(funding.getTitle())
                 .isPrivate(funding.getIsPrivate())
                 .anniversaryCategoryId(funding.getAnniversaryCategory().getId())
+                .anniversaryCategoryName(funding.getAnniversaryCategory().getName())
                 .productId(funding.getProduct().getId())
                 .productName(funding.getProduct().getName())
                 .productImage(funding.getProduct().getImage())
