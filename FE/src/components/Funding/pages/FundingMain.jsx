@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import StoryList from "../component/StoryList";
 import FundingList from "../component/FundingList";
 import ScrollToTopButton from "../../UI/ScrollToTop";
-import { fetchUserInfo, getFriends } from "../api/UserAPI";
+import { getStoryList, getStory } from "../api/StoryAPI";
 import { fetchFriendFunding } from "../api/FundingAPI";
 
 function FundingMain() {
-  const [friends, setFriends] = useState([]); // 친구목록 받아올 배열
+  const [storyList, setStoryList] = useState([]); // 친구목록 받아올 배열
   const [data, setData] = useState([]);
   //친구가 만든 펀딩 받아올 배열
   const [isLoading, setIsLoading] = useState(true);
@@ -16,29 +16,30 @@ function FundingMain() {
   };
 
   useEffect(() => {
-    console.log("업데이트 된 친구 목록" + friends);
-  }, [friends]);
+    console.log("업데이트 된 스토리 목록" + storyList);
+  }, [storyList]);
 
-  //친구목록과 내 정보 불러오는 api, 처음 화면 렌더링 될 때
+  //스토리 리스트 불러오는 api
   useEffect(() => {
     const token = localStorage.getItem("access-token"); // 토큰을 localStorage에서 가져옵니다.
-    const fetchFriends = async () => {
+    const fetchStoryList = async () => {
       try {
-        const friendsData = await getFriends(token);
-        setFriends(friendsData);
+        const storyListData = await getStoryList(token);
+        setStoryList(Array.isArray(storyListData) ? storyListData : []);
       } catch (error) {
         console.error("친구 목록을 불러오는데 실패했습니다.", error);
+        setStoryList([]);
       }
     };
 
-    fetchFriends();
+    fetchStoryList();
   }, []);
 
   //친구가 만든 펀딩 불러오는 api
-  useEffect(() => {
-    const token = localStorage.getItem("access-token");
-    friends.forEach((friend) => fetchFriendFunding(friend, token, setData));
-  }, [friends]);
+  // useEffect(() => {
+  //   const token = localStorage.getItem("access-token");
+  //   friends.forEach((friend) => fetchFriendFunding(friend, token, setData));
+  // }, [friends]);
 
   return (
     <div className="sub-layer relative">
@@ -52,12 +53,12 @@ function FundingMain() {
           <p className="text-center">{myData.people}</p>
         </div>
         <div className="friendStory  flex overflow-x-auto">
-          <StoryList listData={friends} />
+          <StoryList listData={storyList} />
         </div>
       </div>
 
       <div className="main absolute top-44 w-full  pb-24">
-        <FundingList listData={data} friendsData={friends} />
+        <FundingList listData={data} friendsData={storyList} />
       </div>
       <ScrollToTopButton className="bottom-[25px]" />
     </div>

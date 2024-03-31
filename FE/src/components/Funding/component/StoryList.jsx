@@ -25,21 +25,22 @@ function StoryList({ listData }) {
       id="storyList"
       className="flex w-full  overflow-x-scroll font-cusFont3 text-[12px]"
     >
-      {data.map((item, index) => (
-        <div
-          id="storyItem"
-          key={index}
-          className="flex-none cursor-pointer flex-col items-center justify-center p-4"
-          onClick={() => handleStoryClick(item)}
-        >
-          <img
-            src={item.profileThumbnailImage}
-            alt={item.profileNickname}
-            className="h-14 w-14 rounded-full"
-          />
-          <p className="text-center">{item.profileNickname}</p>
-        </div>
-      ))}
+      {Array.isArray(data) &&
+        data.map((item, index) => (
+          <div
+            id="storyItem"
+            key={index}
+            className="flex-none cursor-pointer flex-col items-center justify-center p-4"
+            onClick={() => handleStoryClick(item)}
+          >
+            <img
+              src={item.profileImageUrl}
+              alt={item.name}
+              className="h-14 w-14 rounded-full"
+            />
+            <p className="text-center">{item.profileNickname}</p>
+          </div>
+        ))}
     </div>
   );
 }
