@@ -27,7 +27,7 @@ public class GetAddressResponse {
     private Boolean isDefault;
 
     @Builder
-    public GetAddressResponse(Long id, String name, String defaultAddr, String detailAddr, String zipCode, Boolean isDefault) {
+    private GetAddressResponse(Long id, String name, String defaultAddr, String detailAddr, String zipCode, Boolean isDefault) {
         this.id = id;
         this.name = name;
         this.defaultAddr = defaultAddr;

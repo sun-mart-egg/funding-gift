@@ -39,16 +39,16 @@ public class AddressController {
     }
 
     @Operation(summary = "주소 수정", description = "특정 주소의 정보를 수정합니다. `Token`")
-    @PutMapping("/{id}")
-    public SuccessResponse<Void> updateAddress(@PathVariable Long id, @Valid @RequestBody PostAddressRequest addressDto) {
-        addressService.updateAddress(id, addressDto);
+    @PutMapping("/{address-id}")
+    public SuccessResponse<Void> updateAddress(@PathVariable("address-id") Long addressId, @Valid @RequestBody PostAddressRequest addressDto) {
+        addressService.updateAddress(addressId, addressDto);
         return ResponseUtils.ok(UPDATE_ADDRESS_SUCCESS);
     }
 
     @Operation(summary = "주소 삭제", description = "특정 주소를 삭제합니다. `Token`")
-    @DeleteMapping("/{id}")
-    public SuccessResponse<Void> deleteAddress(@PathVariable Long id) {
-        addressService.deleteAddress(id);
+    @DeleteMapping("/{address-id}")
+    public SuccessResponse<Void> deleteAddress(@PathVariable("address-id") Long addressId) {
+        addressService.deleteAddress(addressId);
         return ResponseUtils.ok(DELETE_ADDRESS_SUCCESS);
     }
 }

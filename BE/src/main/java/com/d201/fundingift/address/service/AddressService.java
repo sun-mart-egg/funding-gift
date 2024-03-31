@@ -24,14 +24,16 @@ import static com.d201.fundingift._common.response.ErrorType.ADDRESS_NOT_FOUND;
 public class AddressService {
 
     private final AddressRepository addressRepository;
-    private final ConsumerRepository consumerRepository;
     private final SecurityUtil securityUtil;
+
+    private Address getAddressOrThrow(Long addressId) {
+        return addressRepository.findById(addressId)
+                .orElseThrow(() -> new CustomException(ADDRESS_NOT_FOUND));
+    }
+
     @Transactional
     public void addAddress(PostAddressRequest request) {
-        Long myConsumerId = securityUtil.getConsumerId();
-        Consumer consumer = consumerRepository.findById(myConsumerId)
-                .orElseThrow(() -> new CustomException(ErrorType.USER_NOT_FOUND));
-
+        Consumer consumer = securityUtil.getConsumer();
         Address address = Address.from(request, consumer);
         addressRepository.save(address);
     }
@@ -48,18 +50,14 @@ public class AddressService {
     }
 
     @Transactional
-    public void updateAddress(Long id, PostAddressRequest addressDto) {
-        Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ADDRESS_NOT_FOUND));
-
+    public void updateAddress(Long addressId, PostAddressRequest addressDto) {
+        Address address = getAddressOrThrow(addressId);
         address.updateFrom(addressDto);
     }
 
     @Transactional
-    public void deleteAddress(Long id) {
-        Address address = addressRepository.findById(id)
-                .orElseThrow(() -> new CustomException(ADDRESS_NOT_FOUND));
-
+    public void deleteAddress(Long addressId) {
+        Address address = getAddressOrThrow(addressId);
         addressRepository.delete(address);
     }
 }
