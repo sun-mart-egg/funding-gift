@@ -2,7 +2,7 @@ import Card from "../component/Card";
 
 function CardList({ data }) {
   return (
-    <div className="m-1 flex flex-wrap justify-start">
+    <div className="m-1 my-2 flex flex-wrap justify-start">
       {data.map((data, index) => (
         <Card
           key={index}

@@ -1,16 +1,20 @@
 import ProgressBar from "./ProgressBar";
 import { useNavigate } from "react-router-dom";
-import Egg from "../../../../public/imgs/egg3.jpg";
 
 function Card({ img, title, productName, startDate, endDate, progress }) {
   const navigate = useNavigate();
   return (
     <div
       onClick={() => navigate("/friend-funding-detail")}
-      className="m-2 w-[45%] rounded-lg border-2 bg-white p-4 shadow-md"
+      className="m-1 mx-2 w-[45%] bg-white"
     >
-      <div className="product_img_div flex justify-center pb-2">
-        <img src={img} alt="" className="h-[200px]" />
+      <div className="product_img_div mt-3 flex justify-center pb-2">
+        {/* 너비를 지정하고 object-fit: cover를 추가합니다. */}
+        <img
+          src={img}
+          alt=""
+          className="h-[180px] w-full rounded-lg object-cover"
+        />
       </div>
       <p className="product_title font-cusFont1 text-[14px]">{title}</p>
       <div className="h-[14px]">
@@ -18,7 +22,7 @@ function Card({ img, title, productName, startDate, endDate, progress }) {
       </div>
       <div className="pt-2">
         <p className="product_des pb-1 text-[10px]">{productName}</p>
-        <div className="product_mon  text-[10px]">
+        <div className="product_mon text-[10px]">
           {startDate} ~ {endDate}
         </div>
       </div>
