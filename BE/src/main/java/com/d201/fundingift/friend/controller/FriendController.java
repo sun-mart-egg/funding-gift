@@ -80,7 +80,7 @@ public class FriendController {
                             schema = @Schema(implementation = ErrorResponse.class)
                     ))
     })
-    @GetMapping("/get-fundings-story")
+    @GetMapping("/fundings-story")
     public SuccessResponse<List<GetFriendStoryResponse>> getFundingsStory() {
         return ResponseUtils.ok(friendService.getFriendsStory(), SuccessType.GET_FRIENDS_STORY_SUCCESS);
     }
