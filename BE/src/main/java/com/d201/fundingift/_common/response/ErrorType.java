@@ -58,7 +58,12 @@ public enum ErrorType {
     // 위시리스트
     WISHLIST_DUPLICATED(HttpStatus.BAD_REQUEST, "이미 위시리스트에 등록된 상품입니다."),
     WISHLIST_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 위시리스트를 찾을 수 없습니다."),
+
+    //주소
+    ADDRESS_NOT_FOUND(HttpStatus.BAD_REQUEST, "주소를 찾을 수 없습니다.")
     ;
+
+
 
     private HttpStatus httpStatus;
     private String msg;

@@ -1,6 +1,7 @@
 package com.d201.fundingift.address.entity;
 
 import com.d201.fundingift._common.entity.BaseTime;
+import com.d201.fundingift.address.dto.request.PostAddressRequest;
 import com.d201.fundingift.consumer.entity.Consumer;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,4 +46,22 @@ public class Address extends BaseTime {
         this.consumer = consumer;
     }
 
+    public static Address from(PostAddressRequest request, Consumer consumer) {
+        return Address.builder()
+                .name(request.getName())
+                .defaultAddr(request.getDefaultAddr())
+                .detailAddr(request.getDetailAddr())
+                .zipCode(request.getZipCode())
+                .isDefault(request.getIsDefault())
+                .consumer(consumer)
+                .build();
+    }
+
+    public void updateFrom(PostAddressRequest request) {
+        this.name = request.getName();
+        this.defaultAddr = request.getDefaultAddr();
+        this.detailAddr = request.getDetailAddr();
+        this.zipCode = request.getZipCode();
+        this.isDefault = request.getIsDefault();
+    }
 }

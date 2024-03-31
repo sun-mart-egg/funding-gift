@@ -37,6 +37,12 @@ public enum SuccessType {
     CREATE_WISHLIST_SUCCESS("위시리스트 등록에 성공하였습니다."),
     DELETE_WISHLIST_SUCCESS("위시리스트 삭제에 성공하였습니다."),
     GET_WISHLISTS_SUCCESS("위시리스트 목록 조회에 성공하였습니다."),
+
+    // 주소
+    CREATE_ADDRESS_SUCCESS("주소가 성공적으로 추가되었습니다."),
+    GET_ADDRESSES_SUCCESS("주소가 성공적으로 조회되었습니다."),
+    UPDATE_ADDRESS_SUCCESS("주소가 성공적으로 수정되었습니다."),
+    DELETE_ADDRESS_SUCCESS("주소가 성공적으로 삭제되었습니다."),
     ;
 
     private final String msg;
