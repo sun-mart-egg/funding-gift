@@ -116,7 +116,6 @@ public class ConsumerService {
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         log.info("{} 사용자의 추가 정보 기입",consumerId);
         consumer.updateInfo(putConsumerInfoRequestDto);
-        consumerRepository.save(consumer);
     }
 
     @Transactional
