@@ -43,8 +43,11 @@ public class GetFundingResponse {
     @Schema(description = "제품 이미지", example = "image url")
     private String productImage;
 
+    @Schema(description = "펀딩 상태", example = "IN_PROGRESS")
+    private String fundingStatus;
+
     @Builder
-    private GetFundingResponse(Long fundingId, Integer targetPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, Long productId, String productName, String productImage) {
+    private GetFundingResponse(Long fundingId, Integer targetPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, Long productId, String productName, String productImage, String fundingStatus) {
         this.fundingId = fundingId;
         this.targetPrice = targetPrice;
         this.anniversaryDate = anniversaryDate;
@@ -56,6 +59,7 @@ public class GetFundingResponse {
         this.productId = productId;
         this.productName = productName;
         this.productImage = productImage;
+        this.fundingStatus = fundingStatus;
     }
 
     public static GetFundingResponse from(Funding funding) {
@@ -71,6 +75,7 @@ public class GetFundingResponse {
                 .productId(funding.getProduct().getId())
                 .productName(funding.getProduct().getName())
                 .productImage(funding.getProduct().getImage())
+                .fundingStatus(funding.getFundingStatus().name())
                 .build();
     }
 }
