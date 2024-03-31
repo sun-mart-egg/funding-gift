@@ -10,11 +10,14 @@ import java.time.LocalDate;
 @Getter
 public class GetFundingResponse {
 
-    @Schema(description = "목표 금액(펀딩 만들 당시의 제품 금액)", example = "500000")
+    @Schema(description = "펀딩 고유번호", example = "55")
     private Long fundingId;
 
     @Schema(description = "목표 금액(펀딩 만들 당시의 제품 금액)", example = "500000")
     private Integer targetPrice;
+
+    @Schema(description = "모인 금액", example = "50000")
+    private Integer sumPrice;
 
     @Schema(description = "기념일 날짜", example = "2024-12-12")
     private String anniversaryDate;
@@ -47,9 +50,10 @@ public class GetFundingResponse {
     private String fundingStatus;
 
     @Builder
-    private GetFundingResponse(Long fundingId, Integer targetPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, Long productId, String productName, String productImage, String fundingStatus) {
+    private GetFundingResponse(Long fundingId, Integer targetPrice, Integer sumPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, Long productId, String productName, String productImage, String fundingStatus) {
         this.fundingId = fundingId;
         this.targetPrice = targetPrice;
+        this.sumPrice = sumPrice;
         this.anniversaryDate = anniversaryDate;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -66,6 +70,7 @@ public class GetFundingResponse {
         return builder()
                 .fundingId(funding.getId())
                 .targetPrice(funding.getTargetPrice())
+                .sumPrice(funding.getSumPrice())
                 .anniversaryDate(funding.getAnniversaryDateToString())
                 .startDate(funding.getStartDateToString())
                 .endDate(funding.getEndDateToString())
