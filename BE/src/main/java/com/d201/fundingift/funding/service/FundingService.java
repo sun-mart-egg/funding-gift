@@ -57,7 +57,7 @@ public class FundingService {
         fundingRepository.save(Funding.from(postFundingRequest, consumer, anniversaryCategory, product, productOption));
     }
 
-    //내 펀딩 목록 보기, 제품명으로 검색 기능 추가
+    //내 펀딩 목록 보기
     public SliceList<GetFundingResponse> getMyFundings(String keyword, Pageable pageable) {
         Long consumerId = securityUtil.getConsumerId();
 
@@ -69,6 +69,7 @@ public class FundingService {
         return getMyFundingsSliceList(findAllByConsumerIdAndProductName(consumerId, keyword, pageable));
     }
 
+    //친구 펀딩 목록 보기
     public SliceList<GetFundingResponse> getFriendFundings(Long friendConsumerId, String keyword, Pageable pageable) {
         Long consumerId = securityUtil.getConsumerId();
 
