@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface WishlistRepository extends CrudRepository<Wishlist, String> {
 
-    Optional<Wishlist> findByConsumerIdAndProductIdAndProductOptionId(Long consumerId, Long productId, Long productOptionId);
+    Optional<Wishlist> findByConsumerIdAndProductId(Long consumerId, Long productId);
     Slice<Wishlist> findAllSliceByConsumerId(Long consumerId, Pageable pageable);
 
 }

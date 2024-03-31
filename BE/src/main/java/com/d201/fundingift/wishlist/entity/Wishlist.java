@@ -22,21 +22,16 @@ public class Wishlist implements Serializable {
     @Indexed
     private Long productId;
 
-    @Indexed
-    private Long productOptionId;
-
     @Builder
-    private Wishlist(Long consumerId, Long productId, Long productOptionId) {
+    private Wishlist(Long consumerId, Long productId) {
         this.consumerId = consumerId;
         this.productId = productId;
-        this.productOptionId = productOptionId;
     }
 
-    public static Wishlist from(WishlistDto request, Long consumerId) {
+    public static Wishlist of(Long consumerId, Long productId) {
         return builder()
                 .consumerId(consumerId)
-                .productId(request.getProductId())
-                .productOptionId(request.getProductOptionId())
+                .productId(productId)
                 .build();
     }
 

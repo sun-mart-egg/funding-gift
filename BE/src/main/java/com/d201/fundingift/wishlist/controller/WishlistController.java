@@ -29,13 +29,13 @@ public class WishlistController {
     @Operation(summary = "위시리스트 추가",
             description = """
                            `token` \n
-                           위시리스트에 상품(+ 상품 옵션)을 추가합니다.
+                           위시리스트에 상품을 추가합니다.
                            """)
     @ApiResponse(responseCode = "200",
             description = "성공",
             useReturnTypeSchema = true)
     @ApiResponse(responseCode = "400",
-            description = "토큰이 없는 경우 / 잘못된 productId / 잘못된 productOptionId / 상품과 상품 옵션이 매칭 되지 않는 경우",
+            description = "토큰이 없는 경우 / 잘못된 productId / 위시리스트에 이미 추가된 상품일 경우",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @PostMapping("")
     public SuccessResponse<Void> createWishlistItem(@RequestBody WishlistDto request) {
@@ -47,13 +47,13 @@ public class WishlistController {
     @Operation(summary = "위시리스트 삭제",
             description = """
                            `token` \n
-                           위시리스트에 상품(+ 상품 옵션)을 삭제합니다.
+                           위시리스트에서 상품을 삭제합니다.
                            """)
     @ApiResponse(responseCode = "200",
             description = "성공",
             useReturnTypeSchema = true)
     @ApiResponse(responseCode = "400",
-            description = "토큰이 없는 경우 / 잘못된 productId / 잘못된 productOptionId / 상품과 상품 옵션이 매칭 되지 않는 경우",
+            description = "토큰이 없는 경우 / 잘못된 productId / 위시리스트에 이미 없는 상품일 경우",
             content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @DeleteMapping("")
     public SuccessResponse<Void> deleteWishlistItem(@RequestBody WishlistDto request) {
@@ -62,28 +62,28 @@ public class WishlistController {
         return ResponseUtils.ok(DELETE_WISHLIST_SUCCESS);
     }
 
-    @Operation(summary = "위시리스트 조회",
-            description = """
-                           `token` \n
-                           유저의 위시리스트 목록을 조회합니다. \n
-                           Query Parameter로 page, size 넣어주세요.
-                           결과로 data, page, size, hasNext를 반환합니다.
-                           - data: 응답 데이터
-                           - page: 현재 페이지 번호
-                           - size: 현재 데이터 개수
-                           - hasNext: 다음 페이지 존재 여부
-                           """)
-    @ApiResponse(responseCode = "200",
-            description = "성공",
-            useReturnTypeSchema = true)
-    @ApiResponse(responseCode = "400",
-            description = "토큰이 없는 경우",
-            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @GetMapping("")
-    public SuccessResponse<SliceList<WishlistDto>> getWishlists
-                (@Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam Integer page,
-                 @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam Integer size) {
-        log.info("[WishlistController.getWishlists]");
-        return ResponseUtils.ok(wishlistService.getWishlists(page, size), GET_WISHLISTS_SUCCESS);
-    }
+//    @Operation(summary = "위시리스트 조회",
+//            description = """
+//                           `token` \n
+//                           유저의 위시리스트 목록을 조회합니다. \n
+//                           Query Parameter로 page, size 넣어주세요.
+//                           결과로 data, page, size, hasNext를 반환합니다.
+//                           - data: 응답 데이터
+//                           - page: 현재 페이지 번호
+//                           - size: 현재 데이터 개수
+//                           - hasNext: 다음 페이지 존재 여부
+//                           """)
+//    @ApiResponse(responseCode = "200",
+//            description = "성공",
+//            useReturnTypeSchema = true)
+//    @ApiResponse(responseCode = "400",
+//            description = "토큰이 없는 경우",
+//            content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+//    @GetMapping("")
+//    public SuccessResponse<SliceList<WishlistDto>> getWishlists
+//                (@Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam Integer page,
+//                 @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam Integer size) {
+//        log.info("[WishlistController.getWishlists]");
+//        return ResponseUtils.ok(wishlistService.getWishlists(page, size), GET_WISHLISTS_SUCCESS);
+//    }
 }
