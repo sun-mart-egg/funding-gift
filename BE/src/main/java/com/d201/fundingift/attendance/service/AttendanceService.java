@@ -48,7 +48,7 @@ public class AttendanceService {
         //최소 금액 만족 확인
         checkingFundingMinPrice(funding.getMinPrice(), postAttendanceRequest.getPrice());
 
-        //펀딩한 금액 더하기,목표 금액 달성시 상태 변경                                                                                                  목표 금액 이상인 경우 예외
+        //펀딩한 금액 더하기,목표 금액 달성시 상태 변경, 목표 금액 이상인 경우 예외
         checkingFundingTargetPrice(postAttendanceRequest.getPrice(), funding);
 
         attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding));
