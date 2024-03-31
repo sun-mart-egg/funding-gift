@@ -33,5 +33,9 @@ public interface FundingRepository extends JpaRepository<Funding, Long> {
 
     List<Funding> findAllByConsumerIdAndFundingStatusAndIsPrivateOrderByStartDateAsc(Long consumerId, FundingStatus fundingStatus, Boolean isPrivate);
 
+    @Query("select f from Funding f " +
+            "where f.consumer.id = :consumerId and f.fundingStatus = 'IN_PROGRESS' and f.deletedAt is null ORDER BY f.startDate ASC Limit 1")
+    Optional<Funding> findOneByConsumerIdAndFundingStatusAndDeletedAtIsNullOrderByStartDateAsc(Long consumerId);
+
     Optional<Funding> findByIdAndDeletedAtIsNull(Long fundingId);
 }
