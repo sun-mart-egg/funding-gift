@@ -1,18 +1,26 @@
 package com.d201.fundingift.wishlist.service;
 
 import com.d201.fundingift._common.exception.CustomException;
+import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.entity.ProductOption;
 import com.d201.fundingift.product.repository.ProductOptionRepository;
 import com.d201.fundingift.product.repository.ProductRepository;
-import com.d201.fundingift.wishlist.dto.request.WishlistRequest;
+import com.d201.fundingift.wishlist.dto.WishlistDto;
 import com.d201.fundingift.wishlist.entity.Wishlist;
 import com.d201.fundingift.wishlist.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.d201.fundingift._common.response.ErrorType.*;
 
@@ -26,9 +34,10 @@ public class WishlistService {
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final SecurityUtil securityUtil;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Transactional
-    public void createWishlistItem(WishlistRequest request) {
+    public void createWishlistItem(WishlistDto request) {
         // 소비자
         Long consumerId = getConsumerId();
 
@@ -45,7 +54,7 @@ public class WishlistService {
     }
 
     @Transactional
-    public void deleteWishlistItem(WishlistRequest request) {
+    public void deleteWishlistItem(WishlistDto request) {
         // 소비자
         Long consumerId = getConsumerId();
 
@@ -64,10 +73,47 @@ public class WishlistService {
         wishlistRepository.delete(wishlist);
     }
 
+    public SliceList<WishlistDto> getWishlists(Integer page, Integer size) {
+        // 소비자
+        Long consumerId = getConsumerId();
+
+        // 페이징
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 조회 -> dto
+        List<Object> wishlistDtos = getWishlistDtos(consumerId, pageable);
+
+        // 다음 페이지 존재 여부
+        boolean hasNext = getHasNext(page, size, wishlistDtos.size(), consumerId);
+
+        // 결과 반환
+        return SliceList.of(wishlistDtos, page, wishlistDtos.size(), hasNext);
+    }
+
+    private boolean getHasNext(Integer page, Integer requestSize, Integer resultSize, Long consumerId) {
+        Long cnt = redisTemplate.opsForSet().size("wishlist:consumerId:" + consumerId);
+        log.info("getWishlistCntByConsumerId: {}", cnt);
+
+        if (resultSize < requestSize || page * requestSize + resultSize >= cnt) {
+            return false;
+        }
+
+        return true;
+    }
+
     private void validateProductAndOption(Long productId, Long productOptionId) {
         if (!findProductById(productId).equals(findProductOptionById(productOptionId).getProduct())) {
             throw new CustomException(PRODUCT_OPTION_MISMATCH);
         }
+    }
+
+    private List<Object> getWishlistDtos(Long consumerId, Pageable pageable) {
+        Slice<Wishlist> wishlists = findAllWishlistByConsumerId(consumerId, pageable);
+        return wishlists.stream().map(WishlistDto::from).collect(Collectors.toList());
+    }
+
+    private Slice<Wishlist> findAllWishlistByConsumerId(Long consumerId, Pageable pageable) {
+        return wishlistRepository.findAllSliceByConsumerId(consumerId, pageable);
     }
 
     private Product findProductById(Long productId) {
@@ -84,7 +130,7 @@ public class WishlistService {
         return securityUtil.getConsumerId();
     }
 
-    private Wishlist findByConsumerIdAndRequest(Long consumerId, WishlistRequest request) {
+    private Wishlist findByConsumerIdAndRequest(Long consumerId, WishlistDto request) {
         return wishlistRepository.findByConsumerIdAndProductIdAndProductOptionId
                         (consumerId, request.getProductId(), request.getProductOptionId())
                         .orElse(null);
