@@ -44,7 +44,6 @@ public class FundingService {
     private final AnniversaryCategoryRepository anniversaryCategoryRepository;
     private final SecurityUtil  securityUtil;
 
-
     @Transactional
     public void postFunding(PostFundingRequest postFundingRequest) {
         Consumer consumer = getConsumer();
@@ -52,6 +51,9 @@ public class FundingService {
         Product product = getProduct(postFundingRequest);
 
         ProductOption productOption = getProductOption(postFundingRequest);
+
+        //제품과 제품 옵션이 맞는지 확인
+        checkingProductAndProductOptionIsSame(product, productOption);
 
         AnniversaryCategory anniversaryCategory = getAnniversaryCategory(postFundingRequest);
 
@@ -115,6 +117,17 @@ public class FundingService {
         } else {
             return getFundingsList(findByConsumerIdAndFundingStatusAndIsPrivateOrderByStartDateAsc(consumerId));
         }
+    }
+
+    //제품과 제품 옵션이 맞는지 확인
+    private void checkingProductAndProductOptionIsSame(Product product, ProductOption productOption) {
+
+        for(ProductOption po : product.getProductOptions()) {
+            if(Objects.equals(po.getId(), productOption.getId()))
+                return;
+        }
+
+        throw new CustomException(ErrorType.PRODUCT_OPTION_MISMATCH);
     }
 
     private List<GetFundingResponse> getFundingsList(List<Funding> fundings) {
