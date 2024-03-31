@@ -80,30 +80,40 @@ public class WishlistService {
         // 페이징
         Pageable pageable = PageRequest.of(page, size);
 
-        // 조회
-        Slice<Wishlist> wishlists = wishlistRepository.findAllSliceByConsumerId(consumerId, pageable);
-        List<Object> wishlistDtos = wishlists.stream().map(WishlistDto::from).collect(Collectors.toList());
+        // 조회 -> dto
+        List<Object> wishlistDtos = getWishlistDtos(consumerId, pageable);
 
-        // 전체 개수
-        Long cnt = redisTemplate.opsForSet().size("wishlist:consumerId:" + consumerId);
-        log.info("cnt: {}", cnt);
-
-        boolean hasNext = true;
-        if (wishlistDtos.size() < size) {
-            hasNext = false;
-        }
-        else if (page * size + wishlistDtos.size() >= cnt) {
-            hasNext = false;
-        }
+        // 다음 페이지 존재 여부
+        boolean hasNext = getHasNext(page, size, wishlistDtos.size(), consumerId);
 
         // 결과 반환
         return SliceList.of(wishlistDtos, page, wishlistDtos.size(), hasNext);
+    }
+
+    private boolean getHasNext(Integer page, Integer requestSize, Integer resultSize, Long consumerId) {
+        Long cnt = redisTemplate.opsForSet().size("wishlist:consumerId:" + consumerId);
+        log.info("getWishlistCntByConsumerId: {}", cnt);
+
+        if (resultSize < requestSize || page * requestSize + resultSize >= cnt) {
+            return false;
+        }
+
+        return true;
     }
 
     private void validateProductAndOption(Long productId, Long productOptionId) {
         if (!findProductById(productId).equals(findProductOptionById(productOptionId).getProduct())) {
             throw new CustomException(PRODUCT_OPTION_MISMATCH);
         }
+    }
+
+    private List<Object> getWishlistDtos(Long consumerId, Pageable pageable) {
+        Slice<Wishlist> wishlists = findAllWishlistByConsumerId(consumerId, pageable);
+        return wishlists.stream().map(WishlistDto::from).collect(Collectors.toList());
+    }
+
+    private Slice<Wishlist> findAllWishlistByConsumerId(Long consumerId, Pageable pageable) {
+        return wishlistRepository.findAllSliceByConsumerId(consumerId, pageable);
     }
 
     private Product findProductById(Long productId) {
