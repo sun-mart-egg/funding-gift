@@ -1,9 +1,9 @@
 package com.d201.fundingift.attendance.controller;
 
 import com.d201.fundingift._common.response.*;
-import com.d201.fundingift.attendance.dto.request.GetAttendanceDetailsRequest;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
-import com.d201.fundingift.attendance.dto.response.GetMyAttendanceDetailsResponse;
+import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
+import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
 import com.d201.fundingift.attendance.service.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -17,8 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import static com.d201.fundingift._common.response.SuccessType.POST_ATTENDANCE_SUCCESS;
 
@@ -67,10 +65,11 @@ public class AttendanceController {
                             schema = @Schema(implementation = ErrorResponse.class)
                     ))
     })
-    @GetMapping("/my-details")
-    public SuccessResponse<SliceList<GetMyAttendanceDetailsResponse>> getAttendanceDetails(@RequestParam(required = true, name = "funding-id") Long fundingId,
-                                                                                           @PageableDefault(size=4, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    @GetMapping("/list")
+    public SuccessResponse<SliceList<GetAttendancesResponse>> getAttendancesResponse(@RequestParam(required = true, name = "funding-id") Long fundingId,
+                                                                                     @PageableDefault(size=4, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        return ResponseUtils.ok(attendanceService.getMyAttendanceDetails(fundingId, pageable), SuccessType.GET_ATTENDANCE_DETAIL_SUCCESS);
+        return ResponseUtils.ok(attendanceService.getAttendancesResponse(fundingId, pageable), SuccessType.GET_ATTENDANCE_DETAIL_SUCCESS);
     }
+
 }

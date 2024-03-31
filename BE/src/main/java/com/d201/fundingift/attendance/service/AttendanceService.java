@@ -4,12 +4,13 @@ import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
-import com.d201.fundingift.attendance.dto.request.GetAttendanceDetailsRequest;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
-import com.d201.fundingift.attendance.dto.response.GetMyAttendanceDetailsResponse;
+import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
+import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
 import com.d201.fundingift.attendance.entity.Attendance;
 import com.d201.fundingift.attendance.repository.AttendanceRepository;
 import com.d201.fundingift.consumer.entity.Consumer;
+import com.d201.fundingift.friend.entity.Friend;
 import com.d201.fundingift.friend.repository.FriendRepository;
 import com.d201.fundingift.funding.entity.Funding;
 import com.d201.fundingift.funding.repository.FundingRepository;
@@ -20,8 +21,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -63,16 +64,23 @@ public class AttendanceService {
         attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding));
     }
 
-    public SliceList<GetMyAttendanceDetailsResponse> getMyAttendanceDetails(Long fundingId, Pageable pageable) {
+    //펀딩 상세 조회의 펀딩 참여자 정보 리스트
+    public SliceList<GetAttendancesResponse> getAttendancesResponse(Long fundingId, Pageable pageable) {
         Long myConsumerId = securityUtil.getConsumerId();
 
         //펀딩 존재 여부 확인
         Funding funding = getFunding(fundingId);
 
-        //내 펀딩인지 확인
-        checkingMyFunding(myConsumerId, funding.getConsumer().getId());
+        //내 펀딩, (나의 친구 펀딩 + isPrivate false), (펀딩 생성자의 친한친구가 나 + isPrivate true)일 경우 상세 보기 가능
+        if(checkingMyFunding(myConsumerId, funding.getConsumer().getId())) {
+            return getMyAttendanceDetailsResponseSliceList(findAllByFundingId(funding.getId(), pageable));
+        } else if(!funding.getIsPrivate() && checkingMyFriend(myConsumerId, funding.getConsumer().getId())) {
+            return getMyAttendanceDetailsResponseSliceList(findAllByFundingId(funding.getId(), pageable));
+        } else if(funding.getIsPrivate() && checkingIsFavoriteFriend(funding.getConsumer().getId(), myConsumerId)) {
+            return getMyAttendanceDetailsResponseSliceList(findAllByFundingId(funding.getId(), pageable));
+        }
 
-        return getMyAttendanceDetailsResponseSliceList(findAllByFundingId(funding.getId(), pageable));
+        throw new CustomException(ErrorType.FUNDING_ATTENDANCE_UNAUTHORIZED);
     }
 
     private Consumer getConsumer() {
@@ -84,8 +92,8 @@ public class AttendanceService {
                 .orElseThrow(() -> new CustomException(ErrorType.FUNDING_NOT_FOUND));
     }
 
-    private SliceList<GetMyAttendanceDetailsResponse> getMyAttendanceDetailsResponseSliceList(Slice<Attendance> attendances) {
-        return SliceList.from(attendances.stream().map(GetMyAttendanceDetailsResponse::from).collect(Collectors.toList()), attendances.getPageable(), attendances.hasNext());
+    private SliceList<GetAttendancesResponse> getMyAttendanceDetailsResponseSliceList(Slice<Attendance> attendances) {
+        return SliceList.from(attendances.stream().map(GetAttendancesResponse::from).collect(Collectors.toList()), attendances.getPageable(), attendances.hasNext());
     }
 
     private Slice<Attendance> findAllByFundingId(Long fundingId, Pageable pageable) {
@@ -120,9 +128,23 @@ public class AttendanceService {
             funding.changeStatus("SUCCESS");
     }
 
-    private void checkingMyFunding(Long myConsumerId, Long fundingConsumerId) {
+    private boolean checkingMyFunding(Long myConsumerId, Long fundingConsumerId) {
         if(!Objects.equals(myConsumerId, fundingConsumerId))
-            throw new CustomException(ErrorType.FUNDING_NOT_MINE);
+            return false;
 
+        return true;
+    }
+
+    private boolean checkingMyFriend(Long myConsumerId, Long fundingConsumerId) {
+        if(friendRepository.findById(myConsumerId + ":" + fundingConsumerId).isEmpty())
+            return false;
+        return true;
+    }
+
+    private boolean checkingIsFavoriteFriend(Long fundingConsumerId, Long myConsumerId) {
+        Optional<Friend> friend = friendRepository.findById(fundingConsumerId + ":" + myConsumerId);
+
+        //보려는 펀딩 목록의 대상에 본인이 친구가 아니거나 친한 친구가 아닌 경우 -> false
+        return friend.isPresent() && friend.get().getIsFavorite();
     }
 }
