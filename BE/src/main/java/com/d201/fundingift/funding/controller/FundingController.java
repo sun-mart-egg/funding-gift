@@ -51,19 +51,79 @@ public class FundingController {
         return ResponseUtils.ok(CREATE_FUNDING_SUCCESS);
     }
 
+    @Operation(summary = "내가 만든 펀딩 목록 보기",
+            description = """
+                           `token` \n
+                           내가 만든 펀딩 목록을 볼 수 있습니다. \n
+                           제품명 keyword에 넣으면 검색 가능합니다. \n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
     @GetMapping("/my-fundings")
-    public SuccessResponse<SliceList<GetFundingResponse>> getMyFundings(@RequestParam(required = false, name = "keyword") String keyword,
-                                                                        @PageableDefault(size=3, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+    public SuccessResponse<SliceList<GetFundingResponse>> getMyFundings(@Schema(description = "제품명으로 펀딩 목록 조회", example = "귀걸이") @RequestParam(required = false, name = "keyword") String keyword,
+                                                                        @PageableDefault(size=4, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return ResponseUtils.ok(fundingService.getMyFundings(keyword, pageable), GET_MY_FUNDINGS_SUCCESS);
     }
 
+    @Operation(summary = "친구가 만든 펀딩 목록 보기",
+            description = """
+                           `token` \n
+                           친구가 만든 펀딩 목록을 볼 수 있습니다. \n
+                           친구 아이디 friend-consumer-id에 필수로 넣어야 합니다. \n
+                           제품명 keyword에 넣으면 검색 가능합니다. \n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부 / 친구 아이디 존재 여부 / 보려는 펀딩 목록의 대상이 자신의 친구인지와 친한친구인지 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
     @GetMapping("/friend-fundings")
     public SuccessResponse<SliceList<GetFundingResponse>> getFriendFundings(
+                                                                        @Schema(description = "친구 아이디", example = "43")
                                                                         @RequestParam(required = true, name = "friend-consumer-id") Long friendConsumerId,
+                                                                        @Schema(description = "제품명으로 펀딩 목록 조회", example = "귀걸이")
                                                                         @RequestParam(required = false, name = "keyword") String keyword,
                                                                         @PageableDefault(size=3, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         return ResponseUtils.ok(fundingService.getFriendFundings(friendConsumerId, keyword, pageable), GET_FRIEND_FUNDINGS_SUCCESS);
+    }
+
+    @Operation(summary = "펀딩 스토리 보기",
+            description = """
+                           `token` \n
+                           펀딩 스토리를 볼 수 있습니다. \n
+                           진행중인 펀딩만 보여줍니다. \n
+                           시작일 기준 오름차순 입니다. \n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부 / 친구 아이디 존재 여부 / 보려는 펀딩 목록의 대상이 자신의 친구인지, 친한친구인지 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
+    @GetMapping("/story")
+    public SuccessResponse<List<GetFundingResponse>> getFundingsStory(
+            @Schema(description = "친구 아이디", example = "43")
+            @RequestParam(name="consumer-id") Long consumerId
+    ) {
+        return ResponseUtils.ok(fundingService.getFundingsStory(consumerId), GET_FUNDINGS_STORY_SUCCESS);
     }
 }

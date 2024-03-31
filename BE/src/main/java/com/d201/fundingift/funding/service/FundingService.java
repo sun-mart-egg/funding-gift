@@ -6,10 +6,13 @@ import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
+import com.d201.fundingift.friend.entity.Friend;
+import com.d201.fundingift.friend.repository.FriendRepository;
 import com.d201.fundingift.funding.dto.request.PostFundingRequest;
 import com.d201.fundingift.funding.dto.response.GetFundingResponse;
 import com.d201.fundingift.funding.entity.AnniversaryCategory;
 import com.d201.fundingift.funding.entity.Funding;
+import com.d201.fundingift.funding.entity.status.FundingStatus;
 import com.d201.fundingift.funding.repository.AnniversaryCategoryRepository;
 import com.d201.fundingift.funding.repository.FundingRepository;
 import com.d201.fundingift.product.entity.Product;
@@ -23,6 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +38,7 @@ public class FundingService {
 
     private final FundingRepository fundingRepository;
     private final ConsumerRepository consumerRepository;
+    private final FriendRepository friendRepository;
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final AnniversaryCategoryRepository anniversaryCategoryRepository;
@@ -53,34 +60,77 @@ public class FundingService {
         fundingRepository.save(Funding.from(postFundingRequest, consumer, anniversaryCategory, product, productOption));
     }
 
-    //내 펀딩 목록 보기, 제품명으로 검색 기능 추가
+    //내 펀딩 목록 보기
     public SliceList<GetFundingResponse> getMyFundings(String keyword, Pageable pageable) {
-        Long consumerId = securityUtil.getConsumerId();
+        Long myConsumerId = securityUtil.getConsumerId();
 
         //제품명으로 검색 안하는 경우
         if (keyword == null)
-            return getMyFundingsSliceList(findAllByConsumerId(consumerId, pageable));
+            return getFundingsSliceList(findAllByConsumerId(myConsumerId, pageable));
 
         //제품명으로 검색하는 경우
-        return getMyFundingsSliceList(findAllByConsumerIdAndProductName(consumerId, keyword, pageable));
+        return getFundingsSliceList(findAllByConsumerIdAndProductName(myConsumerId, keyword, pageable));
     }
 
+    //친구 펀딩 목록 보기
     public SliceList<GetFundingResponse> getFriendFundings(Long friendConsumerId, String keyword, Pageable pageable) {
-        Long consumerId = securityUtil.getConsumerId();
+        Long myConsumerId = securityUtil.getConsumerId();
 
         //친구 아이디 존재 여부 확인
         findByConsumerId(friendConsumerId);
 
-        /**
-         * TODO : consumerId, firendConsumerId 친구아닌 경우 예외
-         * TODO : consumerId, firendConsumerId 친구인 경우 친한 친구인지 아닌지 확인
-         */
+        //보려는 펀딩 목록의 대상이 자신의 친구인지 확인
+        checkingFriend(myConsumerId, friendConsumerId);
 
-        return null;
+        //보려는 펀딩 목록의 대상에 자신이 친한 친구인지 확인
+        if(checkingIsFavoriteFriend(friendConsumerId, myConsumerId)) {
+            //제품명으로 검색 안하는 경우
+            if(keyword == null)
+                return getFundingsSliceList(findAllByConsumerId(friendConsumerId, pageable));
+
+            return getFundingsSliceList(findAllByConsumerIdAndProductName(friendConsumerId, keyword, pageable));
+        } else {
+            //제품명으로 검색 안하는 경우
+            if(keyword == null)
+                return getFundingsSliceList(findAllByConsumerIdAndIsPrivate(friendConsumerId, pageable));
+
+            return getFundingsSliceList(findAllByConsumerIdAndIsPrivateAndProductName(friendConsumerId, keyword, pageable));
+        }
+    }
+
+    public List<GetFundingResponse> getFundingsStory(Long consumerId) {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        if(!Objects.equals(myConsumerId, consumerId)) {
+            //친구 아이디 존재 여부 확인
+            findByConsumerId(consumerId);
+
+            //보려는 펀딩 목록의 대상이 자신의 친구인지 확인
+            checkingFriend(myConsumerId, consumerId);
+        }
+
+        //보려는 펀딩 목록의 대상에 자신이 친한 친구인지 확인
+        if(Objects.equals(myConsumerId, consumerId) || checkingIsFavoriteFriend(consumerId, myConsumerId)) {
+            return getFundingsList(findByConsumerIdAndFundingStatusOrderedByStartDate(consumerId));
+        } else {
+            return getFundingsList(findByConsumerIdAndFundingStatusAndIsPrivateOrderByStartDateAsc(consumerId));
+        }
+    }
+
+    private List<GetFundingResponse> getFundingsList(List<Funding> fundings) {
+        return fundings.stream().map(GetFundingResponse::from).collect(Collectors.toList());
+    }
+
+    private List<Funding> findByConsumerIdAndFundingStatusOrderedByStartDate(Long consumerId) {
+        return fundingRepository.findAllByConsumerIdAndFundingStatusOrderByStartDateAsc(consumerId, FundingStatus.IN_PROGRESS);
+    }
+
+    private List<Funding> findByConsumerIdAndFundingStatusAndIsPrivateOrderByStartDateAsc(Long consumerId) {
+        return fundingRepository.findAllByConsumerIdAndFundingStatusAndIsPrivateOrderByStartDateAsc(consumerId, FundingStatus.IN_PROGRESS, false);
     }
 
     //slice<Funding> -> SliceList<GetFundingResponse> 변경 매서드
-    private SliceList<GetFundingResponse> getMyFundingsSliceList(Slice<Funding> fundings) {
+    private SliceList<GetFundingResponse> getFundingsSliceList(Slice<Funding> fundings) {
         return SliceList.from(fundings.stream().map(GetFundingResponse::from).collect(Collectors.toList()), fundings.getPageable(), fundings.hasNext());
     }
 
@@ -89,14 +139,36 @@ public class FundingService {
         return fundingRepository.findAllByConsumerIdAndDeletedAtIsNull(consumerId, pageable);
     }
 
+    //consumerId, isPrivate == false로 펀딩 목록 찾기
+    private Slice<Funding> findAllByConsumerIdAndIsPrivate(Long consumerId, Pageable pageable) {
+        return fundingRepository.findAllByConsumerIdAndIsPrivateAndDeletedAtIsNull(consumerId, pageable);
+    }
+
     //consumerId, 검색어로 펀딩 목록 찾기
     private Slice<Funding> findAllByConsumerIdAndProductName(Long consumerId, String keyword, Pageable pageable) {
         return fundingRepository.findAllByConsumerIdAndProductNameAndDeletedAtIsNull(consumerId, keyword, pageable);
     }
 
+    //consumerId, isPrivate == false, 검색어로 펀딩 목록 찾기
+    private Slice<Funding> findAllByConsumerIdAndIsPrivateAndProductName(Long consumerId, String keyword, Pageable pageable) {
+        return fundingRepository.findAllByConsumerIdAndIsPrivateAndProductNameAndDeletedAtIsNull(consumerId, keyword, pageable);
+    }
+
     private void findByConsumerId(Long consumerId){
         consumerRepository.findByIdAndDeletedAtIsNull(consumerId)
                 .orElseThrow(() -> new CustomException(ErrorType.USER_NOT_FOUND));
+    }
+
+    private void checkingFriend(Long consumerId, Long toConsumerId) {
+        friendRepository.findById(consumerId + ":" + toConsumerId)
+                .orElseThrow(() -> new CustomException(ErrorType.FRIEND_NOT_FOUND));
+    }
+
+    private boolean checkingIsFavoriteFriend(Long toConsumerId, Long consumerId) {
+        Optional<Friend> friend = friendRepository.findById(toConsumerId + ":" + consumerId);
+
+        //보려는 펀딩 목록의 대상에 본인이 친구가 아니거나 친한 친구가 아닌 경우 -> false
+        return friend.isPresent() && friend.get().getIsFavorite();
     }
 
     private AnniversaryCategory getAnniversaryCategory(PostFundingRequest postFundingRequest) {
