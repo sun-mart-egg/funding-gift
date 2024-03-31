@@ -3,7 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import SampleImage from "/imgs/image_coming_soon.png";
 
 import Star from "/imgs/star.png";
-import Heart from "/imgs/heart.png";
+import HeartEmpty from "/imgs/heart_empty.png";
+import HeartFilled from "/imgs/heart_filled.png";
 import Down from "/imgs/down.png";
 import NoReview from "/imgs/no_review.png";
 
@@ -19,6 +20,7 @@ function ProductDetail() {
   const resetFormData = useFormDataStore((state) => state.resetFormData);
   const [selectedOption, setSelectedOption] = useState(null);
   const token = localStorage.getItem("access-token")
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   // 옵션 토글 가시성 상태
   const [optionToggleVisible, setOptionToggleVisible] = useState(false);
@@ -57,11 +59,12 @@ function ProductDetail() {
       try {
         const response = await fetch(
           import.meta.env.VITE_BASE_URL + `/api/products/${productId}`, {
-            headers: {Authorization: `Bearer ${token}`}
-          }
+          headers: { Authorization: `Bearer ${token}` }
+        }
         );
         const json = await response.json();
         setProduct(json.data); // 'data' 속성에 접근하여 상태에 저장
+        setIsWishlisted(json.data.isWishlist);
       } catch (error) {
         console.error("Error fetching product:", error);
       }
@@ -103,34 +106,35 @@ function ProductDetail() {
   const [reviewOption, setReviewOption] = useState("");
   const [reviewSort, setReviewSort] = useState(0);
 
-  useEffect(() => {
-    const fetchReview = async () => {
-      try {
-        let url = import.meta.env.VITE_BASE_URL + `/api/reviews?product-id=${productId}&page=0&size=10&sort=${reviewSort}`;
-        if (reviewOption !== null) {
-          url += `&product-option-id=${reviewOption}`;
-        }
 
-        const response = await fetch(url, {
-          headers: {Authorization: `Bearer ${token}`}
-        });
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const json = await response.json();
-        if (json && json.data && json.data.data) {
-          setReviews(json.data.data);
-        } else {
-          console.log("No review data available");
-          setReviews([]);
-        }
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
+  const fetchReview = async () => {
+    try {
+      let url = import.meta.env.VITE_BASE_URL + `/api/reviews?product-id=${productId}&page=0&size=10&sort=${reviewSort}`;
+      if (reviewOption !== null) {
+        url += `&product-option-id=${reviewOption}`;
       }
-    };
 
+      const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const json = await response.json();
+      if (json && json.data && json.data.data) {
+        setReviews(json.data.data);
+      } else {
+        console.log("No review data available");
+        setReviews([]);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchReview();
-  }, [productId, reviewOption, reviewSort, reviews]);
+  }, [productId, reviewOption, reviewSort]);
 
   const [reviewOptionToggleVisible, setReviewOptionToggleVisible] =
     useState(false);
@@ -157,18 +161,101 @@ function ProductDetail() {
   // 댓글 삭제
 
   const handleDeleteReview = (reviewId) => {
-    fetch(import.meta.env.VITE_BASE_URL +`/api/reviews/${reviewId}`, {
+    fetch(import.meta.env.VITE_BASE_URL + `/api/reviews/${reviewId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}` // 인증 토큰이 필요한 경우
       }
     })
-    .then(response => response.json())
-    .then(data => {
-      fetchReview();
-    })
-    .catch((error) => console.error('Error:', error));
+      .then(response => response.json())
+      .then(data => {
+        fetchReview();
+      })
+      .catch((error) => console.error('Error:', error));
+  };
+
+  useEffect(() => {
+    // 상품 정보를 가져온 후 위시리스트 상태를 설정합니다.
+    const fetchProduct = async () => {
+      // ... 기존 fetchProduct 로직 ...
+      setIsWishlisted(product.isWishlist);
+    };
+    fetchProduct();
+  }, [productId]);
+
+  const handleAddWish = async () => {
+    setIsWishlisted(true);
+    const requestBody = {
+      productId: Number(productId) // productId를 숫자로 변환
+    };
+
+    try {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + '/api/wishlists', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // 인증 토큰이 필요한 경우
+        },
+        body: JSON.stringify(requestBody) // JSON 형식으로 요청 본문 구성
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const json = await response.json();
+      if (json.code === 200) {
+        console.log("Wishlist updated successfully");
+        // 추가적인 처리 (예: 상태 업데이트 또는 사용자에게 알림 표시)
+      } else {
+        console.error("Error updating wishlist:", json.msg);
+      }
+    } catch (error) {
+      console.error("Error updating wishlist:", error);
+    }
+  };
+
+  const handleDeleteWish = async () => {
+    setIsWishlisted(false);
+    const requestBody = {
+      productId: Number(productId) // productId를 숫자로 변환
+    };
+
+    try {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + '/api/wishlists', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // 인증 토큰이 필요한 경우
+        },
+        body: JSON.stringify(requestBody) // JSON 형식으로 요청 본문 구성
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const json = await response.json();
+      if (json.code === 200) {
+        console.log("Wishlist updated successfully");
+        // 추가적인 처리 (예: 상태 업데이트 또는 사용자에게 알림 표시)
+      } else {
+        console.error("Error updating wishlist:", json.msg);
+      }
+    } catch (error) {
+      console.error("Error updating wishlist:", error);
+    }    
+  };
+
+  const toggleWishlist = async () => {
+    if (isWishlisted) {
+      // 위시리스트에서 삭제
+      await handleDeleteWish();
+    } else {
+      // 위시리스트에 추가
+      await handleAddWish();
+    }
   };
 
   return (
@@ -456,15 +543,25 @@ function ProductDetail() {
           <div className="min-h-[70px]"></div>
           {/* 하단 고정 버튼 */}
           <div className="fixed bottom-0 flex h-[50px] w-[97%] max-w-[500px] items-center justify-center bg-white">
-            <button className="absolute left-[8%] mr-[20px]">
-              <img src={Heart} alt="" className="w-[27px]" />
-            </button>
-            <button
-              className="h-[80%]  w-[50%] rounded-lg bg-cusColor3 px-4 py-2 text-base font-bold text-white hover:bg-red-400"
-              onClick={handleClick}
-            >
-              펀딩 만들기
-            </button>
+            {product ? (
+              <>
+                <button
+                  onClick={toggleWishlist}
+                  className="absolute left-[8%] mr-[20px]"
+                >
+                  <img src={isWishlisted ? HeartFilled : HeartEmpty} alt="" className="w-[27px]" />
+                </button>
+
+                <button
+                  className="h-[80%] w-[50%] rounded-lg bg-cusColor3 px-4 py-2 text-base font-bold text-white hover:bg-red-400"
+                  onClick={handleClick}
+                >
+                  펀딩 만들기
+                </button>
+              </>
+            ) : (
+              <p>Loading...</p> // 로딩 표시
+            )}
           </div>
         </div>
       </div>

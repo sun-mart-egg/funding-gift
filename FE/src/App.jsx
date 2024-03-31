@@ -66,7 +66,7 @@ function App() {
           <Route path="/friends" element={<Friends />} />
           <Route path="/participate" element={<ParticipatePage />} />
           <Route path="/pay" element={<Paypage />} />
-          <Route path="/wishlist/:userId" element={<Wishlist />} />
+          <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/brand/:brandId" element={<BrandStore />} />
         </Route>
 
