@@ -48,18 +48,32 @@ public class FundingService {
     public void postFunding(PostFundingRequest postFundingRequest) {
         Consumer consumer = getConsumer();
 
+        //상품 없으면 예외
         Product product = getProduct(postFundingRequest);
 
+        //상품 옵션 없으면 예외
         ProductOption productOption = getProductOption(postFundingRequest);
 
         //제품과 제품 옵션이 맞는지 확인
         checkingProductAndProductOptionIsSame(product, productOption);
 
+        //기념일 카테고리 없으면 예외
         AnniversaryCategory anniversaryCategory = getAnniversaryCategory(postFundingRequest);
 
+        //시작일이 현재 날짜보다 과거면 예외
+        isStartDatePast(postFundingRequest.getStartDate());
+
+        // 기념일이 시작일보다 과거면 예외
+        isAnniversaryDatePast(postFundingRequest.getAnniversaryDate(), postFundingRequest.getStartDate());
+
+        // 종료일이 기념일 보다 과거이면 예외
+        isEndDatePast(postFundingRequest.getEndDate(), postFundingRequest.getAnniversaryDate());
+
+        //시작일 종료일 7일 넘으면 예외
         isOver7Days(postFundingRequest.getStartDate(), postFundingRequest.getEndDate());
 
-        fundingRepository.save(Funding.from(postFundingRequest, consumer, anniversaryCategory, product, productOption));
+        //시작일이 오늘이면 IN_PROGRESS로 상태 변경, 미래면 PRE_PROGRESS
+        fundingRepository.save(Funding.from(postFundingRequest, IsStartDateToday(postFundingRequest.getStartDate()), consumer, anniversaryCategory, product, productOption));
     }
 
     //내 펀딩 목록 보기
@@ -206,5 +220,27 @@ public class FundingService {
     public void isOver7Days(LocalDate start, LocalDate end) {
         if (Math.abs(start.until(end).getDays()) > 7)
             throw new CustomException(ErrorType.FUNDING_DURATION_NOT_VALID);
+    }
+
+    public void isStartDatePast(LocalDate startDate) {
+        if(startDate.isBefore(LocalDate.now()))
+            throw new CustomException(ErrorType.FUNDING_START_DATE_IS_PAST);
+    }
+
+
+    public void isAnniversaryDatePast(LocalDate anniversaryDate, LocalDate startDate) {
+        if(anniversaryDate.isBefore(startDate))
+            throw new CustomException(ErrorType.FUNDING_ANNIVERSARY_DATE_IS_PAST);
+    }
+
+    public void isEndDatePast(LocalDate endDate, LocalDate anniversaryDate) {
+        if(endDate.isBefore(anniversaryDate))
+            throw new CustomException(ErrorType.FUNDING_END_DATE_IS_PAST);
+    }
+
+    public String IsStartDateToday(LocalDate startDate) {
+        if(startDate.equals(LocalDate.now()))
+            return "IN_PROGRESS";
+        return "PRE_PROGRESS";
     }
 }

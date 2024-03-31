@@ -79,7 +79,7 @@ public class Funding extends BaseTime {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @ColumnDefault("'NOT_STARTED'")
+    @ColumnDefault("'PRE_PROGRESS'")
     private FundingStatus fundingStatus;
 
     @Column(nullable = false)
@@ -131,7 +131,7 @@ public class Funding extends BaseTime {
         this.attendances = attendances;
     }
 
-    public static Funding from(PostFundingRequest postFundingRequest
+    public static Funding from(PostFundingRequest postFundingRequest, String fundingStatus
             , Consumer consumer, AnniversaryCategory anniversaryCategory, Product product, ProductOption productOption) {
         return Funding.builder()
                 .minPrice(postFundingRequest.getMinPrice())
@@ -148,6 +148,7 @@ public class Funding extends BaseTime {
                 .defaultAddr(postFundingRequest.getDefaultAddr())
                 .detailAddr(postFundingRequest.getDetailAddr())
                 .zipCode(postFundingRequest.getZipCode())
+                .fundingStatus(FundingStatus.valueOf(fundingStatus))
                 .isPrivate(postFundingRequest.getIsPrivate())
                 .consumer(consumer)
                 .anniversaryCategory(anniversaryCategory)
