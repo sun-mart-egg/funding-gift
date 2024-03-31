@@ -22,6 +22,15 @@ public class SliceList<T> {
         this.hasNext = hasNext;
     }
 
+    public static SliceList of(List<Object> data, int page, int size, boolean hasNext) {
+        return builder()
+                .data(data)
+                .page(page)
+                .size(size)
+                .hasNext(hasNext)
+                .build();
+    }
+
     public static SliceList from(List<Object> data, Pageable pageable, boolean hasNext) {
         return builder()
                 .data(data)
@@ -30,4 +39,5 @@ public class SliceList<T> {
                 .hasNext(hasNext)
                 .build();
     }
+
 }
