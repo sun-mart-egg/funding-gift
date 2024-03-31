@@ -3,14 +3,18 @@ package com.d201.fundingift.friend.service;
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.jwt.JwtUtil;
 import com.d201.fundingift._common.jwt.RedisJwtRepository;
+import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import com.d201.fundingift.friend.dto.FriendDto;
+import com.d201.fundingift.friend.dto.response.GetFriendStoryResponse;
 import com.d201.fundingift.friend.dto.response.GetKakaoFriendsResponse;
 import com.d201.fundingift.friend.entity.Friend;
 
 import com.d201.fundingift.friend.repository.FriendRepository;
+import com.d201.fundingift.funding.entity.Funding;
+import com.d201.fundingift.funding.repository.FundingRepository;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -43,6 +47,7 @@ public class FriendService {
     private final ConsumerRepository consumerRepository;
     private final RedisJwtRepository redisJwtRepository;
     private final FriendRepository friendRepository;
+    private final FundingRepository fundingRepository;
     private final StringRedisTemplate stringRedisTemplate;
     private final SecurityUtil securityUtil;
     private final JwtUtil jwtUtil;
@@ -157,6 +162,30 @@ public class FriendService {
         return friendDtos;
     }
 
+    public List<GetFriendStoryResponse> getFriendsStory() {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        List<Friend> friends = friendRepository.findByConsumerId(myConsumerId);
+        List<GetFriendStoryResponse> getFriendStoryResponses = new ArrayList<>();
+
+
+        for(Friend f : friends) {
+            log.info(String.valueOf(f.getToConsumerId()));
+            //친구의 펀딩 목록 중 진행중이고 시작일이 제일 빠른 하나 반환
+            Optional<Funding> funding = getOneByConsumerIdAndFundingStatusAndDeletedAtIsNullOrderByStartDateAsc(f);
+
+            Optional<Consumer> consumer = findByConsumerId(f.getToConsumerId());
+
+            if(funding.isPresent() && consumer.isPresent()) {
+                getFriendStoryResponses.add(GetFriendStoryResponse.from(funding.get(), consumer.get()));
+            }
+        }
+
+        Collections.sort(getFriendStoryResponses);
+
+        return getFriendStoryResponses;
+    }
+
     @Transactional
     public void toggleFavorite(Long toConsumerId) {
         Long consumerId = Long.valueOf(securityUtil.getConsumerId());
@@ -184,4 +213,11 @@ public class FriendService {
         log.info("consumerId({})와 관련된 모든 친구 정보가 성공적으로 삭제되었습니다.", consumerId);
     }
 
+    private Optional<Funding> getOneByConsumerIdAndFundingStatusAndDeletedAtIsNullOrderByStartDateAsc(Friend f) {
+        return fundingRepository.findOneByConsumerIdAndFundingStatusAndDeletedAtIsNullOrderByStartDateAsc(f.getToConsumerId());
+    }
+
+    private Optional<Consumer> findByConsumerId(Long consumerId){
+        return consumerRepository.findByIdAndDeletedAtIsNull(consumerId);
+    }
 }

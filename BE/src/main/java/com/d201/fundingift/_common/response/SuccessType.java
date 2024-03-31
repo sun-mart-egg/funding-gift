@@ -13,6 +13,7 @@ public enum SuccessType {
     // 친구
     GET_KAKAO_FRIEND_INFO_SUCCESS("카카오 친구 목록 조회에 성공하였습니다."),
     GET_FRIEND_INFO_SUCCESS("친구 목록 조회에 성공하였습니다."),
+    GET_FRIENDS_STORY_SUCCESS("친구 펀딩 스토리 리스트 조회에 성공하였습니다."),
 
     // 펀딩
     CREATE_FUNDING_SUCCESS("펀딩 등록에 성공하였습니다."),

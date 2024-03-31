@@ -1,12 +1,16 @@
 package com.d201.fundingift.friend.controller;
 
+import com.d201.fundingift._common.response.ErrorResponse;
 import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift._common.response.SuccessType;
 import com.d201.fundingift.friend.dto.FriendDto;
+import com.d201.fundingift.friend.dto.response.GetFriendStoryResponse;
 import com.d201.fundingift.friend.dto.response.GetKakaoFriendsResponse;
 import com.d201.fundingift.friend.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -57,5 +61,27 @@ public class FriendController {
     public ResponseEntity<?> toggleFavorite(@PathVariable("to-consumer-id") Long toConsumerId) {
         friendService.toggleFavorite(toConsumerId);
         return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "친구 펀딩 스토리 리스트",
+            description = """
+                           `token` \n
+                           자신의 친구 펀딩 스토리 리스트를 줍니다. \n
+                           진행중인 펀딩만 보여줍니다. \n
+                           시작일 기준 오름차순으로 정렬 해서 줍니다. \n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
+    @GetMapping("/get-fundings-story")
+    public SuccessResponse<List<GetFriendStoryResponse>> getFundingsStory() {
+        return ResponseUtils.ok(friendService.getFriendsStory(), SuccessType.GET_FRIENDS_STORY_SUCCESS);
     }
 }
