@@ -1,5 +1,6 @@
 package com.d201.fundingift.friend.dto;
 
+import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.friend.entity.Friend;
 import com.google.gson.annotations.SerializedName;
 import lombok.Builder;
@@ -30,6 +31,15 @@ public class FriendDto {
                 .favorite(friend.getIsFavorite())
                 .profileNickname(profileNickname)
                 .profileThumbnailImage(profileThumbnailImage)
+                .build();
+    }
+
+    public static FriendDto from(Friend friend, Consumer consumer) {
+        return FriendDto.builder()
+                .consumerId(friend.getToConsumerId())
+                .favorite(friend.getIsFavorite())
+                .profileNickname(consumer != null ? consumer.getName() : "탈퇴한 회원")
+                .profileThumbnailImage(consumer != null ? consumer.getProfileImageUrl() : null)
                 .build();
     }
 
