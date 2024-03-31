@@ -31,6 +31,7 @@ import FundingMain from "./components/Funding/pages/FundingMain.jsx";
 import StoryPage from "./components/Funding/pages/StoryPage.jsx";
 import MyPage from "./components/Funding/pages/MyPage.jsx";
 import NewAnniversaryPage from "./components/Funding/pages/NewAnniversaryPage.jsx";
+import NewAddressPage from "./components/Funding/pages/NewAddressPage.jsx";
 
 function App() {
   return (
@@ -62,6 +63,7 @@ function App() {
           <Route path="/address-list" element={<AddressListPage />} />
           <Route path="/account-list" element={<AccountListPage />} />
           <Route path="/new-anniversary" element={<NewAnniversaryPage />} />
+          <Route path="/new-address" element={<NewAddressPage />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/participate" element={<ParticipatePage />} />
