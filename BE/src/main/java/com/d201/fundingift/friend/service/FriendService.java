@@ -33,6 +33,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.d201.fundingift._common.response.ErrorType.*;
 
@@ -137,27 +138,20 @@ public class FriendService {
         Long consumerId = Long.valueOf(securityUtil.getConsumerId());
         log.info("Retrieving friends for consumerId: {}", consumerId);
 
-        List<Friend> friends = friendRepository.findByConsumerId(consumerId); // FriendRepository에서 consumerId로 조회
+        List<Friend> friends = friendRepository.findByConsumerId(consumerId);
         log.info("Found {} friends for consumerId: {}", friends.size(), consumerId);
 
-        List<FriendDto> friendDtos = new ArrayList<>();
+        List<FriendDto> friendDtos = friends.stream()
+                .map(friend -> {
+                    Consumer consumer = consumerRepository.findByIdAndDeletedAtIsNull(friend.getToConsumerId()).orElse(null);
+                    return FriendDto.from(friend, consumer);
+                })
+                .filter(Objects::nonNull) // 탈퇴한 회원 제외
+                .collect(Collectors.toList());
 
-        for (Friend friend : friends) {
-            Optional<Consumer> consumerOptional = consumerRepository.findByIdAndDeletedAtIsNull(friend.getToConsumerId());
-
-            String profileNickname = "탈퇴한 회원";
-            String profileThumbnailImage = "";
-
-            if (consumerOptional.isPresent()) {
-                Consumer consumer = consumerOptional.get();
-                profileNickname = consumer.getName();
-                profileThumbnailImage = consumer.getProfileImageUrl();
-            }
-
-            // FriendDto 생성
-            FriendDto friendDto = FriendDto.from(friend, profileNickname, profileThumbnailImage);
-            friendDtos.add(friendDto);
-        }
+        // 친한 친구 우선으로 정렬하고, 같은 경우 이름(닉네임) 기준으로 정렬
+        friendDtos.sort(Comparator.comparing(FriendDto::getFavorite).reversed() // 친한 친구 우선
+                .thenComparing(FriendDto::getProfileNickname)); // 이름 기준 가나다 순 정렬
 
         return friendDtos;
     }
