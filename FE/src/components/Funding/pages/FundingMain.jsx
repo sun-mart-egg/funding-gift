@@ -1,77 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import StoryList from "../component/StoryList";
 import FundingList from "../component/FundingList";
 import ScrollToTopButton from "../../UI/ScrollToTop";
+import { fetchUserInfo, getFriends } from "../api/UserAPI";
+import { fetchFriendFunding } from "../api/FundingAPI";
 
 function FundingMain() {
+  const [friends, setFriends] = useState([]); // 친구목록 받아올 배열
+  const [data, setData] = useState([]);
+  //친구가 만든 펀딩 받아올 배열
+  const [isLoading, setIsLoading] = useState(true);
   let myData = {
     people: "신시은",
     img: "/imgs/egg3.jpg",
   };
 
-  let data = [
-    {
-      id: 0,
-      people: "박창준",
-      title: "GAME IS MY LIFE",
-      name: "닌텐도 스위치",
-      date: "2024.4.15 ~ 2024.4.22",
-      img: "/imgs/egg3.jpg",
-      progress: 10,
-    },
+  useEffect(() => {
+    console.log("업데이트 된 친구 목록" + friends);
+  }, [friends]);
 
-    {
-      id: 1,
-      people: "임수빈",
-      title: "HEALTH IS MY LIFE",
-      name: "단백질 세트",
-      date: "2024.4.15 ~ 2024.4.22",
-      img: "/imgs/egg3.jpg",
-      progress: 70,
-    },
-    {
-      id: 1,
-      people: "임수빈",
-      title: "FOOD IS MY LIFE",
-      name: "냠냠 세트",
-      date: "2024.4.15 ~ 2024.4.22",
-      img: "/imgs/egg3.jpg",
-      progress: 70,
-    },
+  //친구목록과 내 정보 불러오는 api, 처음 화면 렌더링 될 때
+  useEffect(() => {
+    const token = localStorage.getItem("access-token"); // 토큰을 localStorage에서 가져옵니다.
+    const fetchFriends = async () => {
+      try {
+        const friendsData = await getFriends(token);
+        setFriends(friendsData);
+      } catch (error) {
+        console.error("친구 목록을 불러오는데 실패했습니다.", error);
+      }
+    };
 
-    {
-      id: 3,
-      people: "김대영",
-      title: "MUSIC IS MY LIFE",
-      name: "에어팟 맥스",
-      date: "2024.4.15 ~ 2024.4.22",
-      img: "/imgs/egg3.jpg",
-      progress: 100,
-    },
-    {
-      id: 4,
-      people: "박종혁",
-      title: "FOOD IS MY LIFE",
-      name: "고오급 케이크",
-      date: "2024.4.15 ~ 2024.4.22",
-      progress: 20,
-      img: "/imgs/product_sample.png",
-    },
-    {
-      id: 5,
-      people: "이민수",
-      title: "FOOD IS MY LIFE",
-      name: "고오급 케이크",
-      date: "2024.4.15 ~ 2024.4.22",
-      img: "/imgs/egg3.jpg",
-      progress: 20,
-    },
-  ];
+    fetchFriends();
+  }, []);
+
+  //친구가 만든 펀딩 불러오는 api
+  useEffect(() => {
+    const token = localStorage.getItem("access-token");
+    friends.forEach((friend) => fetchFriendFunding(friend, token, setData));
+  }, [friends]);
 
   return (
     <div className="sub-layer relative">
-      <div className="story absolute top-14 flex border-b border-gray-400 font-cusFont3 text-[12px]">
-        <div className="flex-none flex-col items-center justify-center p-4">
+      <div className="story absolute inset-x-0 top-14 flex justify-start border-b border-gray-400 font-cusFont3 text-xs">
+        <div className="MyStory flex-none flex-col items-center justify-center p-4">
           <img
             src={myData.img}
             alt={myData.people}
@@ -79,11 +51,13 @@ function FundingMain() {
           />
           <p className="text-center">{myData.people}</p>
         </div>
-        <StoryList listData={data} />
+        <div className="friendStory  flex overflow-x-auto">
+          <StoryList listData={friends} />
+        </div>
       </div>
 
       <div className="main absolute top-44 w-full  pb-24">
-        <FundingList listData={data} />
+        <FundingList listData={data} friendsData={friends} />
       </div>
       <ScrollToTopButton className="bottom-[25px]" />
     </div>

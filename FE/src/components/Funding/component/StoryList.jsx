@@ -7,7 +7,7 @@ function StoryList({ listData }) {
 
   useEffect(() => {
     const uniqueData = Array.from(
-      new Map(listData.map((item) => [item.id, item])).values(),
+      new Map(listData.map((item) => [item.consumerId, item])).values(),
     );
     setData(uniqueData);
   }, [listData]);
@@ -23,7 +23,7 @@ function StoryList({ listData }) {
   return (
     <div
       id="storyList"
-      className="flex w-full justify-center overflow-x-scroll font-cusFont3 text-[12px]"
+      className="flex w-full  overflow-x-scroll font-cusFont3 text-[12px]"
     >
       {data.map((item, index) => (
         <div
@@ -33,11 +33,11 @@ function StoryList({ listData }) {
           onClick={() => handleStoryClick(item)}
         >
           <img
-            src={item.img}
-            alt={item.people}
+            src={item.profileThumbnailImage}
+            alt={item.profileNickname}
             className="h-14 w-14 rounded-full"
           />
-          <p className="text-center">{item.people}</p>
+          <p className="text-center">{item.profileNickname}</p>
         </div>
       ))}
     </div>

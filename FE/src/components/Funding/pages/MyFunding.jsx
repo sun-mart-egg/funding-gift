@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { fetchMyFundings } from "../api/FundingAPI";
 
 function MyFunding() {
   const navigate = useNavigate();
@@ -49,47 +50,31 @@ function MyFunding() {
     fetchUserInfo();
   }, []);
 
+  //내 펀딩 조회 api
   useEffect(() => {
     const token = localStorage.getItem("access-token");
     if (!token) {
       console.log("토큰이 존재하지 않습니다.");
-      setIsLoading(false); // 토큰이 없는 경우 로딩 상태를 해제합니다.
-      // 추가적으로 사용자를 로그인 페이지로 리다이렉트할 수 있습니다.
+      setIsLoading(false);
       navigate("/login-page");
       return;
     }
-
-    const fetchMyFundings = async () => {
-      try {
-        const response = await axios.get(
-          import.meta.env.VITE_BASE_URL + "/api/fundings/my-fundings",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            params: {
-              page: 0,
-              size: 8,
-            },
-          },
-        );
-        setMyFundings(response.data.data.data);
-      } catch (error) {
-        console.error("내가 만든 펀딩을 불러오는데 실패했습니다.", error);
-      } finally {
-        setIsLoading(false); // 데이터 로딩이 끝났으므로 로딩 상태를 해제합니다.
-      }
-    };
-
-    fetchMyFundings();
+    fetchMyFundings(token, setMyFundings, setIsLoading);
   }, []);
 
+  //버튼 클릭 시 api 불러오는거 연결
   const handleClickButton = (e) => {
+    const token = localStorage.getItem("access-token");
     const buttonName = e.target.name;
     setButtonSelected(buttonName === "myFunding");
-
+    if (!token) {
+      console.log("토큰이 존재하지 않습니다.");
+      setIsLoading(false);
+      navigate("/login-page");
+      return;
+    }
     if (buttonName === "myFunding") {
-      fetchMyFundings();
+      fetchMyFundings(token, setMyFundings, setIsLoading);
     }
   };
 
