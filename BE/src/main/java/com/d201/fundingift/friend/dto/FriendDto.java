@@ -1,5 +1,6 @@
 package com.d201.fundingift.friend.dto;
 
+import com.d201.fundingift.friend.entity.Friend;
 import com.google.gson.annotations.SerializedName;
 import lombok.Builder;
 import lombok.Data;
@@ -22,6 +23,16 @@ public class FriendDto {
         this.profileNickname = profileNickname;
         this.profileThumbnailImage = profileThumbnailImage;
     }
+
+    public static FriendDto from(Friend friend, String profileNickname, String profileThumbnailImage) {
+        return FriendDto.builder()
+                .consumerId(friend.getToConsumerId())
+                .favorite(friend.getIsFavorite())
+                .profileNickname(profileNickname)
+                .profileThumbnailImage(profileThumbnailImage)
+                .build();
+    }
+
 }
 
 
