@@ -16,11 +16,15 @@ public interface FundingRepository extends JpaRepository<Funding, Long> {
     Slice<Funding> findAllByConsumerIdAndDeletedAtIsNull(@Param("consumerId") Long consumerId, Pageable pageable);
 
     @Query("select f from Funding f " +
+            "where f.consumer.id = :consumerId and f.isPrivate = false and f.deletedAt is null")
+    Slice<Funding> findAllByConsumerIdAndIsPrivateAndDeletedAtIsNull(@Param("consumerId") Long consumerId, Pageable pageable);
+
+    @Query("select f from Funding f " +
             "where f.consumer.id = :consumerId and f.product.name like %:keyword% and f.deletedAt is null")
     Slice<Funding> findAllByConsumerIdAndProductNameAndDeletedAtIsNull(@Param("consumerId") Long consumerId, @Param("keyword") String keyword, Pageable pageable);
 
     @Query("select f from Funding f " +
-            "where f.consumer.id = :consumerId and f.isPrivate = false and f.deletedAt is null")
+            "where f.consumer.id = :consumerId and f.isPrivate = false and f.product.name like %:keyword% and f.deletedAt is null")
     Slice<Funding> findAllByConsumerIdAndIsPrivateAndProductNameAndDeletedAtIsNull(@Param("consumerId") Long consumerId, Pageable pageable);
 
     @Query("select f from Funding f " +
