@@ -66,4 +66,11 @@ public class FundingController {
 
         return ResponseUtils.ok(fundingService.getFriendFundings(friendConsumerId, keyword, pageable), GET_FRIEND_FUNDINGS_SUCCESS);
     }
+
+    @GetMapping("/story")
+    public SuccessResponse<List<GetFundingResponse>> getFundingsStory(
+            @RequestParam(name="consumer-id") Long consumerId
+    ) {
+        return ResponseUtils.ok(fundingService.getFundingsStory(consumerId), GET_FUNDINGS_STORY_SUCCESS);
+    }
 }
