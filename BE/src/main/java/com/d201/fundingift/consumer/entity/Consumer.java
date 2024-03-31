@@ -86,4 +86,8 @@ public class Consumer extends BaseTime {
         this.gender = dto.getGender();
     }
 
+    public void updateProfileImageUrl(String url) {
+        this.profileImageUrl = url;
+    }
+
 }

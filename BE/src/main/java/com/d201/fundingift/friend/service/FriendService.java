@@ -7,6 +7,7 @@ import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
+import com.d201.fundingift.consumer.service.ConsumerService;
 import com.d201.fundingift.friend.dto.FriendDto;
 import com.d201.fundingift.friend.dto.response.GetFriendStoryResponse;
 import com.d201.fundingift.friend.dto.response.GetKakaoFriendsResponse;
@@ -46,6 +47,7 @@ public class FriendService {
     private final RedisTemplate<String, Object> redisTemplate;
 
     private final ConsumerRepository consumerRepository;
+    private final ConsumerService consumerService;
     private final RedisJwtRepository redisJwtRepository;
     private final FriendRepository friendRepository;
     private final FundingRepository fundingRepository;
@@ -105,14 +107,20 @@ public class FriendService {
                 totalCount = jsonResponse.get("total_count").getAsInt();
                 favoriteCount = jsonResponse.get("favorite_count").getAsInt();
 
-                // Redis에 친구 추가 (로직 동일하게 유지)
                 for (FriendDto friendDto : friendList) {
                     consumerRepository.findBySocialIdAndDeletedAtIsNull(friendDto.getId().toString()).ifPresent(consumer -> {
-                        friendDto.setConsumerId(consumer.getId());
-                        Friend friend = Friend.from(consumerId, friendDto, consumer.getId());
-                        log.info("Creating Friend with ID: " + friend.getId());
-                        log.info("다음과 친구가 되었습니다: " + consumer.getId());
-                        friendRepository.save(friend);
+                        // 이미 레디스에 친구 정보가 존재하는지 확인
+                        String friendKey = consumerId + ":" + consumer.getId();
+                        if (!friendRepository.existsById(friendKey)) {
+                            // 레디스에 친구 정보가 없는 경우에만 추가
+                            Friend friend = Friend.from(consumerId, friendDto, consumer.getId());
+                            friendRepository.save(friend);
+                        }
+
+                        // 프로필 이미지가 변경된 경우 업데이트
+                        if (!Objects.equals(consumer.getProfileImageUrl(), friendDto.getProfileThumbnailImage())) {
+                            consumerService.updateProfileImage(consumer.getId(), friendDto.getProfileThumbnailImage());
+                        }
                     });
                 }
 

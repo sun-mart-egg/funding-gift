@@ -22,8 +22,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
-import static com.d201.fundingift._common.response.ErrorType.USER_NOT_FOUND;
-import static com.d201.fundingift._common.response.ErrorType.USER_UNAUTHORIZED;
+import static com.d201.fundingift._common.response.ErrorType.*;
 
 @Service
 @Slf4j
@@ -117,6 +116,14 @@ public class ConsumerService {
         log.info("{} 사용자의 추가 정보 기입",consumerId);
         consumer.updateInfo(putConsumerInfoRequestDto);
         consumerRepository.save(consumer);
+    }
+
+    @Transactional
+    public void updateProfileImage(Long consumerId, String newProfileImageUrl) {
+        Consumer consumer = consumerRepository.findById(consumerId)
+                .orElseThrow(() -> new CustomException(CONSUMER_NOT_FOUND));
+
+        consumer.updateProfileImageUrl(newProfileImageUrl);
     }
 
     @Transactional
