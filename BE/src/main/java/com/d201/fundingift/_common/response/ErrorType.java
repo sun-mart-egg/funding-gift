@@ -39,6 +39,7 @@ public enum ErrorType {
     // 펀딩
     ANNIVERSARY_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 기념일 카테고리를 찾을 수 없습니다."),
     FUNDING_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 펀딩을 찾을 수 없습니다."),
+    FUNDING_NOT_MINE(HttpStatus.BAD_REQUEST, "내 펀딩이 아닙니다."),
     FUNDING_DURATION_NOT_VALID(HttpStatus.BAD_REQUEST, "펀딩 기간이 7일을 넘습니다."),
     FUNDING_NOT_STARTED(HttpStatus.BAD_REQUEST, "시작하지 않은 펀딩입니다."),
     FUNDING_FINISHED(HttpStatus.BAD_REQUEST, "종료된 펀딩 입니다."),

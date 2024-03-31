@@ -2,8 +2,11 @@ package com.d201.fundingift.attendance.service;
 
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
+import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
+import com.d201.fundingift.attendance.dto.request.GetAttendanceDetailsRequest;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
+import com.d201.fundingift.attendance.dto.response.GetMyAttendanceDetailsResponse;
 import com.d201.fundingift.attendance.entity.Attendance;
 import com.d201.fundingift.attendance.repository.AttendanceRepository;
 import com.d201.fundingift.consumer.entity.Consumer;
@@ -12,8 +15,14 @@ import com.d201.fundingift.funding.entity.Funding;
 import com.d201.fundingift.funding.repository.FundingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -54,6 +63,18 @@ public class AttendanceService {
         attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding));
     }
 
+    public SliceList<GetMyAttendanceDetailsResponse> getMyAttendanceDetails(Long fundingId, Pageable pageable) {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        //펀딩 존재 여부 확인
+        Funding funding = getFunding(fundingId);
+
+        //내 펀딩인지 확인
+        checkingMyFunding(myConsumerId, funding.getConsumer().getId());
+
+        return getMyAttendanceDetailsResponseSliceList(findAllByFundingId(funding.getId(), pageable));
+    }
+
     private Consumer getConsumer() {
         return securityUtil.getConsumer();
     }
@@ -61,6 +82,14 @@ public class AttendanceService {
     private Funding getFunding(Long fundingId) {
         return fundingRepository.findByIdAndDeletedAtIsNull(fundingId)
                 .orElseThrow(() -> new CustomException(ErrorType.FUNDING_NOT_FOUND));
+    }
+
+    private SliceList<GetMyAttendanceDetailsResponse> getMyAttendanceDetailsResponseSliceList(Slice<Attendance> attendances) {
+        return SliceList.from(attendances.stream().map(GetMyAttendanceDetailsResponse::from).collect(Collectors.toList()), attendances.getPageable(), attendances.hasNext());
+    }
+
+    private Slice<Attendance> findAllByFundingId(Long fundingId, Pageable pageable) {
+        return attendanceRepository.findAllByFundingIdAndDeletedAtIsNull(fundingId,pageable);
     }
 
     private void checkingFundingStatus(String fundingStatus) {
@@ -89,5 +118,11 @@ public class AttendanceService {
 
         if(targetPrice.equals(funding.getTargetPrice()))
             funding.changeStatus("SUCCESS");
+    }
+
+    private void checkingMyFunding(Long myConsumerId, Long fundingConsumerId) {
+        if(!Objects.equals(myConsumerId, fundingConsumerId))
+            throw new CustomException(ErrorType.FUNDING_NOT_MINE);
+
     }
 }

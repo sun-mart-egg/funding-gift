@@ -157,7 +157,7 @@ public class FundingService {
     }
 
     private Funding getFunding(Long fundingId) {
-        return fundingRepository.findById(fundingId)
+        return fundingRepository.findByIdAndDeletedAtIsNull(fundingId)
                 .orElseThrow(() -> new CustomException(ErrorType.FUNDING_NOT_FOUND));
     }
 
