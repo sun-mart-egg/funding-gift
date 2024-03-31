@@ -1,6 +1,5 @@
 package com.d201.fundingift.wishlist.entity;
 
-import com.d201.fundingift.wishlist.dto.WishlistDto;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;

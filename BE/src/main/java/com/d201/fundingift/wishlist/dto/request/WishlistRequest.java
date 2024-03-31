@@ -1,6 +1,5 @@
-package com.d201.fundingift.wishlist.dto;
+package com.d201.fundingift.wishlist.dto.request;
 
-import com.d201.fundingift.wishlist.entity.Wishlist;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -10,22 +9,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(name = "WishlistDto", description = "위시리스트 요청/응답")
-public class WishlistDto {
+public class WishlistRequest {
 
     @NotNull(message = "productId: null 이 아니어야 합니다.")
     @Schema(description = "상품 ID", example = "1")
     private Long productId;
 
-
-//    @Builder
-//    private WishlistDto(Long productId) {
-//        this.productId = productId;
-//    }
-
-//    public static WishlistDto from(Wishlist wishlist) {
-//        return builder()
-//                .productId(wishlist.getProductId())
-//                .build();
-//    }
 
 }

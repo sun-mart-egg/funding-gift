@@ -4,10 +4,9 @@ import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.product.entity.Product;
-import com.d201.fundingift.product.entity.ProductOption;
-import com.d201.fundingift.product.repository.ProductOptionRepository;
 import com.d201.fundingift.product.repository.ProductRepository;
-import com.d201.fundingift.wishlist.dto.WishlistDto;
+import com.d201.fundingift.wishlist.dto.request.WishlistRequest;
+import com.d201.fundingift.wishlist.dto.response.GetWishlistResponse;
 import com.d201.fundingift.wishlist.entity.Wishlist;
 import com.d201.fundingift.wishlist.repository.WishlistRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +31,11 @@ public class WishlistService {
 
     private final WishlistRepository wishlistRepository;
     private final ProductRepository productRepository;
-    private final ProductOptionRepository productOptionRepository;
     private final SecurityUtil securityUtil;
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Transactional
-    public void createWishlistItem(WishlistDto request) {
+    public void createWishlistItem(WishlistRequest request) {
         // 소비자
         Long consumerId = getConsumerId();
 
@@ -57,7 +55,7 @@ public class WishlistService {
     }
 
     @Transactional
-    public void deleteWishlistItem(WishlistDto request) {
+    public void deleteWishlistItem(WishlistRequest request) {
         // 소비자
         Long consumerId = getConsumerId();
 
@@ -76,22 +74,22 @@ public class WishlistService {
         wishlistRepository.delete(wishlist);
     }
 
-//    public SliceList<WishlistDto> getWishlists(Integer page, Integer size) {
-//        // 소비자
-//        Long consumerId = getConsumerId();
-//
-//        // 페이징
-//        Pageable pageable = PageRequest.of(page, size);
-//
-//        // 조회 -> dto
-//        List<Object> wishlistDtos = getWishlistDtos(consumerId, pageable);
-//
-//        // 다음 페이지 존재 여부
-//        boolean hasNext = getHasNext(page, size, wishlistDtos.size(), consumerId);
-//
-//        // 결과 반환
-//        return SliceList.of(wishlistDtos, page, wishlistDtos.size(), hasNext);
-//    }
+    public SliceList<GetWishlistResponse> getWishlists(Integer page, Integer size) {
+        // 소비자
+        Long consumerId = getConsumerId();
+
+        // 페이징
+        Pageable pageable = PageRequest.of(page, size);
+
+        // 조회 -> dto
+        List<Object> wishlistDtos = getWishlistDtos(consumerId, pageable);
+
+        // 다음 페이지 존재 여부
+        boolean hasNext = getHasNext(page, size, wishlistDtos.size(), consumerId);
+
+        // 결과 반환
+        return SliceList.of(wishlistDtos, page, wishlistDtos.size(), hasNext);
+    }
 
     private boolean getHasNext(Integer page, Integer requestSize, Integer resultSize, Long consumerId) {
         Long cnt = redisTemplate.opsForSet().size("wishlist:consumerId:" + consumerId);
@@ -109,10 +107,17 @@ public class WishlistService {
                 .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
     }
 
-//    private List<Object> getWishlistDtos(Long consumerId, Pageable pageable) {
-//        Slice<Wishlist> wishlists = findAllWishlistByConsumerId(consumerId, pageable);
-//        return wishlists.stream().map(WishlistDto::from).collect(Collectors.toList());
-//    }
+    private List<Object> getWishlistDtos(Long consumerId, Pageable pageable) {
+        // 위시리스트 조회
+        Slice<Wishlist> wishlists = findAllWishlistByConsumerId(consumerId, pageable);
+
+        // 상품 목록
+        List<Product> products = wishlists.stream()
+                .map(w -> findProductById(w.getProductId())).collect(Collectors.toList());
+
+        // dto로 반환
+        return products.stream().map(GetWishlistResponse::from).collect(Collectors.toList());
+    }
 
     private Slice<Wishlist> findAllWishlistByConsumerId(Long consumerId, Pageable pageable) {
         return wishlistRepository.findAllSliceByConsumerId(consumerId, pageable);
@@ -121,11 +126,6 @@ public class WishlistService {
     private Product findProductById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new CustomException(PRODUCT_NOT_FOUND));
-    }
-
-    private ProductOption findProductOptionById(Long productOptionId) {
-        return productOptionRepository.findByIdAndStatusIsNotInactive(productOptionId)
-                .orElseThrow(() -> new CustomException(PRODUCT_OPTION_NOT_FOUND));
     }
 
     private Long getConsumerId() {
