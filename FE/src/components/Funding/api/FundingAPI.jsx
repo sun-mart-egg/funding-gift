@@ -24,41 +24,27 @@ async function fetchMyFundings(token, setMyFundings, setIsLoading) {
 }
 
 //친구 펀딩 조회 api
-async function fetchFriendFunding(friend, token, setData) {
-  if (friend.profileNickname !== "Unknown") {
+async function fetchFriendFunding(friendId, token, setData) {
+  if (friendId !== "Unknown") {
     try {
       const params = new URLSearchParams({
-        "friend-consumer-id": friend.consumerId,
+        "friend-consumer-id": friendId,
         page: "0",
         size: "8",
         sort: "createdAt",
-        sort: "DESC",
+        sort: "DESC", // 정렬 파라미터 수정
       });
-
-      const response = await fetch(
+      const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/fundings/friend-fundings?${params.toString()}`,
         {
-          method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
           },
         },
       );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const responseData = await response.json();
-      console.log(
-        "친구 펀딩 목록 조회 : " + JSON.stringify(responseData, null, 2),
-      );
-      setData((prevData) => [
-        ...prevData,
-        ...(Array.isArray(responseData) ? responseData : [responseData]),
-      ]);
+      setData(response.data.data.data);
     } catch (error) {
-      console.error("친구가 만든 펀딩을 불러오는데 실패했습니다.", error);
+      console.error("친구 펀딩을 불러오는데 실패했습니다.", error);
     }
   }
 }
