@@ -1,22 +1,65 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import SearchBar from "../UI/SearchBar";
 import { useNavigate } from "react-router-dom";
 
 import CatIcon from "/imgs/cat.PNG";
 import FishIcon from "/imgs/fish.PNG";
-
 import BannerImage1 from "/imgs/banner_image1.png"
 import BannerImage2 from "/imgs/banner_image2.png"
 import BannerImage3 from "/imgs/banner_image3.png"
 
-
+import HomeProduct from "./HomeProduct"
 import ScrollToTop from "../UI/ScrollToTop";
 
+
 function Home() {
+
+  const observer = useRef();
   const navigate = useNavigate();
 
   const [currentBanner, setCurrentBanner] = useState(0);
   const bannerImages = [BannerImage1, BannerImage2, BannerImage3];
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  const lastProductElementRef = useCallback(node => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setCurrentPage(prevPage => prevPage + 1);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, hasMore]);
+
+  const loadProducts = async (page) => {
+    setLoading(true);
+    try {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `/api/products/rank?page=${page}&size=10`);
+      const json = await response.json();
+      if (json.code === 200 && json.data) {
+        // 중복된 데이터 필터링하여 새 데이터 추가
+        setProducts(prevProducts => {
+          const newData = json.data.data.filter(newItem => !prevProducts.some(prevItem => prevItem.productId === newItem.productId));
+          return [...prevProducts, ...newData];
+        });
+        setHasMore(json.data.hasNext === true);
+      } else {
+        console.error('Error fetching products:', json.msg);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadProducts(currentPage);
+  }, [currentPage]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -59,22 +102,12 @@ function Home() {
         </div>
       </div>
 
-      <div className="mt-[20px] w-[95%] text-left">
-        <p className="font-cusFont5 text-2xl">추천 상품</p>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
-          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
-        </div>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
-          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
-        </div>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
-          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
-        </div>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
-          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
+      <div className="mt-[10px] w-[95%] ml-[5%] text-left">
+        <p className="font-cusFont5 text-[30px] mt-[10px]">추천 상품</p>
+        <div>
+          <HomeProduct />
         </div>
       </div>
-
       <ScrollToTop className="bottom-[25px]" />
     </div>
   );
