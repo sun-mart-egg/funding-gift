@@ -3,6 +3,7 @@ package com.d201.fundingift.product.service;
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
+import com.d201.fundingift.funding.repository.FundingRepository;
 import com.d201.fundingift.product.dto.response.GetProductCategoryResponse;
 import com.d201.fundingift.product.dto.response.GetProductDetailResponse;
 import com.d201.fundingift.product.dto.response.GetProductOptionResponse;
@@ -37,6 +38,7 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final WishlistRepository wishlistRepository;
+    private final FundingRepository fundingRepository;
     private final SecurityUtil securityUtil;
 
     // 카테고리 리스트 조회
@@ -74,6 +76,11 @@ public class ProductService {
         }
         // 키워드 O
         return getProductResponseSliceList(productRepository.findAllSliceByCategoryIdAndKeyword(categoryId, keyword, pageable));
+    }
+
+    public SliceList<GetProductResponse> getProductsRank(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return getProductResponseSliceList(fundingRepository.findProductSliceOrderByFundingCount(pageable));
     }
 
     // 상품 상세 조회

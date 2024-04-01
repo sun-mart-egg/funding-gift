@@ -25,8 +25,8 @@ public enum SuccessType {
 
     // 상품
     GET_PRODUCT_CATEGORIES_SUCCESS("상품 카테고리 목록 조회에 성공하였습니다."),
-    GET_PRODUCTS_BY_CATEGORY_SUCCESS("카테고리 별 상품 목록 조회에 성공하였습니다."),
-    GET_PRODUCTS_BY_KEYWORD_SUCCESS("검색어 별 상품 목록 조회에 성공하였습니다."),
+    GET_PRODUCTS_SUCCESS("상품 목록 조회에 성공하였습니다."),
+    GET_PRODUCTS_RANK_SUCCESS("순위 별 상품 목록 조회에 성공하였습니다."),
     GET_PRODUCT_DETAIL_SUCCESS("상품 상세 조회에 성공하였습니다."),
 
     // 리뷰
