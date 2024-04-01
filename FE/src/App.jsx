@@ -11,7 +11,7 @@ import InputProfile from "./components/Login/InputProfile.jsx";
 
 import Calendar from "./components/Friends/Calendar.jsx";
 import Friends from "./components/Friends/Friends.jsx";
-
+import FriendFunding from "./components/Funding/pages/FriendFunding.jsx";
 import MyFunding from "./components/Funding/pages/MyFunding";
 import AccountListPage from "./components/Funding/pages/AccountListPage.jsx";
 import MakeFundingMain from "./components/Funding/pages/MakeFundingMain";
@@ -41,6 +41,10 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/my-funding" element={<MyFunding />} />
+          <Route
+            path="/friend-funding/:consumerId"
+            element={<FriendFunding />}
+          />
           <Route path="/product" element={<Product />} />
           <Route path="/funding" element={<FundingMain />} />
         </Route>
@@ -75,7 +79,7 @@ function App() {
         </Route>
 
         <Route path="/login-callback" element={<LoginCallback />} />
-        <Route path="/story/:id" element={<StoryPage />} />
+        <Route path="/story/:selectedItem" element={<StoryPage />} />
       </Routes>
     </BrowserRouter>
   );

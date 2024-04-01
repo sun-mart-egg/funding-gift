@@ -2,6 +2,24 @@
 
 import axios from "axios";
 
+async function getFriendInfo(token, id) {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/consumers/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    console.log("가져온 데이터 : " + response.data);
+    return response.data;
+  } catch (error) {
+    console.error("친구 정보 불러오기 실패 : ", error);
+    throw error;
+  }
+}
+
 async function getFriends(token) {
   try {
     const response = await axios.get(
@@ -45,4 +63,4 @@ async function fetchUserInfo() {
   }
 }
 
-export { getFriends, fetchUserInfo };
+export { getFriends, fetchUserInfo, getFriendInfo };
