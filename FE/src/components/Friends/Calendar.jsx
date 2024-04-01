@@ -1,25 +1,46 @@
 import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid"
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin from "@fullcalendar/interaction"
+import { useState } from "react";
 
 function Calendar() {
-    return (
-        <div className="sub-layer">
-            <div className="relative top-7 w-full">
-                <FullCalendar plugins={[ dayGridPlugin ]} initialView="dayGridMonth"/>
-            </div>
+  const [selectedEvents, setSelectedEvents] = useState([]);
+  const handleDateClick = (arg) => {
+    const clickedDate = arg.dateStr
+    const ThisDate = myEvents.filter((event) => {
+        const startDay = event.start
+        const endDay = event.end
+        return clickedDate >= startDay && clickedDate <= endDay
+    })
+    setSelectedEvents(ThisDate)
+  };
 
-            <div className=" flex flex-col justify-center items-center w-full h-[240px]">
-                <br />
-                <br />
-                <p className=" text-3xl font-cusFont5">기념일 목록 출력</p>
-                <br />
-                <p className=" text-3xl font-cusFont5">이제 여기에</p>
-                <p className=" text-3xl font-cusFont5">캘린더 이벤트들을</p>
-                <p className=" text-3xl font-cusFont5">어떻게 연동시키느냐?</p>
-                <p className=" text-3xl font-cusFont5">🤔</p>
-            </div>
-        </div>
-    )
+  const myEvents = [
+    { title: "이벤트1", start: "2024-04-01", end: "2024-04-03" },
+    { title: "이벤트1", start: "2024-04-01", end: "2024-04-03" },
+    { title: "이벤트1", start: "2024-04-01", end: "2024-04-03" },
+    { title: "이벤트2", start: "2024-04-04", end: "2024-04-06" },
+  ];
+
+  return (
+    <div className="sub-layer">
+      <div className="relative top-0 w-full">
+        <FullCalendar
+          plugins={[dayGridPlugin, interactionPlugin]}
+          initialView="dayGridMonth"
+          events={myEvents}
+          dateClick={handleDateClick}
+        />
+      </div>
+
+      <div className=" flex h-[240px] w-full flex-col items-start p-3 border-t-2">
+        {/* 선택한 날짜에 대한 기념일 목록 출력 */}
+        {selectedEvents.map((event, index) => (
+            <div key={index}>😘{event.title}</div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default Calendar;
