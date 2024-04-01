@@ -40,8 +40,12 @@ function Friends() {
     }
   }
 
-  // redis에 친구목록 요청하는 api
   useEffect(() => {
+    handleRedis()
+  }, []);
+  
+  // redis에 친구목록 요청하는 api
+  const handleRedis = () => {
     axios
       .get(import.meta.env.VITE_BASE_URL + "/api/friends", {
         headers: {
@@ -57,7 +61,7 @@ function Friends() {
         console.error(err);
         console.log("REDIS에 친구목록 요청 실패");
       });
-  }, []);
+  }
 
   // 카카오 친구로 동기화를 위한 api 요청 함수
   const handleKAKAO = () => {
@@ -68,8 +72,8 @@ function Friends() {
     })
       .then((res) => {
         console.log(res.data.data.elements)
-        setFriends(res.data.data.elements)
         console.log("KAKAO 친구목록 동기화 성공")
+        handleRedis()
       })
       .catch((err) => {
         console.error(err)
