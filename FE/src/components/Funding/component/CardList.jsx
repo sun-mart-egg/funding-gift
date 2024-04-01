@@ -1,6 +1,6 @@
 import Card from "../component/Card";
 
-function CardList({ data }) {
+function CardList({ data, basePath }) {
   console.log("Data received in CardList component:", data);
 
   return (
@@ -14,6 +14,8 @@ function CardList({ data }) {
           endDate={item.endDate}
           progress={0}
           img={item.productImage}
+          fundingId={item.fundingId}
+          basePath={basePath}
         />
       ))}
     </div>

@@ -97,7 +97,7 @@ function FriendFunding() {
             아직 만들어진 펀딩이 없습니다.{" "}
           </div>
         ) : (
-          <CardList data={friendFunding} />
+          <CardList data={friendFunding} basePath="/friend-funding-detail" />
         )}
       </div>
       <button
