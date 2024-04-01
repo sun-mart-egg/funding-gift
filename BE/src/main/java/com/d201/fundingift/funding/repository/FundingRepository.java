@@ -2,6 +2,7 @@ package com.d201.fundingift.funding.repository;
 
 import com.d201.fundingift.funding.entity.Funding;
 import com.d201.fundingift.funding.entity.status.FundingStatus;
+import com.d201.fundingift.product.entity.Product;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -38,4 +39,10 @@ public interface FundingRepository extends JpaRepository<Funding, Long> {
     Optional<Funding> findOneByConsumerIdAndFundingStatusAndDeletedAtIsNullOrderByStartDateAsc(Long consumerId);
 
     Optional<Funding> findByIdAndDeletedAtIsNull(Long fundingId);
+
+    @Query("select p FROM Funding f right join f.product p " +
+            "where p.status = 'ACTIVE' and p.deletedAt is null " +
+            "group by p order by count(f) desc")
+    Slice<Product> findProductSliceOrderByFundingCount(Pageable pageable);
+
 }
