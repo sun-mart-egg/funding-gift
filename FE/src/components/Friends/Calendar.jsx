@@ -1,17 +1,43 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function Calendar() {
   // 이벤트 목록 받아올 배열
   const [selectedEvents, setSelectedEvents] = useState([]);
   const [selectedDay, setSelectedDay] = useState(null)
+  const [events, setEvents] = useState([])
+
+  // axios 요청을 통한 친구들의 펀딩 목록 가져오기
+  useEffect(() => {
+    axios.get(import.meta.env.VITE_BASE_URL + "/api/fundings/calendar", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) => {
+      console.log(res)
+      const formatEvents = res.data.data.map((item) => ({
+        title: item.title,
+        date: item.anniversaryDate,
+        name: item.consumerName,
+      }))
+      setEvents(formatEvents)
+      console.log("친구들의 펀딩목록 받아오기 성공")
+      
+    })
+    .catch((err) => {
+      console.error(err)
+      console.log("친구들의 펀딩목록 받아오기 실패")
+    })
+  }, [])
 
   // 캘린더 날짜 선택 시
   const handleDateClick = (arg) => {
     const clickedDate = arg.dateStr;
-    const ThisDate = myEvents.filter((event) => {
+    const ThisDate = events.filter((event) => {
       const clickDay = event.date
       return clickedDate === clickDay
     })
@@ -19,13 +45,13 @@ function Calendar() {
     setSelectedDay(clickedDate)
   };
 
-  const myEvents = [
-    { title: "이벤트1", date: "2024-04-02", name: "신시은" },
-    { title: "이벤트1", date: "2024-04-03", name: "신시은" },
-    { title: "이벤트1", date: "2024-04-04", name: "신시은" },
-    { title: "이벤트1", date: "2024-04-05", name: "신시은" },
-    { title: "이벤트1", date: "2024-04-30", name: "신시은" },
-  ];
+  // 캘린더 today 선택 시
+  const handleClickToday = () => {
+    const today = new Date()
+    console.log(today)
+    const todayStr = today.toISOString().split("T")[0]
+    console.log(todayStr)
+  }
 
   return (
     <div className="sub-layer">
@@ -33,7 +59,7 @@ function Calendar() {
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
-          events={myEvents}
+          events={events}
           dateClick={handleDateClick}
           locale="kr"
           headerToolbar={
@@ -43,6 +69,12 @@ function Calendar() {
               right: "today next"
             }
           }
+          customButtons={{
+            today: {
+              text: "Today",
+              click: handleClickToday
+            }
+          }}
         />
       </div>
 
