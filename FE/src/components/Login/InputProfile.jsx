@@ -32,7 +32,7 @@ function InputProfile() {
   };
 
   return (
-    <div className="sub-layer gap-4">
+    <div className="gap-4 sub-layer">
       <img src={SignupLogo} alt="회원가입로고" className="m-3" />
       <div className="flex w-[330px] justify-between">
         <input
@@ -60,7 +60,7 @@ function InputProfile() {
 
       <input
         type="text"
-        placeholder="생년/월/일 8자리를 양식에 따라 입력해주세요"
+        placeholder="생년/월/일 8자리를 입력해주세요"
         className="common-btn signup-font h-[50px] w-[330px] border-[2.5px] bg-white p-3"
         value={myBirthDay}
         onChange={handleBirthday}
