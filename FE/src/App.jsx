@@ -75,7 +75,7 @@ function App() {
         </Route>
 
         <Route path="/login-callback" element={<LoginCallback />} />
-        <Route path="/story/:id" element={<StoryPage />} />
+        <Route path="/story/:selectedItem" element={<StoryPage />} />
       </Routes>
     </BrowserRouter>
   );
