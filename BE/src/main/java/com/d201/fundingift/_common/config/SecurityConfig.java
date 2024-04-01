@@ -48,6 +48,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(antMatcher("/api/consumers/**")).authenticated()
                         .requestMatchers(antMatcher("/api/funding/**")).authenticated()
+                        .requestMatchers(antMatcher("/api/attendance/**")).authenticated()
                         .requestMatchers(antMatcher("/h2-console/**")).permitAll()
                         .requestMatchers(antMatcher("/swagger-ui/")).permitAll()
                         .anyRequest().permitAll()

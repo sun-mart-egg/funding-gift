@@ -9,6 +9,8 @@ import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import com.d201.fundingift.friend.entity.Friend;
 import com.d201.fundingift.friend.repository.FriendRepository;
 import com.d201.fundingift.funding.dto.request.PostFundingRequest;
+import com.d201.fundingift.funding.dto.response.GetFundingCalendarResponse;
+import com.d201.fundingift.funding.dto.response.GetFundingDetailResponse;
 import com.d201.fundingift.funding.dto.response.GetFundingResponse;
 import com.d201.fundingift.funding.entity.AnniversaryCategory;
 import com.d201.fundingift.funding.entity.Funding;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -133,6 +136,68 @@ public class FundingService {
         }
     }
 
+    //펀딩 상세 조회
+    public GetFundingDetailResponse getFundingDetailResponse(Long fundingId) {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        Funding funding = getFunding(fundingId);
+        Long fundingConsumerId = funding.getConsumer().getId();
+
+        //내 펀딩인지 확인
+        if(!Objects.equals(myConsumerId, fundingConsumerId)) {
+
+            //보려는 펀딩 목록의 대상이 자신의 친구인지 확인
+            checkingFriend(myConsumerId, fundingConsumerId);
+
+            //글 허용범위가 펀딩 생성자의 친한 친구 인지 확인
+            if(funding.getIsPrivate()) {
+                checkingIsFavoriteFriendOrElseThrow(fundingConsumerId, myConsumerId);
+            }
+        }
+
+        return GetFundingDetailResponse.from(funding);
+    }
+
+    public List<GetFundingCalendarResponse> getFundingCalendarsResponse(Integer year, Integer month) {
+        List<GetFundingCalendarResponse> fundingList = new ArrayList<>();
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        //친구 리스트 조회
+        List<Friend> friends = friendRepository.findByConsumerId(myConsumerId);
+
+        for(Friend f : friends) {
+
+            //친구가 날 친한 친구로 설정 했는지 확인
+            if(checkingIsFavoriteFriend(f.getToConsumerId(), myConsumerId)) {
+                //친한 친구로 설정한 경우 isPrivate 상관 없이 모두 조회
+                fundingList.addAll(
+                        fundingRepository
+                        .findAllByConsumerIdAndDeletedAtIsNull(f.getToConsumerId(), year, month)
+                        .stream()
+                        .map(GetFundingCalendarResponse::from)
+                        .toList()
+                );
+                continue;
+            }
+
+            //친한 친구가 아닌경우 IsPrivate == false만 조회
+            fundingList.addAll(
+                    fundingRepository
+                            .findAllByConsumerIdAndIsPrivateAndDeletedAtIsNull(f.getToConsumerId(), year, month)
+                            .stream()
+                            .map(GetFundingCalendarResponse::from)
+                            .toList()
+            );
+        }
+
+        return fundingList;
+    }
+
+    private Funding getFunding(Long fundingId) {
+        return fundingRepository.findByIdAndDeletedAtIsNull(fundingId)
+                .orElseThrow(() -> new CustomException(ErrorType.FUNDING_NOT_FOUND));
+    }
+
     //제품과 제품 옵션이 맞는지 확인
     private void checkingProductAndProductOptionIsSame(Product product, ProductOption productOption) {
 
@@ -196,6 +261,11 @@ public class FundingService {
 
         //보려는 펀딩 목록의 대상에 본인이 친구가 아니거나 친한 친구가 아닌 경우 -> false
         return friend.isPresent() && friend.get().getIsFavorite();
+    }
+
+    private void checkingIsFavoriteFriendOrElseThrow(Long toConsumerId, Long consumerId) {
+        friendRepository.findById(toConsumerId + ":" + consumerId)
+                .orElseThrow(() -> new CustomException(ErrorType.FRIEND_NOT_IS_FAVORITE));
     }
 
     private AnniversaryCategory getAnniversaryCategory(PostFundingRequest postFundingRequest) {
