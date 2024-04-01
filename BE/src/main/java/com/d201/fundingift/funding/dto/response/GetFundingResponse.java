@@ -32,6 +32,12 @@ public class GetFundingResponse {
     @Schema(description = "공개 여부", example = "true")
     private Boolean isPrivate;
 
+    @Schema(description = "펀딩 생성자 고유번호", example = "43")
+    private Long consumerId;
+
+    @Schema(description = "펀딩 생성자명", example = "수빈")
+    private String consumerName;
+
     @Schema(description = "기념일 고유번호", example = "1")
     private Integer anniversaryCategoryId;
 
@@ -51,7 +57,7 @@ public class GetFundingResponse {
     private String fundingStatus;
 
     @Builder
-    private GetFundingResponse(Long fundingId, Integer targetPrice, Integer sumPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Integer anniversaryCategoryId, String anniversaryCategoryName, Long productId, String productName, String productImage, String fundingStatus) {
+    private GetFundingResponse(Long fundingId, Integer targetPrice, Integer sumPrice, String anniversaryDate, String startDate, String endDate, String title, Boolean isPrivate, Long consumerId, String consumerName, Integer anniversaryCategoryId, String anniversaryCategoryName, Long productId, String productName, String productImage, String fundingStatus) {
         this.fundingId = fundingId;
         this.targetPrice = targetPrice;
         this.sumPrice = sumPrice;
@@ -60,6 +66,8 @@ public class GetFundingResponse {
         this.endDate = endDate;
         this.title = title;
         this.isPrivate = isPrivate;
+        this.consumerId = consumerId;
+        this.consumerName = consumerName;
         this.anniversaryCategoryId = anniversaryCategoryId;
         this.anniversaryCategoryName = anniversaryCategoryName;
         this.productId = productId;
@@ -78,6 +86,8 @@ public class GetFundingResponse {
                 .endDate(funding.getEndDateToString())
                 .title(funding.getTitle())
                 .isPrivate(funding.getIsPrivate())
+                .consumerId(funding.getConsumer().getId())
+                .consumerName(funding.getConsumer().getName())
                 .anniversaryCategoryId(funding.getAnniversaryCategory().getId())
                 .anniversaryCategoryName(funding.getAnniversaryCategory().getName())
                 .productId(funding.getProduct().getId())
