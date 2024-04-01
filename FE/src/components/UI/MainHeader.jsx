@@ -9,7 +9,9 @@ function Header() {
 
       <header className="flex flex-row gap-3 p-3">
         <button>
-          <img src="/imgs/heart.png" alt="wish-button" />
+          <Link to={"/wishlist"}>
+            <img src="/imgs/heart.png" alt="wish-button" />
+          </Link>
         </button>
         <button>
           <Link to={"/calendar"}>
