@@ -8,6 +8,7 @@ import fish from "/imgs/fish.PNG";
 import star from "/imgs/star.png"
 import graystar from "/imgs/graystar.png"
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 function Friends() {
   const [isSearch, setIsSearch] = useState(false); // 검색창 on/off 위한 상태변수
@@ -15,6 +16,7 @@ function Friends() {
   const [friends, setFriends] = useState([]); // 친구목록 받아올 배열
   const [userInput, setUserInput] = useState(""); // 친구이름 검색
   const [filterOption, setsFilterOption] = useState("all") // 전체, 친한친구 목록 출력
+  const navigate = useNavigate()
 
   const searchState = () => {
     setIsSearch((prevSearch) => !prevSearch);
@@ -157,7 +159,9 @@ function Friends() {
               className="flex flex-row items-center justify-between gap-3 m-2"
             >
               <div className="flex flex-row items-center gap-3"
-                key={friend.consumerId}>
+                key={friend.consumerId}
+                onClick={() => navigate(`/friend-funding/${friend.consumerId}`)}
+                >
                 <img
                   src={
                     friend.profileThumbnailImage === ""
