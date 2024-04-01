@@ -14,6 +14,7 @@ public enum SuccessType {
     GET_KAKAO_FRIEND_INFO_SUCCESS("카카오 친구 목록 조회에 성공하였습니다."),
     GET_FRIEND_INFO_SUCCESS("친구 목록 조회에 성공하였습니다."),
     GET_FRIENDS_STORY_SUCCESS("친구 펀딩 스토리 리스트 조회에 성공하였습니다."),
+    PUT_FAVORITE_TOGGLE_SUCCESS("친한 친구 토글에 설공하였습니다."),
 
     // 펀딩
     CREATE_FUNDING_SUCCESS("펀딩 등록에 성공하였습니다."),
@@ -27,8 +28,8 @@ public enum SuccessType {
 
     // 상품
     GET_PRODUCT_CATEGORIES_SUCCESS("상품 카테고리 목록 조회에 성공하였습니다."),
-    GET_PRODUCTS_BY_CATEGORY_SUCCESS("카테고리 별 상품 목록 조회에 성공하였습니다."),
-    GET_PRODUCTS_BY_KEYWORD_SUCCESS("검색어 별 상품 목록 조회에 성공하였습니다."),
+    GET_PRODUCTS_SUCCESS("상품 목록 조회에 성공하였습니다."),
+    GET_PRODUCTS_RANK_SUCCESS("순위 별 상품 목록 조회에 성공하였습니다."),
     GET_PRODUCT_DETAIL_SUCCESS("상품 상세 조회에 성공하였습니다."),
 
     // 리뷰

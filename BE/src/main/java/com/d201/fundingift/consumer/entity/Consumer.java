@@ -5,7 +5,6 @@ import com.d201.fundingift.account.entity.Account;
 import com.d201.fundingift.address.entity.Address;
 import com.d201.fundingift.attendance.entity.Attendance;
 import com.d201.fundingift.consumer.dto.request.PutConsumerInfoRequestDto;
-import com.d201.fundingift.interest.entity.Interest;
 import com.d201.fundingift.review.entity.Review;
 import jakarta.persistence.*;
 import lombok.*;
@@ -60,9 +59,6 @@ public class Consumer extends BaseTime {
     private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Interest> interests = new ArrayList<>();
-
-    @OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attendance> attendances = new ArrayList<>();
 
     @Builder
@@ -84,6 +80,10 @@ public class Consumer extends BaseTime {
         this.birthyear = dto.getBirthyear();
         this.birthday = dto.getBirthday();
         this.gender = dto.getGender();
+    }
+
+    public void updateProfileImageUrl(String url) {
+        this.profileImageUrl = url;
     }
 
 }

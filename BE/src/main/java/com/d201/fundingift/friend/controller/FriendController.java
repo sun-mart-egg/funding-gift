@@ -46,21 +46,24 @@ public class FriendController {
     }
 
     @Operation(summary = "내 친구 목록 조회 (소비자)",
-            description = "내 친구들의 친구정보를 조회합니다. `Token`"
+            description = """
+    내 친구들의 친구정보를 조회합니다. `Token`"
+    친한친구 -> 가나다 순 정렬으로 반환합니다.
+    """
     )
     @GetMapping
-    public ResponseEntity<List<FriendDto>> getFriends() {
+    public SuccessResponse<List<FriendDto>> getFriends() {
         List<FriendDto> friendDtos = friendService.getFriends();
-        return ResponseEntity.ok(friendDtos);
+        return ResponseUtils.ok(friendDtos, SuccessType.GET_FRIEND_INFO_SUCCESS);
     }
 
     @Operation(summary = "친한친구 설정 변경",
             description = "해당 친구와의 친한친구 관계를 토글합니다. `Token`"
     )
     @PutMapping("/{to-consumer-id}/toggle-favorite")
-    public ResponseEntity<?> toggleFavorite(@PathVariable("to-consumer-id") Long toConsumerId) {
+    public SuccessResponse<?> toggleFavorite(@PathVariable("to-consumer-id") Long toConsumerId) {
         friendService.toggleFavorite(toConsumerId);
-        return ResponseEntity.ok().build();
+        return ResponseUtils.ok(SuccessType.PUT_FAVORITE_TOGGLE_SUCCESS);
     }
 
     @Operation(summary = "친구 펀딩 스토리 리스트",
