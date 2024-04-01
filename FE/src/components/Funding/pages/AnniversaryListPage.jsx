@@ -15,12 +15,24 @@ function AnniversaryListPage() {
   return (
     <div className="sub-layer font-cusFont3 text-[14px]">
       <AnniversaryList listData={anniversaryData} className="" />
-      <button
-        className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
-        onClick={handleSelectButtonClick}
+
+      <div
+        id="buttonSection"
+        className="absolute bottom-0 flex w-full items-center justify-center space-x-4 pb-5"
       >
-        기념일 선택하기
-      </button>
+        <button
+          className="  common-btn border-cus  h-[45px] w-[45%] border border-cusColor3 bg-white text-black "
+          onClick={() => navigate("/new-anniversary")}
+        >
+          기념일 추가
+        </button>
+        <button
+          className="  h-[45px] w-[45%]  rounded-md bg-cusColor3 text-white"
+          onClick={handleSelectButtonClick}
+        >
+          기념일 선택
+        </button>
+      </div>
     </div>
   );
 }
