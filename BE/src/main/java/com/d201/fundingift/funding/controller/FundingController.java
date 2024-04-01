@@ -169,4 +169,11 @@ public class FundingController {
                                                                                         @RequestParam(required = true, name = "month") Integer month) {
         return ResponseUtils.ok(fundingService.getFundingCalendarsResponse(year, month), GET_FUNDING_CALENDARS_SUCCESS);
     }
+
+    @GetMapping("/feed")
+    public SuccessResponse<SliceList<GetFundingResponse>> getFundingFeeds(
+            @PageableDefault(size=3, sort="startDate", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        return ResponseUtils.ok(fundingService.getFundingFeeds(pageable), GET_FUNDINGS_FEED_SUCCESS);
+    }
 }
