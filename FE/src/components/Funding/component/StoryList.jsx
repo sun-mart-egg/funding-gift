@@ -26,7 +26,7 @@ function StoryList({ listData }) {
               alt={item.name}
               className="h-14 w-14 rounded-full"
             />
-            <p className="text-center">{item.consumerId}</p>
+            <p className="text-center">{item.name}</p>
           </div>
         ))}
     </div>
