@@ -4,40 +4,62 @@ import interactionPlugin from "@fullcalendar/interaction"
 import { useState } from "react";
 
 function Calendar() {
+  // 이벤트 목록 받아올 배열
   const [selectedEvents, setSelectedEvents] = useState([]);
+  const [selectedDay, setSelectedDay] = useState(null)
+
+  // 캘린더 날짜 선택 시
   const handleDateClick = (arg) => {
     const clickedDate = arg.dateStr
     const ThisDate = myEvents.filter((event) => {
-        const startDay = event.start
-        const endDay = event.end
-        return clickedDate >= startDay && clickedDate <= endDay
+      const clickDay = event.date
+      return clickedDate === clickDay
     })
     setSelectedEvents(ThisDate)
+    setSelectedDay(clickedDate)
   };
 
   const myEvents = [
-    { title: "이벤트1", start: "2024-04-01", end: "2024-04-03" },
-    { title: "이벤트1", start: "2024-04-01", end: "2024-04-03" },
-    { title: "이벤트1", start: "2024-04-01", end: "2024-04-03" },
-    { title: "이벤트2", start: "2024-04-04", end: "2024-04-06" },
+    { title: "이벤트1", date: "2024-04-02", name: "신시은" },
+    { title: "이벤트1", date: "2024-04-03", name: "신시은" },
+    { title: "이벤트1", date: "2024-04-04", name: "신시은" },
+    { title: "이벤트1", date: "2024-04-05", name: "신시은" },
+    { title: "이벤트1", date: "2024-04-30", name: "신시은" },
   ];
 
   return (
     <div className="sub-layer">
-      <div className="relative top-0 w-full">
+      <div className="absolute w-full top-[65px]">
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
           events={myEvents}
           dateClick={handleDateClick}
+          locale="kr"
+          headerToolbar={
+            {
+              left: "prev",
+              center: "title",
+              right: "today next"
+            }
+          }
         />
       </div>
 
-      <div className=" flex h-[240px] w-full flex-col items-start p-3 border-t-2">
+      <div className="flex flex-col w-full h-[267px] p-3 border-t-2 z-10 bg-white text-xl signup-font gap-2 absolute bottom-0">
+        {selectedDay}
         {/* 선택한 날짜에 대한 기념일 목록 출력 */}
-        {selectedEvents.map((event, index) => (
-            <div key={index}>😘{event.title}</div>
-        ))}
+        {selectedEvents.length > 0 ? (
+          selectedEvents.map((event, index) => (
+            <div key={index}>
+              <p>😘 {event.name}의 {event.title}</p>
+            </div>
+          ))
+        ) : (
+          <div>
+            <p>기념일이 없습니다.</p>
+          </div>
+        )}
       </div>
     </div>
   );
