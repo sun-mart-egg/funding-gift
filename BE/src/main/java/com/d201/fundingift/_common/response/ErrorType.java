@@ -32,13 +32,15 @@ public enum ErrorType {
 
     //친구
     FRIEND_NOT_FOUND(HttpStatus.BAD_REQUEST, "내 친구가 아닙니다."),
+    FRIEND_NOT_IS_FAVORITE(HttpStatus.BAD_REQUEST, "친한 친구가 아닙니다."),
     KAKAO_FRIEND_NOT_FOUND(HttpStatus.BAD_REQUEST, "카카오 친구목록 조회에 실패하였습니다."),
     FRIEND_RELATIONSHIP_NOT_FOUND(HttpStatus.NOT_FOUND, "친구 관계를 찾을 수 없습니다"),
 
     // 펀딩
     ANNIVERSARY_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 기념일 카테고리를 찾을 수 없습니다."),
+    FUNDING_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 펀딩을 찾을 수 없습니다."),
+    FUNDING_NOT_MINE(HttpStatus.BAD_REQUEST, "내 펀딩이 아닙니다."),
     FUNDING_DURATION_NOT_VALID(HttpStatus.BAD_REQUEST, "펀딩 기간이 7일을 넘습니다."),
-    FUNDING_NOT_FOUND(HttpStatus.BAD_REQUEST, "등록된 펀딩이 없습니다. "),
     FUNDING_NOT_STARTED(HttpStatus.BAD_REQUEST, "시작하지 않은 펀딩입니다."),
     FUNDING_FINISHED(HttpStatus.BAD_REQUEST, "종료된 펀딩 입니다."),
     FUNDING_START_DATE_IS_PAST(HttpStatus.BAD_REQUEST, "펀딩 시작일이 과거입니다."),
@@ -48,6 +50,7 @@ public enum ErrorType {
     //펀딩 참여
     FUNDING_NOT_VERIFY_MIN_PRICE(HttpStatus.BAD_REQUEST,"펀딩 참여 금액이 최소 금액을 만족하지 않습니다."),
     FUNDING_OVER_TARGET_PRICE(HttpStatus.BAD_REQUEST, "펀딩 목표 금액을 초과했습니다."),
+    FUNDING_ATTENDANCE_UNAUTHORIZED(HttpStatus.BAD_REQUEST,"해당 펀딩의 펀딩 참여자 정보를 볼 수 없습니다."),
 
     // 상품
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 상품을 찾을 수 없습니다."),

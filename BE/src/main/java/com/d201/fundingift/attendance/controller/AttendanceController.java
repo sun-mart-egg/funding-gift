@@ -1,9 +1,9 @@
 package com.d201.fundingift.attendance.controller;
 
-import com.d201.fundingift._common.response.ErrorResponse;
-import com.d201.fundingift._common.response.ResponseUtils;
-import com.d201.fundingift._common.response.SuccessResponse;
+import com.d201.fundingift._common.response.*;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
+import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
+import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
 import com.d201.fundingift.attendance.service.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,10 +13,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.*;
 
 import static com.d201.fundingift._common.response.SuccessType.POST_ATTENDANCE_SUCCESS;
 
@@ -49,4 +49,27 @@ public class AttendanceController {
         attendanceService.postAttendance(postAttendanceRequest);
         return ResponseUtils.ok(POST_ATTENDANCE_SUCCESS);
     }
+
+    @Operation(summary = "내 펀딩의 참여자 상세 정보 리스트",
+            description = """
+                           `token` \n
+                           내 펀딩의 참여자 상세 정보 리스트를 보여줍니다.\n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부 / 펀딩 존재 여부 / 내 펀딩이 맞는지 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
+    @GetMapping("/list")
+    public SuccessResponse<SliceList<GetAttendancesResponse>> getAttendancesResponse(@RequestParam(required = true, name = "funding-id") Long fundingId,
+                                                                                     @PageableDefault(size=4, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        return ResponseUtils.ok(attendanceService.getAttendancesResponse(fundingId, pageable), SuccessType.GET_ATTENDANCE_DETAIL_SUCCESS);
+    }
+
 }
