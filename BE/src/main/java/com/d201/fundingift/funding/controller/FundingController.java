@@ -149,6 +149,21 @@ public class FundingController {
         return ResponseUtils.ok(fundingService.getFundingDetailResponse(fundingId), GET_FUNDING_DETAIL_SUCCESS);
     }
 
+    @Operation(summary = "펀딩 달력 리스트 조회",
+            description = """
+                           `token` \n
+                           친구 펀딩 리스트를 달력 형태의 리스트로 조회합니다. \n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
     @GetMapping("/calendar")
     public SuccessResponse<List<GetFundingCalendarResponse>> getFundingCalendarsResponse(@RequestParam(required = true, name = "year") Integer year,
                                                                                         @RequestParam(required = true, name = "month") Integer month) {
