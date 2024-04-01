@@ -8,6 +8,7 @@ import fish from "/imgs/fish.PNG";
 import star from "/imgs/star.png"
 import graystar from "/imgs/graystar.png"
 import axios from "axios";
+import { useNavigate } from "react-router";
 
 function Friends() {
   const [isSearch, setIsSearch] = useState(false); // 검색창 on/off 위한 상태변수
@@ -15,6 +16,7 @@ function Friends() {
   const [friends, setFriends] = useState([]); // 친구목록 받아올 배열
   const [userInput, setUserInput] = useState(""); // 친구이름 검색
   const [filterOption, setsFilterOption] = useState("all") // 전체, 친한친구 목록 출력
+  const navigate = useNavigate()
 
   const searchState = () => {
     setIsSearch((prevSearch) => !prevSearch);
@@ -40,8 +42,12 @@ function Friends() {
     }
   }
 
-  // redis에 친구목록 요청하는 api
   useEffect(() => {
+    handleRedis()
+  }, []);
+  
+  // redis에 친구목록 요청하는 api
+  const handleRedis = () => {
     axios
       .get(import.meta.env.VITE_BASE_URL + "/api/friends", {
         headers: {
@@ -57,7 +63,7 @@ function Friends() {
         console.error(err);
         console.log("REDIS에 친구목록 요청 실패");
       });
-  }, []);
+  }
 
   // 카카오 친구로 동기화를 위한 api 요청 함수
   const handleKAKAO = () => {
@@ -68,8 +74,8 @@ function Friends() {
     })
       .then((res) => {
         console.log(res.data.data.elements)
-        setFriends(res.data.data.elements)
         console.log("KAKAO 친구목록 동기화 성공")
+        handleRedis()
       })
       .catch((err) => {
         console.error(err)
@@ -153,7 +159,9 @@ function Friends() {
               className="flex flex-row items-center justify-between gap-3 m-2"
             >
               <div className="flex flex-row items-center gap-3"
-                key={friend.consumerId}>
+                key={friend.consumerId}
+                onClick={() => navigate(`/friend-funding/${friend.consumerId}`)}
+                >
                 <img
                   src={
                     friend.profileThumbnailImage === ""
