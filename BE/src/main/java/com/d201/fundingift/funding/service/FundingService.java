@@ -159,22 +159,38 @@ public class FundingService {
     }
 
     public List<GetFundingCalendarResponse> getFundingCalendarsResponse(Integer year, Integer month) {
-        List<GetFundingCalendarResponse> allFundingList = new ArrayList<>();
+        List<GetFundingCalendarResponse> fundingList = new ArrayList<>();
         Long myConsumerId = securityUtil.getConsumerId();
 
         //친구 리스트 조회
         List<Friend> friends = friendRepository.findByConsumerId(myConsumerId);
 
         for(Friend f : friends) {
-            List<Funding> fundingList = fundingRepository
-                    .findAllByConsumerIdAndIsPrivateAndDeletedAtIsNull(f.getToConsumerId(), checkingIsFavoriteFriend(f.getToConsumerId(), myConsumerId), year, month);
 
-            allFundingList.addAll(fundingList.stream()
-                    .map(GetFundingCalendarResponse::from)
-                    .toList());
+            //친구가 날 친한 친구로 설정 했는지 확인
+            if(checkingIsFavoriteFriend(f.getToConsumerId(), myConsumerId)) {
+                //친한 친구로 설정한 경우 isPrivate 상관 없이 모두 조회
+                fundingList.addAll(
+                        fundingRepository
+                        .findAllByConsumerIdAndDeletedAtIsNull(f.getToConsumerId(), year, month)
+                        .stream()
+                        .map(GetFundingCalendarResponse::from)
+                        .toList()
+                );
+                continue;
+            }
+
+            //친한 친구가 아닌경우 IsPrivate == false만 조회
+            fundingList.addAll(
+                    fundingRepository
+                            .findAllByConsumerIdAndIsPrivateAndDeletedAtIsNull(f.getToConsumerId(), year, month)
+                            .stream()
+                            .map(GetFundingCalendarResponse::from)
+                            .toList()
+            );
         }
 
-        return allFundingList;
+        return fundingList;
     }
 
     private Funding getFunding(Long fundingId) {
