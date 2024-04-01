@@ -49,8 +49,8 @@ function Friends() {
         },
       })
       .then((res) => {
-        console.log(res.data);
-        setFriends(res.data);
+        console.log(res.data.data);
+        setFriends(res.data.data);
         console.log("REDIS에 친구목록 요청 완료");
       })
       .catch((err) => {
