@@ -40,9 +40,8 @@ public interface FundingRepository extends JpaRepository<Funding, Long> {
     Optional<Funding> findByIdAndDeletedAtIsNull(Long fundingId);
 
     @Query("SELECT f FROM Funding f " +
-            "WHERE (YEAR(f.startDate) = :year AND MONTH(f.startDate) = :month) " +
-            "OR (YEAR(f.endDate) = :year AND MONTH(f.endDate) = :month) " +
-            "OR (YEAR(f.anniversaryDate) = :year AND MONTH(f.anniversaryDate) = :month) " +
+            "WHERE " +
+            "(YEAR(f.anniversaryDate) = :year AND MONTH(f.anniversaryDate) = :month) " +
             "AND f.consumer.id = :consumerId AND f.isPrivate = :isPrivate AND f.deletedAt IS NULL")
     List<Funding> findAllByConsumerIdAndIsPrivateAndDeletedAtIsNull(@Param("consumerId") Long consuerId, @Param("isPrivate") Boolean isPrivate, @Param("year") Integer year, @Param("month") Integer month);
 }
