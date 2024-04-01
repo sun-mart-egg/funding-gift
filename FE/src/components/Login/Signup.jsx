@@ -71,6 +71,7 @@ function Signup() {
           placeholder="우편번호"
           className="p-3 bg-white border-[2.5px] common-btn signup-font w-[100px] h-[50px]"
           value={zipCode}
+          readOnly
         />
         <button className="h-[30px] w-[100px] rounded bg-gray-400 text-[15px] text-white"
         onClick={() => setIsOpen(true)}>
@@ -86,6 +87,7 @@ function Signup() {
           placeholder="주소"
           className="w-full signup-font"
           value={defaultAddr}
+          readOnly
         />
       </div>
 
