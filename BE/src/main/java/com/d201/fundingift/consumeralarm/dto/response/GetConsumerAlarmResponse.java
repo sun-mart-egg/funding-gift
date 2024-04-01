@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public class GetConsumerAlarmResponse {
-    private Long consumerAlarmId;
+    private String consumerAlarmId;
     private Long consumerId;
     private String message;
     private String messageType; // Enum을 String으로 변환
@@ -18,7 +18,7 @@ public class GetConsumerAlarmResponse {
     private LocalDateTime readTime;
 
     @Builder
-    public GetConsumerAlarmResponse(Long consumerAlarmId, Long consumerId, String message,
+    public GetConsumerAlarmResponse(String consumerAlarmId, Long consumerId, String message,
                                     String messageType, Boolean isRead,
                                     LocalDateTime createdDate, LocalDateTime readTime) {
         this.consumerAlarmId = consumerAlarmId;

@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface ConsumerAlarmRepository extends CrudRepository<ConsumerAlarm, Long> {
+public interface ConsumerAlarmRepository extends CrudRepository<ConsumerAlarm, String> {
     List<ConsumerAlarm> findByConsumerId(Long consumerId);
-    ConsumerAlarm findByConsumerAlarmId(Long ConsumerAlarmId);
+    ConsumerAlarm findByConsumerAlarmId(String ConsumerAlarmId);
 }

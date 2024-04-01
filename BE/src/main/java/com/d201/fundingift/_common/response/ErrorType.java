@@ -67,6 +67,11 @@ public enum ErrorType {
 
     //알람
     ALARM_NOT_FOUND(HttpStatus.BAD_REQUEST,"알람을 찾을 수 없습니다."),
+    ALARM_CREATION_FAILED(HttpStatus.BAD_REQUEST, "알람 생성 중 오류 발생"),
+    ALARM_RETRIEVAL_FAILED(HttpStatus.BAD_REQUEST, "알람 조회 중 오류 발생"),
+    ALARM_UPDATE_FAILED(HttpStatus.BAD_REQUEST, "알람 읽음 상태 업데이트 중 오류 발생"),
+    ALARM_DELETION_FAILED(HttpStatus.BAD_REQUEST, "알람 삭제 중 오류 발생"),
+    ALARM_DELETION_BY_USER_FAILED(HttpStatus.BAD_REQUEST, "사용자 ID로 알람 삭제 중 오류 발생");
     ;
 
 

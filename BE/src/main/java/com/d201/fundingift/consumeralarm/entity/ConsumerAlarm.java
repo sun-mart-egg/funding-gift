@@ -1,6 +1,9 @@
 package com.d201.fundingift.consumeralarm.entity;
 
 import com.d201.fundingift.consumeralarm.dto.request.PostConsumerAlarmRequest;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -9,33 +12,44 @@ import org.springframework.data.redis.core.index.Indexed;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @RedisHash(value = "consumer_alarm")
 public class ConsumerAlarm implements Serializable {
 
     @Id
-    private Long consumerAlarmId;
+    private String consumerAlarmId;
+
     @Indexed
     private Long consumerId;
+
+    @NotBlank(message = "메세지는 비어 있을 수 없습니다.")
+    @Size(max = 50, message = "메시지는 최대 50자까지 가능합니다.")
     private String message;
+
     private MessageType  messageType;
+
     private Boolean isRead;
+
     private LocalDateTime createdDate;
+
     private LocalDateTime readTime;
 
     @Builder
-    public ConsumerAlarm(Long consumerId, String message, MessageType messageType, Boolean isRead, LocalDateTime createdDate) {
+    public ConsumerAlarm(String consumerAlarmId, Long consumerId, String message, MessageType messageType, Boolean isRead, LocalDateTime createdDate) {
+        this.consumerAlarmId = consumerAlarmId != null ? consumerAlarmId : UUID.randomUUID().toString();
         this.consumerId = consumerId;
         this.message = message;
         this.messageType = messageType;
         this.isRead = isRead;
-        this.createdDate = createdDate != null ? createdDate : LocalDateTime.now(); // 생성 시간 설정
-        this.readTime = null; // 초기 상태에서는 null
+        this.createdDate = createdDate != null ? createdDate : LocalDateTime.now();
+        this.readTime = null;
     }
 
     public static ConsumerAlarm from(PostConsumerAlarmRequest request) {
         return ConsumerAlarm.builder()
+                .consumerAlarmId(UUID.randomUUID().toString()) // UUID 생성 및 할당
                 .consumerId(request.getConsumerId())
                 .message(request.getMessage())
                 .messageType(MessageType.valueOf(request.getMessageType()))
