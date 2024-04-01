@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import StoryList from "../component/StoryList";
 import FundingList from "../component/FundingList";
 import ScrollToTopButton from "../../UI/ScrollToTop";
-import { getStoryList, getStory } from "../api/StoryAPI";
-import { fetchFriendFunding } from "../api/FundingAPI";
+import { getStoryList } from "../api/StoryAPI";
 
 function FundingMain() {
   const [storyList, setStoryList] = useState([]); // 친구목록 받아올 배열
@@ -16,7 +15,7 @@ function FundingMain() {
   };
 
   useEffect(() => {
-    console.log("업데이트 된 스토리 목록" + storyList);
+    console.log("업데이트 된 스토리 목록");
   }, [storyList]);
 
   //스토리 리스트 불러오는 api
@@ -34,12 +33,6 @@ function FundingMain() {
 
     fetchStoryList();
   }, []);
-
-  //친구가 만든 펀딩 불러오는 api
-  // useEffect(() => {
-  //   const token = localStorage.getItem("access-token");
-  //   friends.forEach((friend) => fetchFriendFunding(friend, token, setData));
-  // }, [friends]);
 
   return (
     <div className="sub-layer relative">
