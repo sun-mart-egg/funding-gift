@@ -63,7 +63,10 @@ public enum ErrorType {
     WISHLIST_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 위시리스트를 찾을 수 없습니다."),
 
     //주소
-    ADDRESS_NOT_FOUND(HttpStatus.BAD_REQUEST, "주소를 찾을 수 없습니다.")
+    ADDRESS_NOT_FOUND(HttpStatus.BAD_REQUEST, "주소를 찾을 수 없습니다."),
+
+    //알람
+    ALARM_NOT_FOUND(HttpStatus.BAD_REQUEST,"알람을 찾을 수 없습니다."),
     ;
 
 

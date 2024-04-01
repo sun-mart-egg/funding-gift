@@ -1,5 +1,6 @@
 package com.d201.fundingift._common.config;
 
+import com.d201.fundingift.consumeralarm.entity.ConsumerAlarm;
 import com.d201.fundingift.friend.entity.Friend;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +52,16 @@ public class RedisConfig {
         return template;
     }
 
-
+    @Bean
+    public RedisTemplate<String, ConsumerAlarm> consumerAlarmRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, ConsumerAlarm> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        template.setKeySerializer(new StringRedisSerializer());
+        // Jackson2JsonRedisSerializer를 사용하여 ConsumerAlarm 객체를 JSON으로 직렬화합니다.
+        Jackson2JsonRedisSerializer<ConsumerAlarm> serializer = new Jackson2JsonRedisSerializer<>(ConsumerAlarm.class);
+        template.setHashValueSerializer(serializer);
+        template.setValueSerializer(serializer);
+        return template;
+    }
 
 }
