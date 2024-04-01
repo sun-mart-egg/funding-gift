@@ -7,14 +7,15 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { fetchMyFundings } from "../api/FundingAPI";
+import { getFriendInfo } from "../api/UserAPI";
+import { useParams } from "react-router-dom";
 
-function MyFunding() {
+function FriendFunding() {
+  const { consumerId } = useParams(); // URL 파라미터에서 consumer-id 값을 추출합니다.
   const navigate = useNavigate();
-  const [buttonSelected, setButtonSelected] = useState(true);
   const [myFundings, setMyFundings] = useState([]); // API로부터 받은 데이터를 저장할 상태
   const [isLoading, setIsLoading] = useState(true);
-
-  const [userInfo, setUserInfo] = useState({
+  const [FriendInfo, setFriendInfo] = useState({
     name: "",
     img: null,
     // 추가 정보가 있다면 여기에 포함할 수 있습니다.
@@ -22,61 +23,33 @@ function MyFunding() {
 
   //사용자 정보 받아오기
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const fetchFriends = async () => {
       try {
-        const response = await axios.get(
-          import.meta.env.VITE_BASE_URL + "/api/consumers",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("access-token")}`,
-            },
-          },
-        );
-
-        // 응답 데이터 콘솔에 출력
-        console.log("Received user info:", response.data.data.profileImageUrl);
-
-        // API 응답으로부터 받은 데이터로 userInfo 상태 업데이트
-        setUserInfo({
-          ...userInfo,
-          name: response.data.data.name,
-          img: response.data.data.profileImageUrl,
+        const token = localStorage.getItem("access-token");
+        if (!token) {
+          console.log("토큰이 존재하지 않습니다.");
+          setIsLoading(false);
+          navigate("/login-page");
+          return;
+        }
+        const friendsData = await getFriendInfo(token, consumerId);
+        setFriendInfo({
+          name: friendsData.data.name,
+          img: friendsData.data.profileImageUrl,
         });
+        setIsLoading(false);
       } catch (error) {
-        console.error("Failed to fetch user info:", error);
+        console.error("친구 정보 불러오기 실패:", error);
+        setIsLoading(false);
       }
     };
 
-    fetchUserInfo();
-  }, []);
+    if (consumerId) {
+      fetchFriends();
+    }
+  }, [consumerId, navigate]);
 
-  //내 펀딩 조회 api
-  useEffect(() => {
-    const token = localStorage.getItem("access-token");
-    if (!token) {
-      console.log("토큰이 존재하지 않습니다.");
-      setIsLoading(false);
-      navigate("/login-page");
-      return;
-    }
-    fetchMyFundings(token, setMyFundings, setIsLoading);
-  }, []);
-
-  //버튼 클릭 시 api 불러오는거 연결
-  const handleClickButton = (e) => {
-    const token = localStorage.getItem("access-token");
-    const buttonName = e.target.name;
-    setButtonSelected(buttonName === "myFunding");
-    if (!token) {
-      console.log("토큰이 존재하지 않습니다.");
-      setIsLoading(false);
-      navigate("/login-page");
-      return;
-    }
-    if (buttonName === "myFunding") {
-      fetchMyFundings(token, setMyFundings, setIsLoading);
-    }
-  };
+  //친구가 만든 펀딩 정보 불러오기
 
   const handleCreateFundingClick = () => {
     navigate("/make-funding-main");
@@ -90,11 +63,11 @@ function MyFunding() {
       >
         <div id="leftSection" className="flex items-center space-x-4">
           <img
-            src={userInfo.img}
+            src={FriendInfo.img}
             alt="프로필"
             className="h-[60px] w-[60px] rounded-full  border-gray-300"
           />
-          <p className="font-cusFont5 text-xl">{userInfo.name}</p>
+          <p className="font-cusFont5 text-xl">{FriendInfo.name}</p>
         </div>
 
         <div id="rightSection" className="flex items-center space-x-0">
@@ -118,42 +91,22 @@ function MyFunding() {
       </div>
       <div id="buttonSection" className="flex w-full justify-between  ">
         <button
-          onClick={handleClickButton}
           name="myFunding"
-          className={
-            buttonSelected
-              ? ` w-3/6 bg-cusColor3 p-4 text-xs text-white `
-              : `w-3/6 border-b border-t border-cusColor3 p-4 text-xs`
-          }
+          className={`w-full bg-cusColor3 p-4 text-xs text-white `}
         >
-          내가 만든 펀딩 ({myFundings.length})
-        </button>
-        <button
-          onClick={handleClickButton}
-          name="friendsFunding"
-          className={
-            !buttonSelected
-              ? `w-3/6 bg-cusColor3 p-4 text-xs text-white `
-              : `w-3/6 border-b border-t border-cusColor3 p-4 text-xs`
-          }
-        >
-          내가 참여한 펀딩 ({data2.length})
+          친구가 만든 펀딩 ({myFundings.length})
         </button>
       </div>
 
       <div id="mainSection" className=" flex-center w-full flex-col p-4">
         <SearchBar />
 
-        {buttonSelected ? (
-          myFundings.length === 0 ? (
-            <div className="m-1 flex flex-col items-center justify-start p-10 font-cusFont3 text-[20px]">
-              아직 만들어진 펀딩이 없습니다.{" "}
-            </div>
-          ) : (
-            <CardList data={myFundings} />
-          )
+        {myFundings.length === 0 ? (
+          <div className="m-1 flex flex-col items-center justify-start p-10 font-cusFont3 text-[20px]">
+            아직 만들어진 펀딩이 없습니다.{" "}
+          </div>
         ) : (
-          <CardList data={data2} />
+          <CardList data={myFundings} />
         )}
       </div>
       <button
@@ -192,4 +145,4 @@ let data2 = [
   },
 ];
 
-export default MyFunding;
+export default FriendFunding;

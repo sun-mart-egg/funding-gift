@@ -1,6 +1,6 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction"
+import interactionPlugin from "@fullcalendar/interaction";
 import { useState } from "react";
 
 function Calendar() {
@@ -10,7 +10,7 @@ function Calendar() {
 
   // 캘린더 날짜 선택 시
   const handleDateClick = (arg) => {
-    const clickedDate = arg.dateStr
+    const clickedDate = arg.dateStr;
     const ThisDate = myEvents.filter((event) => {
       const clickDay = event.date
       return clickedDate === clickDay
