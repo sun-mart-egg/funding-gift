@@ -11,7 +11,7 @@ import InputProfile from "./components/Login/InputProfile.jsx";
 
 import Calendar from "./components/Friends/Calendar.jsx";
 import Friends from "./components/Friends/Friends.jsx";
-
+import FriendFunding from "./components/Funding/pages/FriendFunding.jsx";
 import MyFunding from "./components/Funding/pages/MyFunding";
 import AccountListPage from "./components/Funding/pages/AccountListPage.jsx";
 import MakeFundingMain from "./components/Funding/pages/MakeFundingMain";
@@ -31,6 +31,8 @@ import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
 import FundingMain from "./components/Funding/pages/FundingMain.jsx";
 import StoryPage from "./components/Funding/pages/StoryPage.jsx";
 import MyPage from "./components/Funding/pages/MyPage.jsx";
+import NewAnniversaryPage from "./components/Funding/pages/NewAnniversaryPage.jsx";
+import NewAddressPage from "./components/Funding/pages/NewAddressPage.jsx";
 
 function App() {
   return (
@@ -39,6 +41,10 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/my-funding" element={<MyFunding />} />
+          <Route
+            path="/friend-funding/:consumerId"
+            element={<FriendFunding />}
+          />
           <Route path="/product" element={<Product />} />
           <Route path="/funding" element={<FundingMain />} />
         </Route>
@@ -62,6 +68,8 @@ function App() {
           <Route path="/anniversary-list" element={<AnniversaryListPage />} />
           <Route path="/address-list" element={<AddressListPage />} />
           <Route path="/account-list" element={<AccountListPage />} />
+          <Route path="/new-anniversary" element={<NewAnniversaryPage />} />
+          <Route path="/new-address" element={<NewAddressPage />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/friends" element={<Friends />} />
           <Route path="/participate" element={<ParticipatePage />} />
@@ -71,8 +79,7 @@ function App() {
         </Route>
 
         <Route path="/login-callback" element={<LoginCallback />} />
-        <Route path="/story/:id" element={<StoryPage />} />
-
+        <Route path="/story/:selectedItem" element={<StoryPage />} />
       </Routes>
     </BrowserRouter>
   );
