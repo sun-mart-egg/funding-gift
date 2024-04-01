@@ -9,6 +9,7 @@ import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import com.d201.fundingift.friend.entity.Friend;
 import com.d201.fundingift.friend.repository.FriendRepository;
 import com.d201.fundingift.funding.dto.request.PostFundingRequest;
+import com.d201.fundingift.funding.dto.response.GetFundingCalendarResponse;
 import com.d201.fundingift.funding.dto.response.GetFundingDetailResponse;
 import com.d201.fundingift.funding.dto.response.GetFundingResponse;
 import com.d201.fundingift.funding.entity.AnniversaryCategory;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -154,6 +156,25 @@ public class FundingService {
         }
 
         return GetFundingDetailResponse.from(funding);
+    }
+
+    public List<GetFundingCalendarResponse> getFundingCalendarsResponse(Integer year, Integer month) {
+        List<GetFundingCalendarResponse> allFundingList = new ArrayList<>();
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        //친구 리스트 조회
+        List<Friend> friends = friendRepository.findByConsumerId(myConsumerId);
+
+        for(Friend f : friends) {
+            List<Funding> fundingList = fundingRepository
+                    .findAllByConsumerIdAndIsPrivateAndDeletedAtIsNull(f.getToConsumerId(), checkingIsFavoriteFriend(f.getToConsumerId(), myConsumerId), year, month);
+
+            allFundingList.addAll(fundingList.stream()
+                    .map(GetFundingCalendarResponse::from)
+                    .toList());
+        }
+
+        return allFundingList;
     }
 
     private Funding getFunding(Long fundingId) {

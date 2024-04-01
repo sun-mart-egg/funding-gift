@@ -6,6 +6,7 @@ import com.d201.fundingift._common.response.ResponseUtils;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.response.SuccessResponse;
 import com.d201.fundingift.funding.dto.request.PostFundingRequest;
+import com.d201.fundingift.funding.dto.response.GetFundingCalendarResponse;
 import com.d201.fundingift.funding.dto.response.GetFundingDetailResponse;
 import com.d201.fundingift.funding.dto.response.GetFundingResponse;
 import com.d201.fundingift.funding.service.FundingService;
@@ -146,5 +147,11 @@ public class FundingController {
     @GetMapping("/detail/{funding-id}")
     public SuccessResponse<GetFundingDetailResponse> getFundingDetailResponse(@PathVariable(required = true, name = "funding-id") Long fundingId) {
         return ResponseUtils.ok(fundingService.getFundingDetailResponse(fundingId), GET_FUNDING_DETAIL_SUCCESS);
+    }
+
+    @GetMapping("/calendar")
+    public SuccessResponse<List<GetFundingCalendarResponse>> getFundingCalendarsResponse(@RequestParam(required = true, name = "year") Integer year,
+                                                                                        @RequestParam(required = true, name = "month") Integer month) {
+        return ResponseUtils.ok(fundingService.getFundingCalendarsResponse(year, month), GET_FUNDING_CALENDARS_SUCCESS);
     }
 }
