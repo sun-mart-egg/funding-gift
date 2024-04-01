@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -74,11 +73,31 @@ public class ProductController {
                                     - 3: 가격 높은 순
                                     - 4: 가격 낮은 순
                                     """, example = "0") @RequestParam(required = true, name = "sort") Integer sort) {
-        log.info("[ProductController.getProductsByCategoryId]");
-        return ResponseUtils.ok(productService.getProducts(categoryId, keyword, page, size, sort), GET_PRODUCTS_BY_CATEGORY_SUCCESS);
+        log.info("[ProductController.getProducts]");
+        return ResponseUtils.ok(productService.getProducts(categoryId, keyword, page, size, sort), GET_PRODUCTS_SUCCESS);
     }
 
-    // 토큰 검사 추가 필요 (위시리스트 여부 확인)
+    @Operation(summary = "추천 상품 목록 조회",
+            description = """
+                           추천 상품 목록을 조회합니다. (랭킹) \n
+                           Query Parameter로 page, size 넣어주세요. \n
+                           결과로 data, page, size, hasNext를 반환합니다.
+                           - data: 응답 데이터
+                           - page: 현재 페이지 번호
+                           - size: 현재 데이터 개수
+                           - hasNext: 다음 페이지 존재 여부
+                           """)
+    @ApiResponse(responseCode = "200",
+            description = "성공",
+            useReturnTypeSchema = true)
+    @GetMapping("/rank")
+    public SuccessResponse<SliceList<GetProductResponse>> getProductsRank(
+            @Schema(description = "페이지 번호 (0부터 시작)", example = "0") @RequestParam Integer page,
+            @Schema(description = "한 페이지에 불러올 데이터의 개수", example = "10") @RequestParam Integer size) {
+        log.info("[ProductController.getProductsRank]");
+        return ResponseUtils.ok(productService.getProductsRank(page, size), GET_PRODUCTS_RANK_SUCCESS);
+    }
+
     @Operation(summary = "상품 상세 조회",
             description = "상품의 디테일을 조회합니다. Path Variable로 product-id 넣어주세요.")
     @ApiResponse(responseCode = "200",
