@@ -99,10 +99,25 @@ function MyFundingDetail() {
 
   const [isBottomSheetOpen, setIsBottomSheetOpen, selectId] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState("");
+  const [messageList, setMessageList] = useState(MessageList);
 
   const toggleBottomSheet = (message) => {
-    setSelectedMessage(message);
+    if (!isBottomSheetOpen) {
+      setSelectedMessage(message);
+    }
     setIsBottomSheetOpen(!isBottomSheetOpen);
+  };
+
+  const updateReply = (name, newReply) => {
+    const newList = messageList.map((msg) =>
+      msg.name === name ? { ...msg, reply: newReply } : msg
+    );
+    setMessageList(newList);
+  
+    // selectedMessage 상태도 업데이트
+    if (selectedMessage && selectedMessage.name === name) {
+      setSelectedMessage({ ...selectedMessage, reply: newReply });
+    }
   };
 
   return (
@@ -120,7 +135,7 @@ function MyFundingDetail() {
         />
 
         <CongratulateList
-          listData={MessageList}
+          listData={messageList}
           onCardClick={toggleBottomSheet}
         />
       </div>
@@ -129,6 +144,7 @@ function MyFundingDetail() {
         isOpen={isBottomSheetOpen}
         setIsOpen={setIsBottomSheetOpen}
         message={selectedMessage}
+        updateReply={updateReply}
       ></BottomSheet>
 
       <button className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white">
