@@ -1,17 +1,30 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SearchBar from "../UI/SearchBar";
 import { useNavigate } from "react-router-dom";
 
 import CatIcon from "/imgs/cat.PNG";
 import FishIcon from "/imgs/fish.PNG";
 
-import ImageComingSoon from "/imgs/image_coming_soon.png"
-import ImageComingSoon2 from "/imgs/image_coming_soon2.png"
+import BannerImage1 from "/imgs/banner_image1.png"
+import BannerImage2 from "/imgs/banner_image2.png"
+import BannerImage3 from "/imgs/banner_image3.png"
+
 
 import ScrollToTop from "../UI/ScrollToTop";
 
 function Home() {
   const navigate = useNavigate();
+
+  const [currentBanner, setCurrentBanner] = useState(0);
+  const bannerImages = [BannerImage1, BannerImage2, BannerImage3];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBanner((prevIndex) => (prevIndex + 1) % bannerImages.length);
+    }, 5000); // Change image every 5000 milliseconds
+
+    return () => clearInterval(interval); // Clean up interval on component unmount
+  }, []); // Empty dependency array means this runs once on mount
 
   return (
     <div className="main-layer font-cusFont2">
@@ -19,12 +32,16 @@ function Home() {
         <SearchBar />
       </div>
 
-      {/* <div className="mt-[20px] h-[150px] w-[95%] rounded-md p-5">
-        배너 들어갈 자리에요
-        <img src={ImageComingSoon} alt="" className="w-full h-[100%] object-cover"/>
-      </div> */}
-      <p className="font-cusFont4 mt-[20px]">이미지가 준비 중이에요</p>
-      <img src={ImageComingSoon2} alt="" className="h-[150px] w-[95%] rounded-md object-cover"/>
+      <div className="mt-5 h-[150px] w-[95%] rounded-md relative overflow-hidden">
+        {bannerImages.map((image, index) => (
+          <img
+            key={index}
+            src={image}
+            alt={`Banner ${index + 1}`}
+            className={`absolute top-0 left-0 h-full w-full rounded-lg object-cover transition-opacity duration-1000 ${index === currentBanner ? 'opacity-100' : 'opacity-0'}`}
+          />
+        ))}
+      </div>
 
       <div className="flex w-[95%]">
         <div
