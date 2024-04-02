@@ -76,6 +76,28 @@ public class FundingController {
         return ResponseUtils.ok(fundingService.getMyFundings(keyword, pageable), GET_MY_FUNDINGS_SUCCESS);
     }
 
+    @Operation(summary = "내가 참여한 펀딩 목록 보기",
+            description = """
+                           `token` \n
+                           내가 참여한 펀딩 목록을 볼 수 있습니다. \n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
+    @GetMapping("/my-attendance-fundings")
+    public SuccessResponse<SliceList<GetFundingResponse>> getMyAttendanceFundings(
+            @PageableDefault(size=4, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        return ResponseUtils.ok(fundingService.getMyAttendanceFundings(pageable), GET_MY_ATTENDANCE_FUNDINGS_SUCCESS);
+    }
+
     @Operation(summary = "친구가 만든 펀딩 목록 보기",
             description = """
                            `token` \n

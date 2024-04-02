@@ -2,7 +2,6 @@ package com.d201.fundingift.attendance.controller;
 
 import com.d201.fundingift._common.response.*;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
-import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
 import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
 import com.d201.fundingift.attendance.service.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
