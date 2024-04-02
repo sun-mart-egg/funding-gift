@@ -2,6 +2,7 @@ package com.d201.fundingift.attendance.controller;
 
 import com.d201.fundingift._common.response.*;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
+import com.d201.fundingift.attendance.dto.request.UpdateAttendanceRequest;
 import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
 import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
 import com.d201.fundingift.attendance.service.AttendanceService;
@@ -50,10 +51,10 @@ public class AttendanceController {
         return ResponseUtils.ok(POST_ATTENDANCE_SUCCESS);
     }
 
-    @Operation(summary = "내 펀딩의 참여자 상세 정보 리스트",
+    @Operation(summary = "내 펀딩의 참여자 리스트",
             description = """
                            `token` \n
-                           내 펀딩의 참여자 상세 정보 리스트를 보여줍니다.\n
+                           내 펀딩의 참여자 리스트를 보여줍니다.\n
                            """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -69,7 +70,60 @@ public class AttendanceController {
     public SuccessResponse<SliceList<GetAttendancesResponse>> getAttendancesResponse(@RequestParam(required = true, name = "funding-id") Long fundingId,
                                                                                      @PageableDefault(size=4, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        return ResponseUtils.ok(attendanceService.getAttendancesResponse(fundingId, pageable), SuccessType.GET_ATTENDANCE_DETAIL_SUCCESS);
+        return ResponseUtils.ok(attendanceService.getAttendancesResponse(fundingId, pageable), SuccessType.GET_ATTENDANCE_SUCCESS);
     }
 
+    @Operation(summary = "펀딩참여 정보 상세 조회",
+            description = """
+                           `token` \n
+                           펀딩참여 정보 상세 조회를 합니다.\n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부 / 펀딩 존재 여부 / 펀딩 참여 존재 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )),
+            @ApiResponse(responseCode = "401",
+                    description = "펀딩 참여 상세 정보 조회 권한 확인 - 펀딩 참여자나 펀딩 생성자만 상세 조회 가능",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
+    @GetMapping("/detail")
+    public SuccessResponse<GetAttendanceDetailResponse> getAttendanceDetailResponse(@RequestParam(required = true, name = "attendance-id") Long attendanceId,
+                                                                                    @RequestParam(required = true, name="funding-id") Long fundingId) {
+
+        return ResponseUtils.ok(attendanceService.getAttendanceDetailResponse(attendanceId, fundingId), SuccessType.GET_ATTENDANCE_DETAIL_SUCCESS);
+    }
+
+    @Operation(summary = "펀딩참여자에게 감사 메시지 작성",
+            description = """
+                           `token` \n
+                           펀딩참여자에게 감사 메시지를 작성 합니다.\n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부 / 펀딩 존재 여부 / 펀딩 참여 존재 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )),
+            @ApiResponse(responseCode = "401",
+                    description = "감사 메시지 작성 권한 여부 - 펀딩 생성자만 작성 가능",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
+    @PutMapping("/write-message")
+    public SuccessResponse<Void> updateReceiveMessage(@RequestBody UpdateAttendanceRequest updateAttendanceRequest) {
+        attendanceService.updateReceiveMessage(updateAttendanceRequest);
+
+        return ResponseUtils.ok(SuccessType.UPDATE_ATTENDANCE_RECEIVE_MESSAGE_SUCCESS);
+    }
 }
