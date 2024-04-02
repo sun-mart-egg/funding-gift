@@ -252,7 +252,7 @@ public class FundingService {
                 changed.add(f);
         }
 
-        return SliceList.from(fundings.stream().map(GetFundingResponse::from).collect(Collectors.toList()), fundings.getPageable(), fundings.hasNext());
+        return SliceList.from(changed.stream().map(GetFundingResponse::from).collect(Collectors.toList()), fundings.getPageable(), fundings.hasNext());
     }
 
     //consumerId로 펀딩 목록 찾기
