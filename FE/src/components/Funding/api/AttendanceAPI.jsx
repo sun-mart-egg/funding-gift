@@ -1,5 +1,6 @@
 import axios from "axios";
 
+//펀딩 참여하기 api
 async function createAttendance(
   token,
   fundingId,
@@ -37,4 +38,22 @@ async function createAttendance(
   }
 }
 
-export { createAttendance };
+//내가 참여한 펀딩 api
+async function getMyAttendance(token, setData) {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/fundings/my-attendance-fundings`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    console.log("내가 참여한 펀딩 정보 응답 : " + response.data.data.data);
+    setData(response.data.data.data);
+  } catch (error) {
+    console.error("내가 참여한 펀딩 정보 불러오기 에러", error);
+  }
+}
+
+export { createAttendance, getMyAttendance };
