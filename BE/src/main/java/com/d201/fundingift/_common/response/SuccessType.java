@@ -18,6 +18,7 @@ public enum SuccessType {
 
     // 펀딩
     CREATE_FUNDING_SUCCESS("펀딩 등록에 성공하였습니다."),
+    DELETE_FUNDING_SUCCESS("펀딩 삭제에 성공하였습니다."),
     GET_MY_FUNDINGS_SUCCESS("내 펀딩 목록 조회에 성공하였습니다."),
     GET_MY_ATTENDANCE_FUNDINGS_SUCCESS("내가 참여한 펀딩 목록 조회에 성공하였습니다."),
     GET_FRIEND_FUNDINGS_SUCCESS("친구 펀딩 목록 조회에 성공하였습니다."),
