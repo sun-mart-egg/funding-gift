@@ -35,11 +35,11 @@ public interface FundingRepository extends JpaRepository<Funding, Long> {
     List<Funding> findAllByConsumerIdAndFundingStatusAndIsPrivateOrderByStartDateAsc(Long consumerId, FundingStatus fundingStatus, Boolean isPrivate);
 
     @Query("select f from Funding f " +
-            "where f.consumer.id = :consumerId and f.fundingStatus = 'IN_PROGRESS' and f.deletedAt is null ORDER BY f.startDate ASC Limit 1")
-    Optional<Funding> findOneByConsumerIdAndFundingStatusAndDeletedAtIsNullOrderByStartDateAsc(Long consumerId);
+            "where f.consumer.id = :consumerId and f.fundingStatus = 'IN_PROGRESS' and f.isPrivate = :isPrivate and f.deletedAt is null ORDER BY f.startDate ASC")
+    List<Funding> findAllByConsumerIdAndFundingStatusAndIsPrivateAndDeletedAtIsNullOrderByStartDateAsc(@Param("consumerId")Long consumerId, @Param("isPrivate") boolean isPrivate);
 
     Optional<Funding> findByIdAndDeletedAtIsNull(Long fundingId);
-    
+
     @Query("SELECT f FROM Funding f " +
             "WHERE " +
             "(YEAR(f.anniversaryDate) = :year AND MONTH(f.anniversaryDate) = :month) " +
@@ -56,4 +56,8 @@ public interface FundingRepository extends JpaRepository<Funding, Long> {
             "where p.status = 'ACTIVE' and p.deletedAt is null " +
             "group by p order by count(f) desc")
     Slice<Product> findProductSliceOrderByFundingCount(Pageable pageable);
+
+
+    @Query("SELECT f FROM Funding f WHERE f.consumer.id IN :consumerIds and f.fundingStatus = 'IN_PROGRESS' AND f.deletedAt IS NULL")
+    Slice<Funding> findAllByConsumerIdsAndFundingStatusAndDeletedAtIsNull(@Param("consumerIds") List<Long> consumerIds, Pageable pageable);
 }
