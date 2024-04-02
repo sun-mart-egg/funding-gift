@@ -1,19 +1,11 @@
 import FundingDetailInfo from "../component/FundingDetailInfo";
 import CongratulateList from "../component/CongratulateList";
 import BottomSheet from "../component/BottomSheet";
-import React, { useState } from "react";
-import LargeButton from "../../UI/LargeButton";
+import React, { useEffect, useState } from "react";
+import { fetchDetailFunding } from "../api/FundingAPI";
+import { useParams } from "react-router-dom";
 
 function MyFundingDetail() {
-  const data = {
-    title: "EGG IS MY LIFE",
-    name: "계란 토스트",
-    price: 760000,
-    detail:
-      "친구들아 안녕. 곧 내 생일인데 고오급 계란 토스트가 너무 가지고 싶어. 많은 참여 부탁해",
-    progress: 70,
-  };
-
   const MessageList = [
     {
       name: "박창준",
@@ -97,9 +89,24 @@ function MyFundingDetail() {
     },
   ];
 
+  const { fundingId } = useParams(); // URL 파라미터에서 fundingId를 가져옵니다.
+  const [fundingDetail, setFundingDetail] = useState(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen, selectId] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState("");
   const [messageList, setMessageList] = useState(MessageList);
+
+  useEffect(() => {
+    const token = localStorage.getItem("access-token");
+    if (token && fundingId) {
+      fetchDetailFunding(token, fundingId, setFundingDetail);
+    }
+  }, [fundingId]);
+
+  useEffect(() => {
+    if (fundingDetail) {
+      console.log("Funding Detail Loaded: ", fundingDetail);
+    }
+  }, [fundingDetail]);
 
   const toggleBottomSheet = (message) => {
     if (!isBottomSheetOpen) {
@@ -107,6 +114,9 @@ function MyFundingDetail() {
     }
     setIsBottomSheetOpen(!isBottomSheetOpen);
   };
+
+
+  if (!fundingDetail) return <div>Loading...</div>;
 
   const updateReply = (name, newReply) => {
     const newList = messageList.map((msg) =>
@@ -127,11 +137,12 @@ function MyFundingDetail() {
         className="absolute top-20 flex flex-col items-center justify-start pb-20"
       >
         <FundingDetailInfo
-          title={data.title}
-          name={data.name}
-          detail={data.detail}
-          progress={data.progress}
-          price={data.price}
+          title={fundingDetail.title}
+          name={fundingDetail.productName}
+          detail={fundingDetail.content}
+          progress={0}
+          price={fundingDetail.targetPrice}
+          img={fundingDetail.productImage}
         />
 
         <CongratulateList

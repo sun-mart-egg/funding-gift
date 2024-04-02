@@ -150,7 +150,7 @@ function MyFunding() {
               아직 만들어진 펀딩이 없습니다.{" "}
             </div>
           ) : (
-            <CardList data={myFundings} />
+            <CardList data={myFundings} basePath="/my-funding-detail" />
           )
         ) : (
           <CardList data={data2} />

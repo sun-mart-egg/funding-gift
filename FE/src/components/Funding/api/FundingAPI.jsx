@@ -1,4 +1,22 @@
 import axios from "axios";
+
+//펀딩 상세 조회 api
+async function fetchDetailFunding(token, fundingId, setData) {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/fundings/detail/${fundingId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    console.log("디테일 정보 : " + response.data);
+    setData(response.data.data);
+  } catch (error) {
+    console.error("펀딩 디테일 정보를 불러올 수 없습니다. ", error);
+  }
+}
 //내 펀딩 조회 api
 
 async function fetchMyFundings(token, setMyFundings, setIsLoading) {
@@ -78,4 +96,9 @@ async function createFunding(formData, token) {
 
   return await response.json();
 }
-export { createFunding, fetchFriendFunding, fetchMyFundings };
+export {
+  createFunding,
+  fetchFriendFunding,
+  fetchMyFundings,
+  fetchDetailFunding,
+};
