@@ -72,7 +72,21 @@ public class AttendanceController {
         return ResponseUtils.ok(attendanceService.getAttendancesResponse(fundingId, pageable), SuccessType.GET_ATTENDANCE_SUCCESS);
     }
 
-
+    @Operation(summary = "펀딩참여 정보 상세 조회",
+            description = """
+                           `token` \n
+                           펀딩참여 정보 상세 조회를 합니다.\n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부 / 펀딩 존재 여부 / 펀딩 참여 존재 여부 / 펀딩 참여 상세 정보 조회 권한 확인 - 펀딩 참여자나 펀딩 생성자만 상세 조회 가능",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
     @GetMapping("/detail")
     public SuccessResponse<GetAttendanceDetailResponse> getAttendanceDetailResponse(@RequestParam(required = true, name = "attendance-id") Long attendanceId,
                                                                                     @RequestParam(required = true, name="funding-id") Long fundingId) {
