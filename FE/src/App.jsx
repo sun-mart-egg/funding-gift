@@ -41,10 +41,7 @@ function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/my-funding" element={<MyFunding />} />
-          <Route
-            path="/friend-funding/:consumerId"
-            element={<FriendFunding />}
-          />
+
           <Route path="/product" element={<Product />} />
           <Route path="/funding" element={<FundingMain />} />
         </Route>
@@ -59,6 +56,11 @@ function App() {
             path="/my-funding-detail/:fundingId"
             element={<MyFundingDetail />}
           />
+          <Route
+            path="/friend-funding/:consumerId"
+            element={<FriendFunding />}
+          />
+
           <Route
             path="/friend-funding-detail/:fundingId"
             element={<FriendFundingDetail />}

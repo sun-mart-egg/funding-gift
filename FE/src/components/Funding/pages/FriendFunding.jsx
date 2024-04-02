@@ -100,12 +100,6 @@ function FriendFunding() {
           <CardList data={friendFunding} basePath="/friend-funding-detail" />
         )}
       </div>
-      <button
-        onClick={handleCreateFundingClick}
-        className="hover:bg-cusColor3-dark fixed bottom-24 right-4 flex h-12 w-12 flex-col items-center justify-center rounded-full bg-cusColor3 text-white shadow-lg"
-      >
-        <AiOutlinePlus size="20" />
-      </button>
     </div>
   );
 }
