@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 @Getter
-@Schema(name = "PostAttendanceRequest", description = "펀딩 참여자 감사 메시지 정보")
+@Schema(name = "UpdateAttendanceRequest", description = "펀딩 참여자 감사 메시지 정보")
 public class UpdateAttendanceRequest {
 
     @NotNull(message = "fundingId: 값이 null 이 아니어야 합니다.")
