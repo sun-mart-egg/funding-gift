@@ -97,9 +97,33 @@ async function createFunding(formData, token) {
   return await response.json();
 }
 
+//펀딩 피드 api
+async function getFundingFeed(token, setData) {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/fundings/feed`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          page: 0,
+          size: 8,
+          sort: "", // sort가 필요하다면 'columnName,asc' 또는 'columnName,desc' 형식의 값을 설정하세요.
+        },
+      },
+    );
+    console.log("펀딩 피드 가져오기 : ", response.data.data.data);
+    setData(response.data.data.data);
+  } catch (error) {
+    console.error("펀딩 피드를 불러올 수 없습니다.", error);
+  }
+}
+
 export {
   createFunding,
   fetchFriendFunding,
   fetchMyFundings,
   fetchDetailFunding,
+  getFundingFeed,
 };

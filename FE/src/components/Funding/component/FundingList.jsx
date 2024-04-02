@@ -1,32 +1,32 @@
 import React, { useState, useEffect } from "react";
 import FundingCard from "./FundingCard";
 
-function FundingList({ listData, friendsData }) {
-  const [data, setData] = useState();
-
-  useEffect(() => {
-    setData(listData);
-  }, [listData]);
-
+function FundingList({ listData }) {
+  const [data, setData] = useState([]);
   return (
-    // <div
-    //   id="fundingList"
-    //   className="w-full flex-col items-center justify-center overflow-auto"
-    // >
-    //   {data.map((item, index) => (
-    //     <div key={index} className="flex w-full justify-center">
-    //       <FundingCard
-    //         people={item.people}
-    //         title={item.title}
-    //         progress={item.progress}
-    //         name={item.name}
-    //         date={item.date}
-    //         img={item.img}
-    //       />
-    //     </div>
-    //   ))}
-    // </div>
-    <></>
+    <div
+      id="fundingList"
+      className="w-full flex-col items-center justify-center overflow-auto"
+    >
+      {Array.isArray(listData) &&
+        listData.map((item, index) => (
+          <div key={index} className="flex w-full justify-center">
+            <FundingCard
+              fundingId={item.fundingId}
+              profileImg={item.profileImageUrl}
+              people={item.consumerName}
+              title={item.title}
+              progress={0}
+              name={item.productName}
+              date={item.anniversaryDate}
+              img={item.productImage}
+              startDate={item.startDate}
+              endDate={item.endDate}
+              anniversaryCategoryName={item.anniversaryCategoryName}
+            />
+          </div>
+        ))}
+    </div>
   );
 }
 
