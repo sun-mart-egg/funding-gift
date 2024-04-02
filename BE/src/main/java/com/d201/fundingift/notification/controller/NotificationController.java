@@ -13,15 +13,15 @@ import static com.d201.fundingift._common.response.SuccessType.SAVE_FCM_TOKEN_SU
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/notification")
+@RequestMapping("/api/notifications")
 public class NotificationController {
 
     private final NotificationService notificationService;
 
     @PostMapping
     public SuccessResponse<Void> saveFcmToken(@RequestBody PostFcmTokenRequest request) {
-        notificationService.saveFcmToken(request);
-        return ResponseUtils.ok(SAVE_FCM_TOKEN_SUCCESS);
+        log.info("[NotificationController.saveFcmToken]");
+        return ResponseUtils.ok(notificationService.saveFcmToken(request));
     }
 
 }
