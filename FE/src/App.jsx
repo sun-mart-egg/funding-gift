@@ -8,7 +8,7 @@ import LoginCallback from "./components/Login/LoginCallback.jsx";
 import Signup from "./components/Login/Signup.jsx";
 import SignupFinish from "./components/Login/SignupFinish.jsx";
 import InputProfile from "./components/Login/InputProfile.jsx";
-
+import ParticipatePage from "./components/Funding/pages/ParticipatePage.jsx";
 import Calendar from "./components/Friends/Calendar.jsx";
 import Friends from "./components/Friends/Friends.jsx";
 import FriendFunding from "./components/Funding/pages/FriendFunding.jsx";
@@ -22,7 +22,7 @@ import Wishlist from "./components/Products/Wishlist";
 import AddressListPage from "./components/Funding/pages/AddressListPage.jsx";
 import AnniversaryListPage from "./components/Funding/pages/AnniversaryListPage.jsx";
 import FriendFundingDetail from "./components/Funding/pages/FriendFundingDetail.jsx";
-import ParticipatePage from "./components/Funding/pages/ParticipatePage.jsx";
+import ParticipateFundingFinish from "./components/Funding/pages/ParticipateFundingFinish.jsx";
 import Paypage from "./components/Funding/pages/Paypage.jsx";
 import MakeFundingDetail from "./components/Funding/pages/MakeFundingDetail.jsx";
 import MakeFundingFinish from "./components/Funding/pages/MakeFundingFinish.jsx";
@@ -70,6 +70,10 @@ function App() {
           <Route path="/alarm" element={<Alarm />} />
           <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
+          <Route
+            path="/participate-funding-finish"
+            element={<ParticipateFundingFinish />}
+          />
           <Route path="/product/:productId" element={<ProductDetail />} />
           <Route path="/anniversary-list" element={<AnniversaryListPage />} />
           <Route path="/address-list" element={<AddressListPage />} />
@@ -78,7 +82,7 @@ function App() {
           <Route path="/new-address" element={<NewAddressPage />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/friends" element={<Friends />} />
-          <Route path="/participate" element={<ParticipatePage />} />
+          <Route path="/participate/:fundingId" element={<ParticipatePage />} />
           <Route path="/pay" element={<Paypage />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/brand/:brandId" element={<BrandStore />} />

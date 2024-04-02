@@ -1,35 +1,83 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom"; // useLocation을 import합니다.
-import egg from "/imgs/egg3.jpg";
-
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import useAttendanceStore from "../../Store/AttendanceStore";
+import { createAttendance } from "../api/AttendanceAPI";
+import { fetchDetailFunding } from "../api/FundingAPI";
 function Paypage() {
-  const location = useLocation(); // 현재 location 객체를 가져옵니다.
-  const { amount } = location.state; // location.state에서 amount 값을 추출합니다.
+  const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
+  const [fundingDetail, setFundingDetail] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const { sendMessage, sendMessageTitle, price, fundingId } =
+    useAttendanceStore();
 
   // 결제 수단을 선택하는 함수입니다.
   const selectPaymentMethod = (method) => {
     setSelectedPaymentMethod(method);
   };
 
+  useEffect(() => {
+    console.log("펀딩 id " + fundingId);
+    const token = localStorage.getItem("access-token");
+    if (token && fundingId) {
+      console.log(`Fetching funding details for ID: ${fundingId}`);
+      fetchDetailFunding(token, fundingId, setFundingDetail)
+        .then(() => {
+          console.log("Funding details fetched successfully.");
+        })
+        .catch((error) => {
+          console.error("Error fetching funding details:", error);
+        });
+    }
+  }, [fundingId]);
+
+  if (!fundingDetail) {
+    return <div>Loading...</div>; // 데이터가 로드되기 전에 로딩 표시
+  }
+
+  const handlePayment = async () => {
+    try {
+      await createAttendance(
+        localStorage.getItem("access-token"),
+        fundingId,
+        sendMessage,
+        sendMessageTitle,
+        price,
+      );
+      navigate("/participate-funding-finish"); // 결제가 성공적으로 이루어진 후 페이지 이동
+    } catch (error) {
+      console.error("결제 중 오류가 발생했습니다: ", error);
+      // 오류 처리 로직을 여기에 추가할 수 있습니다.
+    }
+  };
   return (
     <div className="sub-layer flex justify-around pt-20 font-cusFont3">
       <div className="flex  w-[80%] flex-col justify-start">
-        <p className=" pb-2 font-cusFont2 text-[20px]">펀딩 정보</p>
+        <p className=" pb-2 font-cusFont2 text-[20px]">펀딩 참여 정보</p>
         <div
           id="fundingInfo"
-          className="flex h-[150px] items-center justify-center rounded-md border border-gray-400 pt-1"
+          className="flex h-[180px] items-center justify-center rounded-md border border-gray-400 pt-1"
         >
-          <div id="left" className="w-[40%]">
-            <img src={egg} alt="" />
+          <div
+            id="left"
+            className="flex w-[50%] items-center justify-center p-3"
+          >
+            <img
+              src={fundingDetail.productImage}
+              alt=""
+              className="rounded-md"
+            />
           </div>
           <div
             id="right"
-            className="flex flex-col items-start justify-start p-2  text-xs"
+            className="m-2 flex w-[50%] flex-col items-start justify-start text-xs"
           >
-            <p>펀딩명 : MUSIC IS MY LIFE</p>
-            <p>상품명 : 에어팟 맥스</p>
-            <p>수령자 : 신시은</p>
+            <p className="pb-1">펀딩명 : {fundingDetail.title}</p>
+            <p className="pb-1">상품명 : {fundingDetail.productName}</p>
+            <p className="pb-4">수령자 : {fundingDetail.consumerName}</p>
+
+            <p className="pb-1">{sendMessageTitle}</p>
+
+            <p className="pb-1">{sendMessage}</p>
           </div>
         </div>
       </div>
@@ -60,16 +108,15 @@ function Paypage() {
       <div className="w-[80%] pb-10">
         <p className="pt-4 font-cusFont2 text-[20px]">총 결제 예정 금액</p>
         <p className="font-cusFont2 text-[35px] text-cusColor3">
-          {Number(amount).toLocaleString()} 원
+          {Number(price).toLocaleString()} 원
         </p>
       </div>
-      <button className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white">
+      <button
+        onClick={handlePayment}
+        className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
+      >
         결제하기
       </button>
-
-      {/* {selectedPaymentMethod && (
-        <p>선택된 결제 수단: {selectedPaymentMethod}</p>
-      )} */}
     </div>
   );
 }

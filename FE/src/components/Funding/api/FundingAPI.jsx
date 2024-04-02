@@ -120,6 +120,7 @@ async function getFundingFeed(token, setData) {
   }
 }
 
+//
 export {
   createFunding,
   fetchFriendFunding,
