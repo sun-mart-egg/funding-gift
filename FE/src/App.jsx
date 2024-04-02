@@ -33,6 +33,7 @@ import StoryPage from "./components/Funding/pages/StoryPage.jsx";
 import MyPage from "./components/Funding/pages/MyPage.jsx";
 import NewAnniversaryPage from "./components/Funding/pages/NewAnniversaryPage.jsx";
 import NewAddressPage from "./components/Funding/pages/NewAddressPage.jsx";
+import Alarm from "./components/Home/Alarm.jsx";
 
 function App() {
   return (
@@ -61,7 +62,7 @@ function App() {
             element={<FriendFundingDetail />}
           />
           <Route path="/my-page" element={<MyPage />} />
-
+          <Route path="/alarm" element={<Alarm />} />
           <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
