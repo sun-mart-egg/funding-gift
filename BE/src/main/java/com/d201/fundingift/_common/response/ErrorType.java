@@ -29,6 +29,7 @@ public enum ErrorType {
     // 사용자
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "등록된 사용자가 없습니다."),
     CONSUMER_NOT_FOUND(HttpStatus.BAD_REQUEST,"소비자를 찾을 수 없습니다."),
+    CANNOT_DELETE_CONSUMER_WITH_IN_PROGRESS_FUNDING(HttpStatus.BAD_REQUEST,"현재 참여 중이거나 진행 중인 펀딩이 있어 탈퇴할 수 없습니다."),
 
     //친구
     FRIEND_NOT_FOUND(HttpStatus.BAD_REQUEST, "내 친구가 아닙니다."),
