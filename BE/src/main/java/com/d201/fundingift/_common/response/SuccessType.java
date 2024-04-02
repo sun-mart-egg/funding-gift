@@ -29,6 +29,7 @@ public enum SuccessType {
     GET_ATTENDANCE_DETAIL_SUCCESS("펀딩 참여자 상세 정보 조회에 성공하였습니다."),
     POST_ATTENDANCE_SUCCESS("펀딩 참여에 성공하였습니다."),
     UPDATE_ATTENDANCE_RECEIVE_MESSAGE_SUCCESS("펀딩 참여자에게 감사 메시지 작성을 성공하였습니다."),
+    GET_ANNIVERSARY_CATEGORIES_SUCCESS("카테고리 리스트 조회에 성공하였습니다."),
 
     // 상품
     GET_PRODUCT_CATEGORIES_SUCCESS("상품 카테고리 목록 조회에 성공하였습니다."),
