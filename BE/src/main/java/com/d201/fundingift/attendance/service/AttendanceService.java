@@ -81,7 +81,7 @@ public class AttendanceService {
             return getMyAttendanceResponseSliceList(findAllByFundingId(funding.getId(), pageable));
         }
 
-        throw new CustomException(ErrorType.FUNDING_ATTENDANCE_UNAUTHORIZED);
+        throw new CustomException(ErrorType.USER_UNAUTHORIZED);
     }
 
     //참여자 상세 정보 조회 - 펀딩 참여자나 펀딩 생성자만 상세 조회 가능
@@ -125,7 +125,7 @@ public class AttendanceService {
                 , myConsumerId, funding.getConsumer().getId(), attendance.getConsumer().getId());
         if(!Objects.equals(funding.getConsumer().getId(), myConsumerId)
                 && !Objects.equals(attendance.getConsumer().getId(), myConsumerId))
-            throw new CustomException(ErrorType.ATTENDANCE_UNAUTHORIZED);
+            throw new CustomException(ErrorType.USER_UNAUTHORIZED);
     }
 
     private Consumer getConsumer() {
@@ -200,6 +200,6 @@ public class AttendanceService {
 
     private static void checkingAuthorizeWritingReceiveMessage(Funding funding, Long myConsumerId) {
         if(!Objects.equals(funding.getConsumer().getId(), myConsumerId))
-            throw new CustomException(ErrorType.ATTENDANCE_WRITE_RECEIVE_MESSAGE_UNAUTHORIZED);
+            throw new CustomException(ErrorType.USER_UNAUTHORIZED);
     }
 }
