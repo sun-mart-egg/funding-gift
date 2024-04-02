@@ -215,19 +215,23 @@ public class FriendService {
 
     @Transactional
     public void deleteAllFriendsByConsumerId(Long consumerId) {
-        List<Friend> friendsByConsumer = friendRepository.findByConsumerId(consumerId);
-        for (Friend friend : friendsByConsumer) {
-            friendRepository.delete(friend);
-        }
-        log.info("consumerId({})가 생성한 모든 친구 관계를 삭제했습니다.", consumerId);
+        try {
+            List<Friend> friendsByConsumer = friendRepository.findByConsumerId(consumerId);
+            for (Friend friend : friendsByConsumer) {
+                friendRepository.delete(friend);
+            }
+            log.info("consumerId({})가 생성한 모든 친구 관계를 삭제했습니다.", consumerId);
 
-        List<Friend> friendsByToConsumer = friendRepository.findByToConsumerId(consumerId);
-        for (Friend friend : friendsByToConsumer) {
-            friendRepository.delete(friend);
-        }
-        log.info("다른 사용자가 consumerId({})를 추가한 모든 친구 관계를 삭제했습니다.", consumerId);
+            List<Friend> friendsByToConsumer = friendRepository.findByToConsumerId(consumerId);
+            for (Friend friend : friendsByToConsumer) {
+                friendRepository.delete(friend);
+            }
+            log.info("다른 사용자가 consumerId({})를 추가한 모든 친구 관계를 삭제했습니다.", consumerId);
 
-        log.info("consumerId({})와 관련된 모든 친구 정보가 성공적으로 삭제되었습니다.", consumerId);
+            log.info("consumerId({})와 관련된 모든 친구 정보가 성공적으로 삭제되었습니다.", consumerId);
+        } catch (Exception e) {
+            throw new CustomException(FRIEND_RELATIONSHIP_DELETE_FAILED);
+        }
     }
 
     private List<Funding> getAllByConsumerIdAndFundingStatusAndIsPrivateAndDeletedAtIsNullOrderByStartDateAsc(Friend f, boolean isPrivate) {
