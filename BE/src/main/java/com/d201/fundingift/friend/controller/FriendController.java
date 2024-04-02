@@ -56,6 +56,21 @@ public class FriendController {
         List<FriendDto> friendDtos = friendService.getFriends();
         return ResponseUtils.ok(friendDtos, SuccessType.GET_FRIEND_INFO_SUCCESS);
     }
+    @Operation(summary = "내 친구 모두 삭제",
+            description = """
+    나와 연결된 모든 친구를 친구목록에서 삭제합니다. `Token`"
+    상대방의 친구목록에서도 삭제됩니다.
+    """
+    )
+    @DeleteMapping("/{consumer-id}")
+    public ResponseEntity<?> deleteAllFriendsByConsumerId(@PathVariable("consumer-id") Long consumerId) {
+        try {
+            friendService.deleteAllFriendsByConsumerId(consumerId);
+            return ResponseEntity.ok().body("ConsumerId " + consumerId + "의 모든 친구 관계가 삭제되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("ConsumerId " + consumerId + "의 친구 관계 삭제 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
 
     @Operation(summary = "친한친구 설정 변경",
             description = "해당 친구와의 친한친구 관계를 토글합니다. `Token`"

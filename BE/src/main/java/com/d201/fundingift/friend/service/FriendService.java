@@ -215,12 +215,16 @@ public class FriendService {
 
     @Transactional
     public void deleteAllFriendsByConsumerId(Long consumerId) {
-        // consumerId를 기준으로 생성한 모든 친구 관계 삭제
-        friendRepository.deleteByConsumerId(consumerId);
+        List<Friend> friendsByConsumer = friendRepository.findByConsumerId(consumerId);
+        for (Friend friend : friendsByConsumer) {
+            friendRepository.delete(friend);
+        }
         log.info("consumerId({})가 생성한 모든 친구 관계를 삭제했습니다.", consumerId);
 
-        // 다른 사용자가 consumerId를 친구로 추가한 모든 친구 관계 삭제
-        friendRepository.deleteByToConsumerId(consumerId);
+        List<Friend> friendsByToConsumer = friendRepository.findByToConsumerId(consumerId);
+        for (Friend friend : friendsByToConsumer) {
+            friendRepository.delete(friend);
+        }
         log.info("다른 사용자가 consumerId({})를 추가한 모든 친구 관계를 삭제했습니다.", consumerId);
 
         log.info("consumerId({})와 관련된 모든 친구 정보가 성공적으로 삭제되었습니다.", consumerId);
