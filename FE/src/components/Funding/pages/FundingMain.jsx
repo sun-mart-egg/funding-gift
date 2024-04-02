@@ -3,10 +3,12 @@ import StoryList from "../component/StoryList";
 import FundingList from "../component/FundingList";
 import ScrollToTopButton from "../../UI/ScrollToTop";
 import { getStoryList } from "../api/StoryAPI";
-
+import { getFundingFeed } from "../api/FundingAPI";
 function FundingMain() {
   const [storyList, setStoryList] = useState([]); // 친구목록 받아올 배열
   const [data, setData] = useState([]);
+  const [feedData, setFeedData] = useState([]);
+
   //친구가 만든 펀딩 받아올 배열
   const [isLoading, setIsLoading] = useState(true);
   let myData = {
@@ -32,6 +34,7 @@ function FundingMain() {
     };
 
     fetchStoryList();
+    getFundingFeed(token, setFeedData);
   }, []);
 
   return (
@@ -51,7 +54,7 @@ function FundingMain() {
       </div>
 
       <div className="main absolute top-44 w-full  pb-24">
-        <FundingList listData={data} friendsData={storyList} />
+        <FundingList listData={feedData} friendsData={storyList} />
       </div>
       <ScrollToTopButton className="bottom-[25px]" />
     </div>
