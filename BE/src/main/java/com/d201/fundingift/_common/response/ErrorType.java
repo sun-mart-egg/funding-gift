@@ -80,6 +80,7 @@ public enum ErrorType {
     // FCM
     FCM_TOKEN_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "이미 존재하는 fcm token 입니다."),
     FCM_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 fcm token 을 찾을 수 없습니다."),
+    FCM_NOTIFICATION_SEND_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "fcm 알람을 발송하는데 실패하였습니다."),
     ;
 
     private HttpStatus httpStatus;

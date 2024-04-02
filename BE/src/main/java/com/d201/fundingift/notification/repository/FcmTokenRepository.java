@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface FcmTokenRepository extends CrudRepository<FcmToken, String> {
 
     Optional<FcmToken> findByConsumerIdAndFcmTokenValue(Long consumerId, String fcmTokenValue);
+    Optional<FcmToken> findByConsumerId(Long consumerId);
 
 }
