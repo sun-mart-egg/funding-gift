@@ -94,7 +94,7 @@ function MyPage() {
 
   // 회원탈퇴 관련 ( 카카오과의 연결을 끊음 )
   const BYE_BYE_URL =
-    "https://j10d201.p.ssafy.io/oauth2/authorization/kakao?redirect_uri=http://j10d201.p.ssafy.io&mode=unlink";
+    "https://j10d201.p.ssafy.io/oauth2/authorization/kakao?redirect_uri=https://j10d201.p.ssafy.io&mode=unlink";
 
   const signOut = () => {
     localStorage.clear();

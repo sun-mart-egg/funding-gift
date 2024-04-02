@@ -7,6 +7,7 @@ import useFormDataStore from "../../Store/FormDataStore";
 import { createFunding } from "../api/FundingAPI";
 import { useLocation } from "react-router-dom";
 import useProductStore from "../../Store/ProductStore";
+import useUserStore from "../../Store/UserStore";
 
 function MakeFundingDetail() {
   const [accessToken, setAccessToken] = useState("");
@@ -26,6 +27,15 @@ function MakeFundingDetail() {
     selectedAccount,
   } = useStore(); // Zustand에서 상태를 가져옵니다.
 
+  const { name } = useUserStore();
+
+  useEffect(() => {
+    if (name) {
+      console.log("이름 : ", name);
+      updateFormData("name", name);
+    }
+  }, []);
+
   const CustomInput = forwardRef(({ value, onClick }, ref) => (
     <button
       onClick={() => setShowDatePicker(true)}
@@ -35,7 +45,8 @@ function MakeFundingDetail() {
       선택
     </button>
   ));
-  // product 상태가 변경될 때마다 실행되는 useEffect 그냥 데이터 확인용
+
+  // product 상태가 변경될 때마다 실행되는
   useEffect(() => {
     if (product) {
       console.log("product : " + product.imageUrl);
