@@ -55,6 +55,9 @@ public enum SuccessType {
     GET_ALARM_SUCCESS("알람이 성공적으로 조회되었습니다."),
     UPDATE_ALARM_SUCCESS("알람이 성공적으로 수정되었습니다."),
     DELETE_ALARM_SUCCESS("알람이 성공적으로 삭제되었습니다."),
+
+    // FCM
+    SAVE_FCM_TOKEN_SUCCESS("fcm token 이 성공적으로 저장되었습니다."),
     ;
 
     private final String msg;
