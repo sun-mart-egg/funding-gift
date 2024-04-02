@@ -8,7 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
+
+    Optional<Attendance> findByIdAndDeletedAtIsNull(Long id);
 
     @Query("select a from Attendance a " +
             "where a.funding.id = :fundingId and a.deletedAt is null")

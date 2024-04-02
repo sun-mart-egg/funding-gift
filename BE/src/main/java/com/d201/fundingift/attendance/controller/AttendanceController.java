@@ -2,6 +2,7 @@ package com.d201.fundingift.attendance.controller;
 
 import com.d201.fundingift._common.response.*;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
+import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
 import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
 import com.d201.fundingift.attendance.service.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,4 +72,11 @@ public class AttendanceController {
         return ResponseUtils.ok(attendanceService.getAttendancesResponse(fundingId, pageable), SuccessType.GET_ATTENDANCE_SUCCESS);
     }
 
+
+    @GetMapping("/detail")
+    public SuccessResponse<GetAttendanceDetailResponse> getAttendanceDetailResponse(@RequestParam(required = true, name = "attendance-id") Long attendanceId,
+                                                                                    @RequestParam(required = true, name="funding-id") Long fundingId) {
+
+        return ResponseUtils.ok(attendanceService.getAttendanceDetailResponse(attendanceId, fundingId), SuccessType.GET_ATTENDANCE_DETAIL_SUCCESS);
+    }
 }

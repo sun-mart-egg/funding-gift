@@ -51,6 +51,8 @@ public enum ErrorType {
     FUNDING_NOT_VERIFY_MIN_PRICE(HttpStatus.BAD_REQUEST,"펀딩 참여 금액이 최소 금액을 만족하지 않습니다."),
     FUNDING_OVER_TARGET_PRICE(HttpStatus.BAD_REQUEST, "펀딩 목표 금액을 초과했습니다."),
     FUNDING_ATTENDANCE_UNAUTHORIZED(HttpStatus.BAD_REQUEST,"해당 펀딩의 펀딩 참여자 정보를 볼 수 없습니다."),
+    ATTENDANCE_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 펀딩 참여 정보를 찾을 수 없습니다."),
+    ATTENDANCE_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "펀딩 참여 상세 조회 권한이 없습니다."),
 
     // 상품
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 상품을 찾을 수 없습니다."),

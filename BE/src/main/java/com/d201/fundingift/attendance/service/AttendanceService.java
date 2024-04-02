@@ -5,6 +5,7 @@ import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
+import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
 import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
 import com.d201.fundingift.attendance.entity.Attendance;
 import com.d201.fundingift.attendance.repository.AttendanceRepository;
@@ -82,6 +83,33 @@ public class AttendanceService {
         throw new CustomException(ErrorType.FUNDING_ATTENDANCE_UNAUTHORIZED);
     }
 
+    //참여자 상세 정보 조회 - 펀딩 참여자나 펀딩 생성자만 상세 조회 가능
+    public GetAttendanceDetailResponse getAttendanceDetailResponse(Long attendanceId, Long fundingId) {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        //펀딩 존재 여부 확인
+        Funding funding = getFunding(fundingId);
+
+        //펀딩 참여 존재 여부 확인
+        Attendance attendance = getAttendance(attendanceId);
+
+        //펀딩 참여 상세 정보 조회 권한 확인
+        checkingAuthorized(funding, myConsumerId, attendance);
+
+        return GetAttendanceDetailResponse.from(attendance);
+    }
+
+    /**
+     * 내부 메서드
+     */
+    private static void checkingAuthorized(Funding funding, Long myConsumerId, Attendance attendance) {
+        log.info("myConsumerId={}, funding.getConsumer={}, attendance.getConsumer={}"
+                , myConsumerId, funding.getConsumer().getId(), attendance.getConsumer().getId());
+        if(!Objects.equals(funding.getConsumer().getId(), myConsumerId)
+                && !Objects.equals(attendance.getConsumer().getId(), myConsumerId))
+            throw new CustomException(ErrorType.ATTENDANCE_UNAUTHORIZED);
+    }
+
     private Consumer getConsumer() {
         return securityUtil.getConsumer();
     }
@@ -145,5 +173,10 @@ public class AttendanceService {
 
         //보려는 펀딩 목록의 대상에 본인이 친구가 아니거나 친한 친구가 아닌 경우 -> false
         return friend.isPresent() && friend.get().getIsFavorite();
+    }
+
+    private Attendance getAttendance(Long attendanceId) {
+        return attendanceRepository.findByIdAndDeletedAtIsNull(attendanceId)
+                .orElseThrow(() -> new CustomException(ErrorType.ATTENDANCE_NOT_FOUND));
     }
 }
