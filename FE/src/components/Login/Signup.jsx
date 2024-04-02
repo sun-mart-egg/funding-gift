@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import useUserStore from "../Store/UserStore.jsx";
+import axios from "axios";
 
 function Signup() {
   // 주소 데이터를 관리할 store
@@ -35,8 +36,30 @@ function Signup() {
     console.log("상세주소 : ", detailAddr)
   }, [zipCode, defaultAddr, detailAddr])
 
+  const sendMyAddrData = () => {
+    axios.post(import.meta.env.VITE_BASE_URL + "/api/addresses", {
+      "name": "기본 주소",
+      "defaultAddr": defaultAddr,
+      "detailAddr": detailAddr,
+      "zipCode": zipCode,
+      "isDefault": true
+    }, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) => {
+      console.log(res)
+      console.log("주소 저장 성공")
+    })
+    .catch((err) => {
+      console.error(err)
+      console.log("주소 저장 실패")
+    })
+  }
+
   return (
-    <div className="sub-layer gap-4">
+    <div className="gap-4 sub-layer">
       <img src={SignupLogo} alt="회원가입로고" className="m-3" />
       <p className="signup-font">물건을 받을 주소를 입력해주세용</p>
 
@@ -48,6 +71,7 @@ function Signup() {
           placeholder="우편번호"
           className="p-3 bg-white border-[2.5px] common-btn signup-font w-[100px] h-[50px]"
           value={zipCode}
+          readOnly
         />
         <button className="h-[30px] w-[100px] rounded bg-gray-400 text-[15px] text-white"
         onClick={() => setIsOpen(true)}>
@@ -63,14 +87,15 @@ function Signup() {
           placeholder="주소"
           className="w-full signup-font"
           value={defaultAddr}
+          readOnly
         />
       </div>
 
       <div className=" flex h-[50px] w-[330px] flex-row justify-between rounded-[5px] border-[2.5px] p-3">
-        <input type="text" placeholder="상세주소" className="signup-font w-full" value={detailAddr} onChange={handleDetailAddress}/>
+        <input type="text" placeholder="상세주소" className="w-full signup-font" value={detailAddr} onChange={handleDetailAddress}/>
       </div>
 
-      <Link to={"/signupFin"} className="common-btn max-w-[284px] max-h-[50px] w-full h-full">
+      <Link to={"/signupFin"} className="common-btn max-w-[284px] max-h-[50px] w-full h-full" onClick={sendMyAddrData}>
         <button>다음</button>
       </Link>
 

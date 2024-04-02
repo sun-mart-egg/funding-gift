@@ -1,17 +1,73 @@
-import React from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import SearchBar from "../UI/SearchBar";
 import { useNavigate } from "react-router-dom";
 
 import CatIcon from "/imgs/cat.PNG";
 import FishIcon from "/imgs/fish.PNG";
+import BannerImage1 from "/imgs/banner_image1.png"
+import BannerImage2 from "/imgs/banner_image2.png"
+import BannerImage3 from "/imgs/banner_image3.png"
 
-import ImageComingSoon from "/imgs/image_coming_soon.png"
-import ImageComingSoon2 from "/imgs/image_coming_soon2.png"
-
+import HomeProduct from "./HomeProduct"
 import ScrollToTop from "../UI/ScrollToTop";
 
+
 function Home() {
+
+  const observer = useRef();
   const navigate = useNavigate();
+
+  const [currentBanner, setCurrentBanner] = useState(0);
+  const bannerImages = [BannerImage1, BannerImage2, BannerImage3];
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  const lastProductElementRef = useCallback(node => {
+    if (loading) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setCurrentPage(prevPage => prevPage + 1);
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, hasMore]);
+
+  const loadProducts = async (page) => {
+    setLoading(true);
+    try {
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `/api/products/rank?page=${page}&size=10`);
+      const json = await response.json();
+      if (json.code === 200 && json.data) {
+        // 중복된 데이터 필터링하여 새 데이터 추가
+        setProducts(prevProducts => {
+          const newData = json.data.data.filter(newItem => !prevProducts.some(prevItem => prevItem.productId === newItem.productId));
+          return [...prevProducts, ...newData];
+        });
+        setHasMore(json.data.hasNext === true);
+      } else {
+        console.error('Error fetching products:', json.msg);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    loadProducts(currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentBanner((prevIndex) => (prevIndex + 1) % bannerImages.length);
+    }, 5000); // Change image every 5000 milliseconds
+
+    return () => clearInterval(interval); // Clean up interval on component unmount
+  }, []); // Empty dependency array means this runs once on mount
 
   return (
     <div className="main-layer font-cusFont2">
@@ -19,12 +75,16 @@ function Home() {
         <SearchBar />
       </div>
 
-      {/* <div className="mt-[20px] h-[150px] w-[95%] rounded-md p-5">
-        배너 들어갈 자리에요
-        <img src={ImageComingSoon} alt="" className="w-full h-[100%] object-cover"/>
-      </div> */}
-      <p className="font-cusFont4 mt-[20px]">이미지가 준비 중이에요</p>
-      <img src={ImageComingSoon2} alt="" className="h-[150px] w-[95%] rounded-md object-cover"/>
+      <div className="mt-5 h-[150px] w-[95%] rounded-md relative overflow-hidden">
+        {bannerImages.map((image, index) => (
+          <img
+            key={index}
+            src={image}
+            alt={`Banner ${index + 1}`}
+            className={`absolute top-0 left-0 h-full w-full rounded-lg object-cover transition-opacity duration-1000 ${index === currentBanner ? 'opacity-100' : 'opacity-0'}`}
+          />
+        ))}
+      </div>
 
       <div className="flex w-[95%]">
         <div
@@ -42,22 +102,12 @@ function Home() {
         </div>
       </div>
 
-      <div className="mt-[20px] w-[95%] text-left">
-        <p className="font-cusFont5 text-2xl">추천 상품</p>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
-          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
-        </div>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
-          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
-        </div>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
-          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
-        </div>
-        <div className="mt-[10px] h-[200px] w-full rounded-md bg-red-50 p-5">
-          <p className="font-cusFont4">추천 상품이 들어갈 예정입니다!</p>
+      <div className="mt-[10px] w-[95%] ml-[5%] text-left">
+        <p className="font-cusFont5 text-[30px] mt-[10px]">추천 상품</p>
+        <div>
+          <HomeProduct />
         </div>
       </div>
-
       <ScrollToTop className="bottom-[25px]" />
     </div>
   );

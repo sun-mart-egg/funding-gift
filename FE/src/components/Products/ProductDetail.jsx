@@ -11,6 +11,7 @@ import NoReview from "/imgs/no_review.png";
 import useProductStore from "../Store/ProductStore";
 import { useStore } from "../Store/MakeStore";
 import useFormDataStore from "../Store/FormDataStore";
+import Wishlist from "./Wishlist";
 
 function ProductDetail() {
   const { productId } = useParams();
@@ -179,7 +180,8 @@ function ProductDetail() {
     // 상품 정보를 가져온 후 위시리스트 상태를 설정합니다.
     const fetchProduct = async () => {
       // ... 기존 fetchProduct 로직 ...
-      setIsWishlisted(product.isWishlist);
+      if (product) {
+      setIsWishlisted(product.isWishlist)};
     };
     fetchProduct();
   }, [productId]);
