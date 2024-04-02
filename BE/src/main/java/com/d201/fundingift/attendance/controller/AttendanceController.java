@@ -49,10 +49,10 @@ public class AttendanceController {
         return ResponseUtils.ok(POST_ATTENDANCE_SUCCESS);
     }
 
-    @Operation(summary = "내 펀딩의 참여자 상세 정보 리스트",
+    @Operation(summary = "내 펀딩의 참여자 리스트",
             description = """
                            `token` \n
-                           내 펀딩의 참여자 상세 정보 리스트를 보여줍니다.\n
+                           내 펀딩의 참여자 리스트를 보여줍니다.\n
                            """)
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -68,7 +68,7 @@ public class AttendanceController {
     public SuccessResponse<SliceList<GetAttendancesResponse>> getAttendancesResponse(@RequestParam(required = true, name = "funding-id") Long fundingId,
                                                                                      @PageableDefault(size=4, sort="createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        return ResponseUtils.ok(attendanceService.getAttendancesResponse(fundingId, pageable), SuccessType.GET_ATTENDANCE_DETAIL_SUCCESS);
+        return ResponseUtils.ok(attendanceService.getAttendancesResponse(fundingId, pageable), SuccessType.GET_ATTENDANCE_SUCCESS);
     }
 
 }

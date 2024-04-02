@@ -25,7 +25,7 @@ public enum SuccessType {
     GET_FUNDING_CALENDARS_SUCCESS("펀딩 캘린더 목록 조회에 성공하였습니다."),
     GET_FUNDINGS_FEED_SUCCESS("펀딩 목록 피드 조회에 성공하였습니다."),
     GET_FUNDING_DETAIL_SUCCESS("펀딩 상세 조회에 성공하였습니다."),
-    GET_ATTENDANCE_DETAIL_SUCCESS("펀딩 참여 상세 리스트 조회에 성공하였습니다."),
+    GET_ATTENDANCE_SUCCESS("펀딩 참여자 리스트 조회에 성공하였습니다."),
     POST_ATTENDANCE_SUCCESS("펀딩 참여에 성공하였습니다."),
 
     // 상품

@@ -72,11 +72,11 @@ public class AttendanceService {
 
         //내 펀딩, (나의 친구 펀딩 + isPrivate false), (펀딩 생성자의 친한친구가 나 + isPrivate true)일 경우 상세 보기 가능
         if(checkingMyFunding(myConsumerId, funding.getConsumer().getId())) {
-            return getMyAttendanceDetailsResponseSliceList(findAllByFundingId(funding.getId(), pageable));
+            return getMyAttendanceResponseSliceList(findAllByFundingId(funding.getId(), pageable));
         } else if(!funding.getIsPrivate() && checkingMyFriend(myConsumerId, funding.getConsumer().getId())) {
-            return getMyAttendanceDetailsResponseSliceList(findAllByFundingId(funding.getId(), pageable));
+            return getMyAttendanceResponseSliceList(findAllByFundingId(funding.getId(), pageable));
         } else if(funding.getIsPrivate() && checkingIsFavoriteFriend(funding.getConsumer().getId(), myConsumerId)) {
-            return getMyAttendanceDetailsResponseSliceList(findAllByFundingId(funding.getId(), pageable));
+            return getMyAttendanceResponseSliceList(findAllByFundingId(funding.getId(), pageable));
         }
 
         throw new CustomException(ErrorType.FUNDING_ATTENDANCE_UNAUTHORIZED);
@@ -91,7 +91,7 @@ public class AttendanceService {
                 .orElseThrow(() -> new CustomException(ErrorType.FUNDING_NOT_FOUND));
     }
 
-    private SliceList<GetAttendancesResponse> getMyAttendanceDetailsResponseSliceList(Slice<Attendance> attendances) {
+    private SliceList<GetAttendancesResponse> getMyAttendanceResponseSliceList(Slice<Attendance> attendances) {
         return SliceList.from(attendances.stream().map(GetAttendancesResponse::from).collect(Collectors.toList()), attendances.getPageable(), attendances.hasNext());
     }
 
