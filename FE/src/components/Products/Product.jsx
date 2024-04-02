@@ -177,6 +177,20 @@ function Product() {
 		handleToggle(toggleType);
 	};
 
+	useEffect(() => {
+  // 페이지 언마운트 시 상태 저장
+  return () => {
+    sessionStorage.setItem("productState", JSON.stringify({
+      keyword,
+      currentPage,
+      products,
+      categoryId,
+      sort,
+      scrollPosition: window.scrollY // 현재 스크롤 위치 저장
+    }));
+  };
+}, [keyword, currentPage, products, categoryId, sort]);
+
 	return (
 		<>
 			<div className="main-layer font-cusFont2">

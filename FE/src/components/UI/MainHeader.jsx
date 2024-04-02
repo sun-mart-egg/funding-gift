@@ -19,7 +19,9 @@ function Header() {
           </Link>
         </button>
         <button>
-          <img src="/imgs/bell.png" alt="alert-button" />
+          <Link to={"/alarm"}>
+            <img src="/imgs/bell.png" alt="alert-button" />
+          </Link>
         </button>
       </header>
     </header>
