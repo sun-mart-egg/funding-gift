@@ -28,10 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -117,6 +114,15 @@ public class FundingService {
         }
     }
 
+    public SliceList<GetFundingResponse> getFundingFeeds(Pageable pageable) {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        //친구 리스트 조회
+        List<Friend> friends = friendRepository.findByConsumerId(myConsumerId);
+
+        return getFundingsFeedSliceList(findAllByConsumerIdsAndFundingStatus(friends, pageable), friends);
+    }
+
     public List<GetFundingResponse> getFundingsStory(Long consumerId) {
         Long myConsumerId = securityUtil.getConsumerId();
 
@@ -172,10 +178,10 @@ public class FundingService {
                 //친한 친구로 설정한 경우 isPrivate 상관 없이 모두 조회
                 fundingList.addAll(
                         fundingRepository
-                        .findAllByConsumerIdAndDeletedAtIsNull(f.getToConsumerId(), year, month)
-                        .stream()
-                        .map(GetFundingCalendarResponse::from)
-                        .toList()
+                                .findAllByConsumerIdAndDeletedAtIsNull(f.getToConsumerId(), year, month)
+                                .stream()
+                                .map(GetFundingCalendarResponse::from)
+                                .toList()
                 );
                 continue;
             }
@@ -226,6 +232,29 @@ public class FundingService {
         return SliceList.from(fundings.stream().map(GetFundingResponse::from).collect(Collectors.toList()), fundings.getPageable(), fundings.hasNext());
     }
 
+    //slice<Funding> -> SliceList<GetFundingResponse> 변경 매서드
+    private SliceList<GetFundingResponse> getFundingsFeedSliceList(Slice<Funding> fundings, List<Friend> friends) {
+        Map<Long, Friend> toFriends = new HashMap<>();
+
+        for(Friend f : friends) {
+            Optional<Friend> toFriend =friendRepository.findById(f.getToConsumerId() + ":" + f.getConsumerId());
+            toFriend.ifPresent(friend -> toFriends.put(f.getToConsumerId(), friend));
+        }
+
+        List<Funding> changed = new ArrayList<>();
+        for(Funding f : fundings) {
+            if(!f.getIsPrivate()) {
+                changed.add(f);
+                continue;
+            }
+
+            if(toFriends.get(f.getConsumer().getId()).getIsFavorite())
+                changed.add(f);
+        }
+
+        return SliceList.from(changed.stream().map(GetFundingResponse::from).collect(Collectors.toList()), fundings.getPageable(), fundings.hasNext());
+    }
+
     //consumerId로 펀딩 목록 찾기
     private Slice<Funding> findAllByConsumerId(Long consumerId, Pageable pageable) {
         return fundingRepository.findAllByConsumerIdAndDeletedAtIsNull(consumerId, pageable);
@@ -244,6 +273,13 @@ public class FundingService {
     //consumerId, isPrivate == false, 검색어로 펀딩 목록 찾기
     private Slice<Funding> findAllByConsumerIdAndIsPrivateAndProductName(Long consumerId, String keyword, Pageable pageable) {
         return fundingRepository.findAllByConsumerIdAndIsPrivateAndProductNameAndDeletedAtIsNull(consumerId, keyword, pageable);
+    }
+
+    private Slice<Funding> findAllByConsumerIdsAndFundingStatus(List<Friend> friends, Pageable pageable) {
+        List<Long> friendIds = friends.stream()
+                .map(Friend::getToConsumerId).toList();
+
+        return fundingRepository.findAllByConsumerIdsAndFundingStatusAndDeletedAtIsNull(friendIds, pageable);
     }
 
     private void findByConsumerId(Long consumerId){

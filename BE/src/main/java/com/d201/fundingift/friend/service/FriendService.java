@@ -174,12 +174,23 @@ public class FriendService {
         for(Friend f : friends) {
             log.info(String.valueOf(f.getToConsumerId()));
             //친구의 펀딩 목록 중 진행중이고 시작일이 제일 빠른 하나 반환
-            Optional<Funding> funding = getOneByConsumerIdAndFundingStatusAndDeletedAtIsNullOrderByStartDateAsc(f);
+            List<Funding> privateFundings = getAllByConsumerIdAndFundingStatusAndIsPrivateAndDeletedAtIsNullOrderByStartDateAsc(f, true);
+            List<Funding> notPrivateFundings = getAllByConsumerIdAndFundingStatusAndIsPrivateAndDeletedAtIsNullOrderByStartDateAsc(f, false);
 
             Optional<Consumer> consumer = findByConsumerId(f.getToConsumerId());
 
-            if(funding.isPresent() && consumer.isPresent()) {
-                getFriendStoryResponses.add(GetFriendStoryResponse.from(funding.get(), consumer.get()));
+            //내 친구가 소비자가 아닌 경우
+            if(consumer.isEmpty())
+                continue;
+
+            //친한 친구 아닌데 친한친구 공개 펀딩만 있는 경우
+            if(!privateFundings.isEmpty() && notPrivateFundings.isEmpty() && !checkingIsFavoriteFriend(consumer.get().getId(), myConsumerId))
+                continue;
+
+            if(!notPrivateFundings.isEmpty()) {
+                getFriendStoryResponses.add(GetFriendStoryResponse.from(notPrivateFundings.get(0), consumer.get()));
+            } else if(!privateFundings.isEmpty()) {
+                getFriendStoryResponses.add(GetFriendStoryResponse.from(privateFundings.get(0), consumer.get()));
             }
         }
 
@@ -215,11 +226,18 @@ public class FriendService {
         log.info("consumerId({})와 관련된 모든 친구 정보가 성공적으로 삭제되었습니다.", consumerId);
     }
 
-    private Optional<Funding> getOneByConsumerIdAndFundingStatusAndDeletedAtIsNullOrderByStartDateAsc(Friend f) {
-        return fundingRepository.findOneByConsumerIdAndFundingStatusAndDeletedAtIsNullOrderByStartDateAsc(f.getToConsumerId());
+    private List<Funding> getAllByConsumerIdAndFundingStatusAndIsPrivateAndDeletedAtIsNullOrderByStartDateAsc(Friend f, boolean isPrivate) {
+        return fundingRepository.findAllByConsumerIdAndFundingStatusAndIsPrivateAndDeletedAtIsNullOrderByStartDateAsc(f.getToConsumerId(),isPrivate);
     }
 
     private Optional<Consumer> findByConsumerId(Long consumerId){
         return consumerRepository.findByIdAndDeletedAtIsNull(consumerId);
+    }
+
+    private boolean checkingIsFavoriteFriend(Long toConsumerId, Long consumerId) {
+        Optional<Friend> friend = friendRepository.findById(toConsumerId + ":" + consumerId);
+
+        //보려는 펀딩 목록의 대상에 본인이 친구가 아니거나 친한 친구가 아닌 경우 -> false
+        return friend.isPresent() && friend.get().getIsFavorite();
     }
 }
