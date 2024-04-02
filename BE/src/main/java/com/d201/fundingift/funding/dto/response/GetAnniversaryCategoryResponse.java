@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public class GetAnniversaryCategoryResponse {
 
-    @Schema(description = "기념일 고유번호", example = "0")
+    @Schema(description = "기념일 고유번호", example = "1")
     private Integer anniversaryCategoryId;
 
     @Schema(description = "기념일 이름", example = "생일")

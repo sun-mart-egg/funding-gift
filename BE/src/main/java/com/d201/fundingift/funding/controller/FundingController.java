@@ -52,7 +52,7 @@ public class FundingController {
     }
 
     @Operation(summary = "펀딩 삭제",
-            description = "펀딩 생성자가 펀딩을 삭합니다.")
+            description = "펀딩 생성자가 펀딩을 삭제합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "성공",
