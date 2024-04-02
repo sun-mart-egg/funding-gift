@@ -3,6 +3,7 @@ package com.d201.fundingift.attendance.service;
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.response.SliceList;
+import com.d201.fundingift._common.util.FcmNotificationProvider;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
 import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
@@ -14,6 +15,7 @@ import com.d201.fundingift.friend.entity.Friend;
 import com.d201.fundingift.friend.repository.FriendRepository;
 import com.d201.fundingift.funding.entity.Funding;
 import com.d201.fundingift.funding.repository.FundingRepository;
+import com.d201.fundingift.notification.dto.FcmNotificationDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +37,7 @@ public class AttendanceService {
     private final FundingRepository fundingRepository;
     private final FriendRepository friendRepository;
     private final SecurityUtil securityUtil;
+    private final FcmNotificationProvider fcmNotificationProvider;
 
     @Transactional
     public void postAttendance(PostAttendanceRequest postAttendanceRequest) {
@@ -62,6 +65,10 @@ public class AttendanceService {
         checkingFundingTargetPrice(postAttendanceRequest.getPrice(), funding);
 
         attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding));
+
+        // 알림
+        fcmNotificationProvider.send(funding.getConsumer().getId(),
+                FcmNotificationDto.of("펀딩 참여 알림", consumer.getName() + "님이 펀딩에 참여했어요!"));
     }
 
     //펀딩 상세 조회의 펀딩 참여자 정보 리스트

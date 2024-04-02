@@ -1,9 +1,7 @@
 package com.d201.fundingift._common.util;
 
 import com.d201.fundingift._common.exception.CustomException;
-import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.notification.dto.FcmNotificationDto;
-import com.d201.fundingift.notification.entity.FcmToken;
 import com.d201.fundingift.notification.repository.FcmTokenRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -24,13 +22,7 @@ public class FcmNotificationProvider {
 
     public void send(Long consumerId, FcmNotificationDto fcmNotificationDto) {
         fcmTokenRepository.findByConsumerId(consumerId).ifPresent(
-                t -> {
-                    try {
-                        FirebaseMessaging.getInstance().send(buildMessage(t.getFcmTokenValue(), fcmNotificationDto));
-                    } catch (FirebaseMessagingException e) {
-                        throw new CustomException(FCM_NOTIFICATION_SEND_FAILED);
-                    }
-                });
+                t -> sendMessage(buildMessage(t.getFcmTokenValue(), fcmNotificationDto)));
     }
 
     private Message buildMessage(String fcmToken, FcmNotificationDto fcmNotificationDto) {
@@ -43,4 +35,15 @@ public class FcmNotificationProvider {
                                 .build())
                 .build();
     }
+
+    private void sendMessage(Message message) {
+        try {
+            FirebaseMessaging.getInstance().send(message);
+            log.info("message send success");
+        } catch (FirebaseMessagingException e) {
+            log.error(e.getMessage());
+            throw new CustomException(FCM_NOTIFICATION_SEND_FAILED);
+        }
+    }
+
 }
