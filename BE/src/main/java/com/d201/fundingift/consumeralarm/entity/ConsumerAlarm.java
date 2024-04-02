@@ -24,8 +24,6 @@ public class ConsumerAlarm implements Serializable {
     @Indexed
     private Long consumerId;
 
-    @NotBlank(message = "메세지는 비어 있을 수 없습니다.")
-    @Size(max = 50, message = "메시지는 최대 50자까지 가능합니다.")
     private String message;
 
     private MessageType  messageType;
@@ -37,8 +35,7 @@ public class ConsumerAlarm implements Serializable {
     private LocalDateTime readTime;
 
     @Builder
-    public ConsumerAlarm(String consumerAlarmId, Long consumerId, String message, MessageType messageType, Boolean isRead, LocalDateTime createdDate) {
-        this.consumerAlarmId = consumerAlarmId != null ? consumerAlarmId : UUID.randomUUID().toString();
+    private ConsumerAlarm(Long consumerId, String message, MessageType messageType, Boolean isRead, LocalDateTime createdDate) {
         this.consumerId = consumerId;
         this.message = message;
         this.messageType = messageType;
@@ -49,7 +46,6 @@ public class ConsumerAlarm implements Serializable {
 
     public static ConsumerAlarm from(PostConsumerAlarmRequest request) {
         return ConsumerAlarm.builder()
-                .consumerAlarmId(UUID.randomUUID().toString()) // UUID 생성 및 할당
                 .consumerId(request.getConsumerId())
                 .message(request.getMessage())
                 .messageType(MessageType.valueOf(request.getMessageType()))

@@ -3,6 +3,7 @@ package com.d201.fundingift.consumeralarm.service;
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.util.SecurityUtil;
+import com.d201.fundingift.consumer.service.ConsumerService;
 import com.d201.fundingift.consumeralarm.dto.request.PostConsumerAlarmRequest;
 import com.d201.fundingift.consumeralarm.dto.response.GetConsumerAlarmResponse;
 import com.d201.fundingift.consumeralarm.entity.ConsumerAlarm;
@@ -13,9 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.d201.fundingift._common.response.ErrorType.ALARM_NOT_FOUND;
+import static com.d201.fundingift._common.response.ErrorType.CONSUMER_NOT_FOUND;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,10 +26,18 @@ import static com.d201.fundingift._common.response.ErrorType.ALARM_NOT_FOUND;
 public class ConsumerAlarmService {
 
     private final ConsumerAlarmRepository consumerAlarmRepository;
+    private final ConsumerService consumerService;
     private final SecurityUtil securityUtil;
 
     @Transactional
     public void createAlarm(PostConsumerAlarmRequest request) {
+        Long consumerId = request.getConsumerId();
+        // 유효한인지 소비자 검사
+        if (!consumerService.isValidConsumerId(consumerId)) {
+            log.error("유효하지 않은 Consumer ID: {}", consumerId);
+            throw new CustomException(CONSUMER_NOT_FOUND);
+        }
+
         try {
             ConsumerAlarm alarm = ConsumerAlarm.from(request);
             consumerAlarmRepository.save(alarm);
@@ -67,7 +78,17 @@ public class ConsumerAlarmService {
 
     @Transactional
     public void deleteConsumerAlarm(String consumerAlarmId) {
+        if (!isValidUUID(consumerAlarmId)) {
+            log.error("잘못된 UUID 형식, 알람 ID: {}", consumerAlarmId);
+            throw new CustomException(ErrorType.INVALID_ALARM_ID);
+        }
+
         try {
+            if (!consumerAlarmRepository.existsById(consumerAlarmId)) {
+                log.error("존재하지 않는 알람 ID: {}", consumerAlarmId);
+                throw new CustomException(ErrorType.ALARM_NOT_FOUND);
+            }
+
             consumerAlarmRepository.deleteById(consumerAlarmId);
             log.info("알람이 성공적으로 삭제되었습니다, ID: {}", consumerAlarmId);
         } catch (Exception e) {
@@ -75,6 +96,7 @@ public class ConsumerAlarmService {
             throw new CustomException(ErrorType.ALARM_DELETION_FAILED);
         }
     }
+
     @Transactional
     public void deleteAlarmsByConsumerId() {
         Long consumerId = securityUtil.getConsumerId();
@@ -85,6 +107,15 @@ public class ConsumerAlarmService {
         } catch (Exception e) {
             log.error("사용자 ID로 알람 삭제 중 오류 발생, 사용자 ID: {}: ", consumerId, e);
             throw new CustomException(ErrorType.ALARM_DELETION_BY_USER_FAILED);
+        }
+    }
+
+    private boolean isValidUUID(String str) {
+        try {
+            UUID.fromString(str);
+            return true;
+        } catch (IllegalArgumentException e) {
+            return false;
         }
     }
 }

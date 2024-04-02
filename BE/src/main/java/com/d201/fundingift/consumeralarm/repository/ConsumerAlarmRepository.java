@@ -7,5 +7,4 @@ import java.util.List;
 
 public interface ConsumerAlarmRepository extends CrudRepository<ConsumerAlarm, String> {
     List<ConsumerAlarm> findByConsumerId(Long consumerId);
-    ConsumerAlarm findByConsumerAlarmId(String ConsumerAlarmId);
 }

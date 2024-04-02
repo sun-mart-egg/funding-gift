@@ -18,7 +18,7 @@ public class GetConsumerAlarmResponse {
     private LocalDateTime readTime;
 
     @Builder
-    public GetConsumerAlarmResponse(String consumerAlarmId, Long consumerId, String message,
+    private GetConsumerAlarmResponse(String consumerAlarmId, Long consumerId, String message,
                                     String messageType, Boolean isRead,
                                     LocalDateTime createdDate, LocalDateTime readTime) {
         this.consumerAlarmId = consumerAlarmId;

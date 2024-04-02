@@ -42,26 +42,5 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new StringRedisSerializer());
         return redisTemplate;
     }
-    @Bean
-    public RedisTemplate<String, Friend> friendRedisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Friend> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Friend.class));
-        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(Friend.class));
-        return template;
-    }
-
-    @Bean
-    public RedisTemplate<String, ConsumerAlarm> consumerAlarmRedisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, ConsumerAlarm> template = new RedisTemplate<>();
-        template.setConnectionFactory(connectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-        // Jackson2JsonRedisSerializer를 사용하여 ConsumerAlarm 객체를 JSON으로 직렬화합니다.
-        Jackson2JsonRedisSerializer<ConsumerAlarm> serializer = new Jackson2JsonRedisSerializer<>(ConsumerAlarm.class);
-        template.setHashValueSerializer(serializer);
-        template.setValueSerializer(serializer);
-        return template;
-    }
 
 }

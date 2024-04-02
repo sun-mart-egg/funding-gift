@@ -28,14 +28,20 @@ public class ConsumerAlarmController {
 
     private final ConsumerAlarmService consumerAlarmService;
 
-    @Operation(summary = "알람 생성", description = "사용자 알람을 생성합니다.", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "알람 생성", description = """
+        사용자 알람을 생성합니다.
+        consumerId : 유효한 아이디를 입력해야 합니다. (탈퇴 회원에게 보낼 수 없습니다.)
+        message :  1-50자 입력 가능합니다.
+        type = [시스템, 친구, 펀딩] (추가 가능합니다.)
+    """
+    )
     @PostMapping
     public SuccessResponse<Void> createAlarm(@Valid @RequestBody PostConsumerAlarmRequest request) {
         consumerAlarmService.createAlarm(request);
         return ResponseUtils.ok(SuccessType.CREATE_ALARM_SUCCESS);
     }
 
-    @Operation(summary = "사용자별 알람 조회", description = "특정 사용자의 모든 알람을 조회합니다.")
+    @Operation(summary = "내 알람 조회", description = "내 모든 알람을 조회합니다.")
     @GetMapping
     public SuccessResponse<List<GetConsumerAlarmResponse>> getAlarmsByConsumerId() {
         List<GetConsumerAlarmResponse> response = consumerAlarmService.getAlarmsByConsumerId();
