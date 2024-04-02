@@ -71,3 +71,9 @@ cloud:
       auto: false
     stack:
       auto: false
+
+
+imp:
+  key: ${IMP_KEY}
+  secret: ${IMP_SECRET_KEY}
+  code: ${IMP_CODE}
