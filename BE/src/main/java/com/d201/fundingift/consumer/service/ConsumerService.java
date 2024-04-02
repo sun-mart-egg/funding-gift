@@ -59,6 +59,11 @@ public class ConsumerService {
                 .orElseThrow((() -> new CustomException(USER_NOT_FOUND)));
     }
 
+    // 소비자 ID 유효성 검사
+    public boolean isValidConsumerId(Long consumerId) {
+        return consumerRepository.existsByIdAndDeletedAtIsNull(consumerId);
+    }
+
     // 내 정보 조회
     public GetConsumerMyInfoResponse getConsumerMyInfo(Authentication authentication) {
         if (authentication == null || authentication.getPrincipal() == null) {

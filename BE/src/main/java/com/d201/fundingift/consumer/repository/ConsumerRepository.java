@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface ConsumerRepository extends JpaRepository<Consumer, Long> {
     Optional<Consumer> findBySocialIdAndDeletedAtIsNull(String socialId);
     Optional<Consumer> findByIdAndDeletedAtIsNull(Long id);
+    Boolean existsByIdAndDeletedAtIsNull(Long Id);
 }

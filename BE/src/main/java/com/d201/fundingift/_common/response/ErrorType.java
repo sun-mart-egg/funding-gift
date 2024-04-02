@@ -66,10 +66,17 @@ public enum ErrorType {
     WISHLIST_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 위시리스트를 찾을 수 없습니다."),
 
     //주소
-    ADDRESS_NOT_FOUND(HttpStatus.BAD_REQUEST, "주소를 찾을 수 없습니다.")
+    ADDRESS_NOT_FOUND(HttpStatus.BAD_REQUEST, "주소를 찾을 수 없습니다."),
+
+    //알람
+    ALARM_NOT_FOUND(HttpStatus.BAD_REQUEST,"알람을 찾을 수 없습니다."),
+    INVALID_ALARM_ID(HttpStatus.BAD_REQUEST, "유효하지 않는 알람 형식입니다"),
+    ALARM_CREATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "알람 생성 중 오류 발생"),
+    ALARM_RETRIEVAL_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "알람 조회 중 오류 발생"),
+    ALARM_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "알람 읽음 상태 업데이트 중 오류 발생"),
+    ALARM_DELETION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "알람 삭제 중 오류 발생"),
+    ALARM_DELETION_BY_USER_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "사용자 ID로 알람 삭제 중 오류 발생"),
     ;
-
-
 
     private HttpStatus httpStatus;
     private String msg;
