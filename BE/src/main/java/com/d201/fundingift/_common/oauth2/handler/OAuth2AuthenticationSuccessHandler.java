@@ -1,5 +1,6 @@
 package com.d201.fundingift._common.oauth2.handler;
 
+import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.jwt.JwtUtil;
 import com.d201.fundingift._common.jwt.RedisJwtRepository;
 import com.d201.fundingift._common.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
@@ -7,9 +8,15 @@ import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
 import com.d201.fundingift._common.oauth2.user.OAuth2Provider;
 import com.d201.fundingift._common.oauth2.user.OAuth2UserUnlinkManager;
 import com.d201.fundingift._common.oauth2.util.CookieUtils;
+import com.d201.fundingift._common.response.ErrorType;
+import com.d201.fundingift.attendance.entity.Attendance;
+import com.d201.fundingift.attendance.repository.AttendanceRepository;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.service.ConsumerService;
 import com.d201.fundingift.friend.service.FriendService;
+import com.d201.fundingift.funding.entity.Funding;
+import com.d201.fundingift.funding.entity.status.FundingStatus;
+import com.d201.fundingift.funding.repository.FundingRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,6 +28,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static com.d201.fundingift._common.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.MODE_PARAM_COOKIE_NAME;
@@ -37,7 +45,6 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     private final ConsumerService consumerService;
     private final FriendService friendService;
     private final RedisJwtRepository redisJwtRepository;
-
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
@@ -141,14 +148,10 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             OAuth2Provider provider = principal.getUserInfo().getProvider();
             Long consumerId = findMember.get().getId();
 
-            log.info("Starting unlink process for consumerId: {}", consumerId);
+            log.info("회원 탈퇴 시도, 사용자 ID: {}", consumerId);
 
-            try {
-                consumerService.deleteConsumer(consumerId);
-                log.info("Deleted consumer data for consumerId: {}", consumerId);
-            } catch (Exception e) {
-                log.error("Error deleting consumer data for consumerId: {}: {}", consumerId, e.getMessage());
-                // Handle the error appropriately
+            if(consumerService.isConsumerInProgressOrAttendanceFunding(consumerId) == true){
+                // 탈퇴 금지 리턴
             }
 
             try {

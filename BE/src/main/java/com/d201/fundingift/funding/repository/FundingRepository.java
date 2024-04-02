@@ -60,4 +60,8 @@ public interface FundingRepository extends JpaRepository<Funding, Long> {
 
     @Query("SELECT f FROM Funding f WHERE f.consumer.id IN :consumerIds and f.fundingStatus = 'IN_PROGRESS' AND f.deletedAt IS NULL")
     Slice<Funding> findAllByConsumerIdsAndFundingStatusAndDeletedAtIsNull(@Param("consumerIds") List<Long> consumerIds, Pageable pageable);
+
+    @Query("SELECT f FROM Funding f WHERE f.consumer.id = :consumerId AND f.fundingStatus = 'IN_PROGRESS' AND f.deletedAt IS NULL")
+    List<Funding> findInProgressFundingsByConsumerId(@Param("consumerId") Long consumerId);
+
 }
