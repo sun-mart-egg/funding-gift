@@ -14,7 +14,7 @@ function AddressList({ listData }) {
 
   // isSelected 상태를 업데이트하는 함수
   const handleSelect = (index) => {
-    setSelectedAddress(data[index]);
+    setSelectedAddress(listData[index]);
     setSelectedAddressIndex(index);
   };
 
@@ -23,20 +23,24 @@ function AddressList({ listData }) {
       id="addressList"
       className="absolute top-20 w-full flex-col justify-center"
     >
-      {data.map((item, index) => (
-        <AddressCard
-          key={index}
-          name={item.name}
-          nickname={item.nickname}
-          isDefault={item.isDefault}
-          phoneNumber={item.phoneNumber}
-          defaultAddr={item.defaultAddr}
-          detailAddr={item.detailAddr}
-          zipCode={item.zipCode}
-          isSelected={index === selectedAddressIndex}
-          onSelect={() => handleSelect(index)} // onSelect prop 추가
-        />
-      ))}
+      {listData.map(
+        (item, index) => (
+          console.log("item " + item),
+          (
+            <AddressCard
+              key={index}
+              id={item.id}
+              name={item.name}
+              isDefault={item.isDefault}
+              defaultAddr={item.defaultAddr}
+              detailAddr={item.detailAddr}
+              zipCode={item.zipCode}
+              isSelected={index === selectedAddressIndex}
+              onSelect={() => handleSelect(index)} // onSelect prop 추가
+            />
+          )
+        ),
+      )}
     </div>
   );
 }

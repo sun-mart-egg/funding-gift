@@ -1,7 +1,8 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import DaumPostcodeEmbed from "react-daum-postcode";
-
+import { createAddress } from "../api/AddressAPI";
+import { useNavigate } from "react-router";
 function NewAddressPage() {
   // 상세주소 검색창 on/off 상태변수
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +11,7 @@ function NewAddressPage() {
   const [detailAddress, setDetailAddress] = useState("");
   const [addressName, setAddressName] = useState("");
   const [isDefault, setIsDefault] = useState(false);
+  const navigate = useNavigate();
 
   const handleAddress = (data) => {
     setZipcode(data.zonecode);
@@ -28,6 +30,18 @@ function NewAddressPage() {
   const handleIsDefault = (event) => {
     setIsDefault((prevIsDefault) => !prevIsDefault);
     console.log(isDefault);
+  };
+
+  const handleCreate = (event) => {
+    createAddress(
+      addressName,
+      defaultAddress,
+      detailAddress,
+      zipCode,
+      isDefault,
+      localStorage.getItem("access-token"),
+    );
+    navigate("/address-list");
   };
   return (
     <div className="sub-layer font-cusFont3">
@@ -94,7 +108,9 @@ function NewAddressPage() {
         </div>
       )}
       <div className="absolute bottom-0 flex w-full items-center justify-center space-x-4 pb-5">
-        <button className="common-btn h-[45px] w-[75%]">배송지 추가하기</button>
+        <button onClick={handleCreate} className="common-btn h-[45px] w-[75%]">
+          배송지 추가하기
+        </button>
       </div>
     </div>
   );
