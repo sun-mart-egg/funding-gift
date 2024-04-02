@@ -1,10 +1,8 @@
 package com.d201.fundingift.funding.controller;
 
 
-import com.d201.fundingift._common.response.ErrorResponse;
-import com.d201.fundingift._common.response.ResponseUtils;
-import com.d201.fundingift._common.response.SliceList;
-import com.d201.fundingift._common.response.SuccessResponse;
+import com.d201.fundingift._common.response.*;
+import com.d201.fundingift.funding.dto.request.DeleteFundingRequest;
 import com.d201.fundingift.funding.dto.request.PostFundingRequest;
 import com.d201.fundingift.funding.dto.response.GetFundingCalendarResponse;
 import com.d201.fundingift.funding.dto.response.GetFundingDetailResponse;
@@ -51,6 +49,25 @@ public class FundingController {
 
         fundingService.postFunding(fundingCreateRequestDto);
         return ResponseUtils.ok(CREATE_FUNDING_SUCCESS);
+    }
+
+    @Operation(summary = "펀딩 삭제",
+            description = "펀딩 생성자가 펀딩을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "소비자가 없는 경우 / 펀딩이 존재하지 않는 경우 / 내 펀딩이 아닌 경우 / 펀딩 상태가 PRE_PROGRESS가 아닌 경우",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
+    @DeleteMapping
+    public SuccessResponse<Void> deleteFunding(@RequestBody DeleteFundingRequest deleteFundingRequest) {
+        fundingService.deleteFunding(deleteFundingRequest);
+
+        return ResponseUtils.ok(DELETE_FUNDING_SUCCESS);
     }
 
     @Operation(summary = "내가 만든 펀딩 목록 보기",

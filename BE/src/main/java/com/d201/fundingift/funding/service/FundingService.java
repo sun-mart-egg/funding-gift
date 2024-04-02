@@ -9,6 +9,7 @@ import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import com.d201.fundingift.friend.entity.Friend;
 import com.d201.fundingift.friend.repository.FriendRepository;
+import com.d201.fundingift.funding.dto.request.DeleteFundingRequest;
 import com.d201.fundingift.funding.dto.request.PostFundingRequest;
 import com.d201.fundingift.funding.dto.response.GetFundingCalendarResponse;
 import com.d201.fundingift.funding.dto.response.GetFundingDetailResponse;
@@ -76,6 +77,24 @@ public class FundingService {
 
         //시작일이 오늘이면 IN_PROGRESS로 상태 변경, 미래면 PRE_PROGRESS
         fundingRepository.save(Funding.from(postFundingRequest, IsStartDateToday(postFundingRequest.getStartDate()), consumer, anniversaryCategory, product, productOption));
+    }
+
+    @Transactional
+    public void deleteFunding(DeleteFundingRequest deleteFundingRequest) {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        //펀딩 존재 확인
+        Funding funding = getFunding(deleteFundingRequest.getFundingId());
+
+        //내 펀딩이 맞는지 확인
+        if(!Objects.equals(myConsumerId, funding.getConsumer().getId()))
+            throw new CustomException(ErrorType.USER_UNAUTHORIZED);
+
+        //삭제 가능한 상태인지 확인 - 펀딩 시작전일 경우만 삭제 가능(PRE_PROGRESS인 경우)
+        if(!"PRE_PROGRESS".equals(String.valueOf(funding.getFundingStatus())))
+            throw new CustomException(ErrorType.FUNDING_STATUS_NOT_DELETED);
+
+        fundingRepository.delete(funding);
     }
 
     //내 펀딩 목록 보기
