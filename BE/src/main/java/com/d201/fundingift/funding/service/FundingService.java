@@ -260,7 +260,7 @@ public class FundingService {
                 continue;
             }
 
-            if(toFriends.get(f.getConsumer().getId()).getIsFavorite())
+            if(toFriends.containsKey(f.getConsumer().getId()) && toFriends.get(f.getConsumer().getId()).getIsFavorite())
                 changed.add(f);
         }
 
