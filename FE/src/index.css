@@ -35,10 +35,6 @@
   src: url(/fonts/Yeongdo.ttf);
 }
 
-#root {
-  @apply bg-cusColor4;
-}
-
 /* 공통 버튼양식, 전체적인 레이어 등등... */
 @layer components {
   .main-layer {
