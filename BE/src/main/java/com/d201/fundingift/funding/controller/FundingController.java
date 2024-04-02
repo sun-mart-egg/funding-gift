@@ -170,6 +170,21 @@ public class FundingController {
         return ResponseUtils.ok(fundingService.getFundingCalendarsResponse(year, month), GET_FUNDING_CALENDARS_SUCCESS);
     }
 
+    @Operation(summary = "펀딩 피드 리스트 조회",
+            description = """
+                           `token` \n
+                           친구 펀딩 리스트를 피드 형태의 리스트로 조회합니다. \n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
     @GetMapping("/feed")
     public SuccessResponse<SliceList<GetFundingResponse>> getFundingFeeds(
             @PageableDefault(size=3, sort="startDate", direction = Sort.Direction.DESC) Pageable pageable) {
