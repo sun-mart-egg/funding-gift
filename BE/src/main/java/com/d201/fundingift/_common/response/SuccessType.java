@@ -19,13 +19,16 @@ public enum SuccessType {
     // 펀딩
     CREATE_FUNDING_SUCCESS("펀딩 등록에 성공하였습니다."),
     GET_MY_FUNDINGS_SUCCESS("내 펀딩 목록 조회에 성공하였습니다."),
+    GET_MY_ATTENDANCE_FUNDINGS_SUCCESS("내가 참여한 펀딩 목록 조회에 성공하였습니다."),
     GET_FRIEND_FUNDINGS_SUCCESS("친구 펀딩 목록 조회에 성공하였습니다."),
     GET_FUNDINGS_STORY_SUCCESS("펀딩 목록 스토리 조회에 성공하였습니다."),
     GET_FUNDING_CALENDARS_SUCCESS("펀딩 캘린더 목록 조회에 성공하였습니다."),
     GET_FUNDINGS_FEED_SUCCESS("펀딩 목록 피드 조회에 성공하였습니다."),
     GET_FUNDING_DETAIL_SUCCESS("펀딩 상세 조회에 성공하였습니다."),
-    GET_ATTENDANCE_DETAIL_SUCCESS("펀딩 참여 상세 리스트 조회에 성공하였습니다."),
+    GET_ATTENDANCE_SUCCESS("펀딩 참여자 리스트 조회에 성공하였습니다."),
+    GET_ATTENDANCE_DETAIL_SUCCESS("펀딩 참여자 상세 정보 조회에 성공하였습니다."),
     POST_ATTENDANCE_SUCCESS("펀딩 참여에 성공하였습니다."),
+    UPDATE_ATTENDANCE_RECEIVE_MESSAGE_SUCCESS("펀딩 참여자에게 감사 메시지 작성을 성공하였습니다."),
 
     // 상품
     GET_PRODUCT_CATEGORIES_SUCCESS("상품 카테고리 목록 조회에 성공하였습니다."),

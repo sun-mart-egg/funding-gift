@@ -24,7 +24,7 @@ public enum ErrorType {
 
     // 토큰
     TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "Http Header에 토큰이 없습니다."),
-    USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다."),
+    USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
 
     // 사용자
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "등록된 사용자가 없습니다."),
@@ -50,7 +50,7 @@ public enum ErrorType {
     //펀딩 참여
     FUNDING_NOT_VERIFY_MIN_PRICE(HttpStatus.BAD_REQUEST,"펀딩 참여 금액이 최소 금액을 만족하지 않습니다."),
     FUNDING_OVER_TARGET_PRICE(HttpStatus.BAD_REQUEST, "펀딩 목표 금액을 초과했습니다."),
-    FUNDING_ATTENDANCE_UNAUTHORIZED(HttpStatus.BAD_REQUEST,"해당 펀딩의 펀딩 참여자 정보를 볼 수 없습니다."),
+    ATTENDANCE_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 펀딩 참여 정보를 찾을 수 없습니다."),
 
     // 상품
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 상품을 찾을 수 없습니다."),

@@ -60,5 +60,8 @@ public class Attendance extends BaseTime {
                 .build();
     }
 
+    public void writingReceiveMessage(String msg) {
+        this.receiveMessage = msg;
+    }
 
 }

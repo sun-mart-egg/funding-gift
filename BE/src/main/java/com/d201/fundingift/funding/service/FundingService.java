@@ -4,6 +4,7 @@ import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
+import com.d201.fundingift.attendance.repository.AttendanceRepository;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
 import com.d201.fundingift.friend.entity.Friend;
@@ -37,6 +38,7 @@ import java.util.stream.Collectors;
 public class FundingService {
 
     private final FundingRepository fundingRepository;
+    private final AttendanceRepository attendanceRepository;
     private final ConsumerRepository consumerRepository;
     private final FriendRepository friendRepository;
     private final ProductRepository productRepository;
@@ -86,6 +88,13 @@ public class FundingService {
 
         //제품명으로 검색하는 경우
         return getFundingsSliceList(findAllByConsumerIdAndProductName(myConsumerId, keyword, pageable));
+    }
+
+    //내가 참여한 펀딩 목록 조회
+    public SliceList<GetFundingResponse> getMyAttendanceFundings(Pageable pageable) {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        return getFundingsSliceList(findAllByConsumerRightJoinAttendance(myConsumerId, pageable));
     }
 
     //친구 펀딩 목록 보기
@@ -199,6 +208,9 @@ public class FundingService {
         return fundingList;
     }
 
+    /**
+     * 내부 메서드
+     */
     private Funding getFunding(Long fundingId) {
         return fundingRepository.findByIdAndDeletedAtIsNull(fundingId)
                 .orElseThrow(() -> new CustomException(ErrorType.FUNDING_NOT_FOUND));
@@ -248,7 +260,7 @@ public class FundingService {
                 continue;
             }
 
-            if(toFriends.get(f.getConsumer().getId()).getIsFavorite())
+            if(toFriends.containsKey(f.getConsumer().getId()) && toFriends.get(f.getConsumer().getId()).getIsFavorite())
                 changed.add(f);
         }
 
@@ -258,6 +270,10 @@ public class FundingService {
     //consumerId로 펀딩 목록 찾기
     private Slice<Funding> findAllByConsumerId(Long consumerId, Pageable pageable) {
         return fundingRepository.findAllByConsumerIdAndDeletedAtIsNull(consumerId, pageable);
+    }
+
+    private Slice<Funding> findAllByConsumerRightJoinAttendance(Long consumerId, Pageable pageable) {
+        return attendanceRepository.findAllByConsumerIdAndAndDeletedAtIsNull(consumerId, pageable);
     }
 
     //consumerId, isPrivate == false로 펀딩 목록 찾기
