@@ -22,7 +22,7 @@ public enum ErrorType {
     INVALID_FILE_FORMAT(HttpStatus.BAD_REQUEST, "파일의 포맷이 올바르지 않습니다."),
     IMAGE_FILE_UPLOAD_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 파일 업로드에 실패하였습니다."),
 
-    // 토큰
+    // 액세스 토큰
     TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "Http Header에 토큰이 없습니다."),
     USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다."),
 
@@ -30,7 +30,7 @@ public enum ErrorType {
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "등록된 사용자가 없습니다."),
     CONSUMER_NOT_FOUND(HttpStatus.BAD_REQUEST,"소비자를 찾을 수 없습니다."),
 
-    //친구
+    // 친구
     FRIEND_NOT_FOUND(HttpStatus.BAD_REQUEST, "내 친구가 아닙니다."),
     FRIEND_NOT_IS_FAVORITE(HttpStatus.BAD_REQUEST, "친한 친구가 아닙니다."),
     KAKAO_FRIEND_NOT_FOUND(HttpStatus.BAD_REQUEST, "카카오 친구목록 조회에 실패하였습니다."),
@@ -47,7 +47,7 @@ public enum ErrorType {
     FUNDING_END_DATE_IS_PAST(HttpStatus.BAD_REQUEST, "펀딩 종료일이 기념일보다 과거입니다."),
     FUNDING_ANNIVERSARY_DATE_IS_PAST(HttpStatus.BAD_REQUEST, "기념일이 시작일보다 과거입니다."),
 
-    //펀딩 참여
+    // 펀딩 참여
     FUNDING_NOT_VERIFY_MIN_PRICE(HttpStatus.BAD_REQUEST,"펀딩 참여 금액이 최소 금액을 만족하지 않습니다."),
     FUNDING_OVER_TARGET_PRICE(HttpStatus.BAD_REQUEST, "펀딩 목표 금액을 초과했습니다."),
     FUNDING_ATTENDANCE_UNAUTHORIZED(HttpStatus.BAD_REQUEST,"해당 펀딩의 펀딩 참여자 정보를 볼 수 없습니다."),
@@ -65,10 +65,10 @@ public enum ErrorType {
     WISHLIST_DUPLICATED(HttpStatus.BAD_REQUEST, "이미 위시리스트에 등록된 상품입니다."),
     WISHLIST_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 위시리스트를 찾을 수 없습니다."),
 
-    //주소
+    // 주소
     ADDRESS_NOT_FOUND(HttpStatus.BAD_REQUEST, "주소를 찾을 수 없습니다."),
 
-    //알람
+    // 알람
     ALARM_NOT_FOUND(HttpStatus.BAD_REQUEST,"알람을 찾을 수 없습니다."),
     INVALID_ALARM_ID(HttpStatus.BAD_REQUEST, "유효하지 않는 알람 형식입니다"),
     ALARM_CREATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "알람 생성 중 오류 발생"),
@@ -76,6 +76,10 @@ public enum ErrorType {
     ALARM_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "알람 읽음 상태 업데이트 중 오류 발생"),
     ALARM_DELETION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "알람 삭제 중 오류 발생"),
     ALARM_DELETION_BY_USER_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "사용자 ID로 알람 삭제 중 오류 발생"),
+
+    // FCM
+    FCM_TOKEN_ALREADY_EXIST(HttpStatus.BAD_REQUEST, "이미 존재하는 fcm token 입니다."),
+    FCM_TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 fcm token 을 찾을 수 없습니다."),
     ;
 
     private HttpStatus httpStatus;

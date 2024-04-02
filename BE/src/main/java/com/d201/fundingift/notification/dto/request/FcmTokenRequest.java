@@ -9,7 +9,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostFcmTokenRequest {
+public class FcmTokenRequest {
 
     private String fcmToken;
 

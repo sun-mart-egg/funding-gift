@@ -58,7 +58,7 @@ public enum SuccessType {
 
     // FCM
     SAVE_FCM_TOKEN_SUCCESS("fcm token 이 성공적으로 저장되었습니다."),
-    SAVE_FCM_TOKEN_ALREADY_DONE("fcm token 이 이미 저장되어 있습니다."),
+    DELETE_FCM_TOKEN_SUCCESS("fcm token 이 성공적으로 삭제되었습니다."),
     ;
 
     private final String msg;
