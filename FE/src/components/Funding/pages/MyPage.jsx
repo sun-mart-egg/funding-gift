@@ -108,7 +108,7 @@ function MyPage() {
       {isEditMode ? (
         // 수정 모드 활성화 시 보여줄 UI
         <>
-          <div className="head absolute top-20 flex w-full items-center px-6">
+          <div className="absolute flex items-center w-full px-6 head top-20">
             <div className="relative mr-4 ">
               <img
                 src={userInfo.img}
@@ -130,7 +130,7 @@ function MyPage() {
               />
             </div>
           </div>
-          <div className="content absolute top-52 w-full px-6 font-cusFont3">
+          <div className="absolute w-full px-6 content top-52 font-cusFont3">
             <div className="birthday">
               <div className="sub-title">
                 <p>생일</p>{" "}
@@ -145,7 +145,7 @@ function MyPage() {
               </div>
             </div>
             <div className="address">
-              <div className="sub-title pt-6 ">
+              <div className="pt-6 sub-title ">
                 <p>기본 주소</p>{" "}
                 <button className="w-[25%] rounded-md bg-[#9B9B9B] text-[12px] text-white">
                   기본 주소 선택
@@ -156,7 +156,7 @@ function MyPage() {
               </p>
             </div>
             <div className="account">
-              <div className="sub-title pt-6">
+              <div className="pt-6 sub-title">
                 <p>기본 계좌</p>{" "}
                 <button className="w-[25%] rounded-md bg-[#9B9B9B] text-[12px] text-white">
                   기본 계좌 선택
@@ -175,7 +175,7 @@ function MyPage() {
           </button>
           <div
             id="buttonSection"
-            className="absolute bottom-0 flex w-full flex-col items-center justify-around  pb-5"
+            className="absolute bottom-0 flex flex-col items-center justify-around w-full pb-5"
           >
             <button
               onClick={handleEditClick}
@@ -189,7 +189,7 @@ function MyPage() {
       ) : (
         <>
           {/* head 입니다. */}
-          <div className="head absolute top-20  flex w-full items-center px-6">
+          <div className="absolute flex items-center w-full px-6 head top-20">
             <img
               src={userInfo.img}
               alt=""
@@ -210,7 +210,7 @@ function MyPage() {
           </div>
 
           {/* Content 입니다. */}
-          <div className="content absolute top-52 w-full px-6">
+          <div className="absolute w-full px-6 content top-52">
             <div className="birthday">
               <div className="sub-title">
                 <p>생일</p>
@@ -219,7 +219,7 @@ function MyPage() {
                 {userInfo.anniversaryDate}
               </p>
             </div>
-            <div className="address  pt-6">
+            <div className="pt-6 address">
               <div className="sub-title">
                 <p>기본 주소</p>
               </div>
@@ -227,7 +227,7 @@ function MyPage() {
                 {userInfo.defaultAddr} {userInfo.detailAddr} {userInfo.zipCode}
               </p>
             </div>
-            <div className="account  pt-6">
+            <div className="pt-6 account">
               <div className="sub-title">
                 <p>기본 계좌</p>
               </div>
@@ -239,7 +239,7 @@ function MyPage() {
           </div>
           <div
             id="buttonSection"
-            className="absolute bottom-0 flex w-full flex-col items-center justify-around  pb-5"
+            className="absolute bottom-0 flex flex-col items-center justify-around w-full pb-5"
           >
             <button
               onClick={handleEditClick}
