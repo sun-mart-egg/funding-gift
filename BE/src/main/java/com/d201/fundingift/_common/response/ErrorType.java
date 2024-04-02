@@ -53,6 +53,7 @@ public enum ErrorType {
     FUNDING_ATTENDANCE_UNAUTHORIZED(HttpStatus.BAD_REQUEST,"해당 펀딩의 펀딩 참여자 정보를 볼 수 없습니다."),
     ATTENDANCE_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 펀딩 참여 정보를 찾을 수 없습니다."),
     ATTENDANCE_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "펀딩 참여 상세 조회 권한이 없습니다."),
+    ATTENDANCE_WRITE_RECEIVE_MESSAGE_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "펀딩 참여 감사 메시지 작성 권한이 없습니다."),
 
     // 상품
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 상품을 찾을 수 없습니다."),

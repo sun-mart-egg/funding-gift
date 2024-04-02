@@ -2,6 +2,7 @@ package com.d201.fundingift.attendance.controller;
 
 import com.d201.fundingift._common.response.*;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
+import com.d201.fundingift.attendance.dto.request.UpdateAttendanceRequest;
 import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
 import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
 import com.d201.fundingift.attendance.service.AttendanceService;
@@ -82,7 +83,12 @@ public class AttendanceController {
                     description = "성공",
                     useReturnTypeSchema = true),
             @ApiResponse(responseCode = "400",
-                    description = "로그인 여부 / 펀딩 존재 여부 / 펀딩 참여 존재 여부 / 펀딩 참여 상세 정보 조회 권한 확인 - 펀딩 참여자나 펀딩 생성자만 상세 조회 가능",
+                    description = "로그인 여부 / 펀딩 존재 여부 / 펀딩 참여 존재 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )),
+            @ApiResponse(responseCode = "401",
+                    description = "펀딩 참여 상세 정보 조회 권한 확인 - 펀딩 참여자나 펀딩 생성자만 상세 조회 가능",
                     content = @Content(
                             schema = @Schema(implementation = ErrorResponse.class)
                     ))
@@ -92,5 +98,32 @@ public class AttendanceController {
                                                                                     @RequestParam(required = true, name="funding-id") Long fundingId) {
 
         return ResponseUtils.ok(attendanceService.getAttendanceDetailResponse(attendanceId, fundingId), SuccessType.GET_ATTENDANCE_DETAIL_SUCCESS);
+    }
+
+    @Operation(summary = "펀딩참여자에게 감사 메시지 작성",
+            description = """
+                           `token` \n
+                           펀딩참여자에게 감사 메시지를 작성 합니다.\n
+                           """)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "성공",
+                    useReturnTypeSchema = true),
+            @ApiResponse(responseCode = "400",
+                    description = "로그인 여부 / 펀딩 존재 여부 / 펀딩 참여 존재 여부",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    )),
+            @ApiResponse(responseCode = "401",
+                    description = "감사 메시지 작성 권한 여부 - 펀딩 생성자만 작성 가능",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class)
+                    ))
+    })
+    @PutMapping("/write-message")
+    public SuccessResponse<Void> updateReceiveMessage(@RequestBody UpdateAttendanceRequest updateAttendanceRequest) {
+        attendanceService.updateReceiveMessage(updateAttendanceRequest);
+
+        return ResponseUtils.ok(SuccessType.UPDATE_ATTENDANCE_RECEIVE_MESSAGE_SUCCESS);
     }
 }

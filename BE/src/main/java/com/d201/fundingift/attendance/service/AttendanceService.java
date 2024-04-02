@@ -5,6 +5,7 @@ import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
+import com.d201.fundingift.attendance.dto.request.UpdateAttendanceRequest;
 import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
 import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
 import com.d201.fundingift.attendance.entity.Attendance;
@@ -94,15 +95,32 @@ public class AttendanceService {
         Attendance attendance = getAttendance(attendanceId);
 
         //펀딩 참여 상세 정보 조회 권한 확인
-        checkingAuthorized(funding, myConsumerId, attendance);
+        checkingAuthorizedAttendanceDetail(funding, myConsumerId, attendance);
 
         return GetAttendanceDetailResponse.from(attendance);
+    }
+
+    //펀딩 참여자에게 감사 메시지 작성하기 - 펀딩 생성자만 작성 가능
+    @Transactional
+    public void updateReceiveMessage(UpdateAttendanceRequest updateAttendanceRequest) {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        //펀딩 존재 여부 확인
+        Funding funding = getFunding(updateAttendanceRequest.getFundingId());
+
+        //펀딩 참여 존재 여부 확인
+        Attendance attendance = getAttendance(updateAttendanceRequest.getAttendanceId());
+
+        //감사 메시지 작성 권한 확인
+        checkingAuthorizeWritingReceiveMessage(funding, myConsumerId);
+
+        attendance.writingReceiveMessage(updateAttendanceRequest.getReceiveMessage());
     }
 
     /**
      * 내부 메서드
      */
-    private static void checkingAuthorized(Funding funding, Long myConsumerId, Attendance attendance) {
+    private static void checkingAuthorizedAttendanceDetail(Funding funding, Long myConsumerId, Attendance attendance) {
         log.info("myConsumerId={}, funding.getConsumer={}, attendance.getConsumer={}"
                 , myConsumerId, funding.getConsumer().getId(), attendance.getConsumer().getId());
         if(!Objects.equals(funding.getConsumer().getId(), myConsumerId)
@@ -178,5 +196,10 @@ public class AttendanceService {
     private Attendance getAttendance(Long attendanceId) {
         return attendanceRepository.findByIdAndDeletedAtIsNull(attendanceId)
                 .orElseThrow(() -> new CustomException(ErrorType.ATTENDANCE_NOT_FOUND));
+    }
+
+    private static void checkingAuthorizeWritingReceiveMessage(Funding funding, Long myConsumerId) {
+        if(!Objects.equals(funding.getConsumer().getId(), myConsumerId))
+            throw new CustomException(ErrorType.ATTENDANCE_WRITE_RECEIVE_MESSAGE_UNAUTHORIZED);
     }
 }
