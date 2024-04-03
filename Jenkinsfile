@@ -54,6 +54,14 @@ pipeline {
                 }
             }
         }
-        
     }
+
+    post {
+            success {
+            	mattermostSend color: '#32a852', message: "Deploy Success! (${env.JOB_NAME}) #(${env.BUILD_NUMBER}) (<${env.BUILD_URL}|Open>) \n See the (<${env.BUILD_URL}console|console>)"
+	    }
+            failure {
+            	mattermostSend color: '#ff0800', message: "Deploy Fail! (${env.JOB_NAME}) #(${env.BUILD_NUMBER}) (<${env.BUILD_URL}|Open>) \n See the (<${env.BUILD_URL}console|console>)"
+	    }
+        }
 }
