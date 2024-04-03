@@ -27,6 +27,7 @@ function MakeFundingMain() {
         </div>
         <div id="buttonSection" className="flex w-full justify-around">
           <button
+            onClick={() => navigate("/wishlist")}
             style={{ flexBasis: "50%" }}
             className="mx-2 flex flex-col items-center justify-center rounded-lg bg-cusColor3 p-1 py-2 text-white"
           >
