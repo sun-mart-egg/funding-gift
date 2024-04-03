@@ -116,7 +116,7 @@ async function createFunding(formData, token) {
 }
 
 //펀딩 피드 api
-async function getFundingFeed(token, setData) {
+async function getFundingFeed(token, page) {
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_BASE_URL}/api/fundings/feed`,
@@ -125,16 +125,14 @@ async function getFundingFeed(token, setData) {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          page: 0,
-          size: 8,
-          sort: "", // sort가 필요하다면 'columnName,asc' 또는 'columnName,desc' 형식의 값을 설정하세요.
+          page: page,
+          size: 8, // You can adjust the size as needed
         },
-      },
+      }
     );
-    console.log("펀딩 피드 가져오기 : ", response.data.data.data);
-    setData(response.data.data.data);
+    return response.data;
   } catch (error) {
-    console.error("펀딩 피드를 불러올 수 없습니다.", error);
+    throw new Error("Failed to fetch funding feed");
   }
 }
 
