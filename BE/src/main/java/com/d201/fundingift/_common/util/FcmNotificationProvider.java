@@ -1,8 +1,8 @@
 package com.d201.fundingift._common.util;
 
 import com.d201.fundingift._common.exception.CustomException;
-import com.d201.fundingift.notification.dto.FcmNotificationDto;
-import com.d201.fundingift.notification.repository.FcmTokenRepository;
+import com.d201.fundingift._common.dto.FcmNotificationDto;
+import com.d201.fundingift.fcmtoken.repository.FcmTokenRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;

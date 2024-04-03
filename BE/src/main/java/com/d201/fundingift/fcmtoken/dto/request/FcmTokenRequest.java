@@ -1,4 +1,4 @@
-package com.d201.fundingift.notification.dto.request;
+package com.d201.fundingift.fcmtoken.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

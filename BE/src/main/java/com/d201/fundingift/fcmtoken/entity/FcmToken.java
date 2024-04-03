@@ -1,4 +1,4 @@
-package com.d201.fundingift.notification.entity;
+package com.d201.fundingift.fcmtoken.entity;
 
 import lombok.Builder;
 import lombok.Getter;

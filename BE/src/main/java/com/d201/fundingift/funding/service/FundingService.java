@@ -20,7 +20,7 @@ import com.d201.fundingift.funding.entity.Funding;
 import com.d201.fundingift.funding.entity.status.FundingStatus;
 import com.d201.fundingift.funding.repository.AnniversaryCategoryRepository;
 import com.d201.fundingift.funding.repository.FundingRepository;
-import com.d201.fundingift.notification.dto.FcmNotificationDto;
+import com.d201.fundingift._common.dto.FcmNotificationDto;
 import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.entity.ProductOption;
 import com.d201.fundingift.product.repository.ProductOptionRepository;

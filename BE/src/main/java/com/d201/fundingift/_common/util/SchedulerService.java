@@ -1,7 +1,7 @@
 package com.d201.fundingift._common.util;
 
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
-import com.d201.fundingift.notification.dto.FcmNotificationDto;
+import com.d201.fundingift._common.dto.FcmNotificationDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;

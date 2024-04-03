@@ -1,6 +1,6 @@
-package com.d201.fundingift.notification.repository;
+package com.d201.fundingift.fcmtoken.repository;
 
-import com.d201.fundingift.notification.entity.FcmToken;
+import com.d201.fundingift.fcmtoken.entity.FcmToken;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

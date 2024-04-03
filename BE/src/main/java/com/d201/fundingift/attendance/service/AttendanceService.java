@@ -16,7 +16,7 @@ import com.d201.fundingift.friend.entity.Friend;
 import com.d201.fundingift.friend.repository.FriendRepository;
 import com.d201.fundingift.funding.entity.Funding;
 import com.d201.fundingift.funding.repository.FundingRepository;
-import com.d201.fundingift.notification.dto.FcmNotificationDto;
+import com.d201.fundingift._common.dto.FcmNotificationDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;

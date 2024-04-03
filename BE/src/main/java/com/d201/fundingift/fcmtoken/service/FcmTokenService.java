@@ -1,10 +1,10 @@
-package com.d201.fundingift.notification.service;
+package com.d201.fundingift.fcmtoken.service;
 
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.util.SecurityUtil;
-import com.d201.fundingift.notification.dto.request.FcmTokenRequest;
-import com.d201.fundingift.notification.entity.FcmToken;
-import com.d201.fundingift.notification.repository.FcmTokenRepository;
+import com.d201.fundingift.fcmtoken.dto.request.FcmTokenRequest;
+import com.d201.fundingift.fcmtoken.entity.FcmToken;
+import com.d201.fundingift.fcmtoken.repository.FcmTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import static com.d201.fundingift._common.response.ErrorType.FCM_TOKEN_NOT_FOUND
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class NotificationService {
+public class FcmTokenService {
 
     private final FcmTokenRepository fcmTokenRepository;
     private final SecurityUtil securityUtil;

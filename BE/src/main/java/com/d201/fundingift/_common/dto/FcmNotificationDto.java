@@ -1,4 +1,4 @@
-package com.d201.fundingift.notification.dto;
+package com.d201.fundingift._common.dto;
 
 import lombok.Builder;
 import lombok.Getter;
