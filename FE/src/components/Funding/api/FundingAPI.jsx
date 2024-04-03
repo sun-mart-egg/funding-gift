@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useNavigate } from "react-router";
 //펀딩 상세 조회 api
 async function fetchDetailFunding(token, fundingId, setData) {
@@ -116,7 +115,7 @@ async function createFunding(formData, token) {
 }
 
 //펀딩 피드 api
-async function getFundingFeed(token, page) {
+async function getFundingFeed(token, setData) {
   try {
     const response = await axios.get(
       `${import.meta.env.VITE_BASE_URL}/api/fundings/feed`,
@@ -125,14 +124,16 @@ async function getFundingFeed(token, page) {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          page: page,
-          size: 8, // You can adjust the size as needed
+          page: 0,
+          size: 8,
+          sort: "", // sort가 필요하다면 'columnName,asc' 또는 'columnName,desc' 형식의 값을 설정하세요.
         },
-      }
+      },
     );
-    return response.data;
+    console.log("펀딩 피드 가져오기 : ", response.data.data.data);
+    setData(response.data.data.data);
   } catch (error) {
-    throw new Error("Failed to fetch funding feed");
+    console.error("펀딩 피드를 불러올 수 없습니다.", error);
   }
 }
 
