@@ -2,10 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
 import Star from '/imgs/star.png';
-import Logo from '/imgs/logo.png';
 import ImageComingSoon from '/imgs/image_coming_soon.png'
-
-import NoSearchResult from '/imgs/no_search_result.png'
 
 function ProductComponent({ categoryId, keyword, sort }) {
 
@@ -38,23 +35,11 @@ function ProductComponent({ categoryId, keyword, sort }) {
     loadProducts(currentPage);
   }, [currentPage, categoryId, sort, keyword]);
 
-  const renderNoResultsMessage = () => {
-    if (!loading && products.length === 0) {
-      return (
-        <div className='w-full h-full text-center flex flex-col items-center' style={{ backgroundColor: '#FFFBE8' }}>
-          <p className='text-4xl font-cusFont4 pt-[30px]'>검색 결과가 없습니다.</p>
-          <img src={NoSearchResult} className='w-[90%] h-auto'></img>
-        </div>
-
-      )
-    }
-    return null;
-  };
 
   const loadProducts = async (page) => {
     setLoading(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/products?category-id=${categoryId}&keyword=${keyword}&page=${page}&size=10&sort=${sort}`);
+      const response = await fetch(import.meta.env.VITE_BASE_URL + `/api/products/rank?page=${page}&size=10`);
       const json = await response.json();
       if (json.code === 200 && json.data) {
         // 현재 페이지가 0인 경우 새 데이터 설정, 그 외에는 기존 데이터에 추가
@@ -78,8 +63,10 @@ function ProductComponent({ categoryId, keyword, sort }) {
     return num >= 1000 ? "999+" : num;
   };
 
+
+
   return (
-    <div className="mt-4 flex min-h-[63%] w-[95.5%] flex-grow flex-wrap justify-center overflow-y-auto bg-white font-cusfont2">
+    <div className="flex min-h-[63%] w-[95.5%] flex-grow flex-wrap justify-center overflow-y-auto bg-white font-cusfont2">
       {products.map((product, index) => (
         <div
           key={product.productId}
@@ -108,7 +95,6 @@ function ProductComponent({ categoryId, keyword, sort }) {
         </div>
       ))}
       {loading && <p>Loading more products...</p>}
-      {renderNoResultsMessage()} {/* 검색 결과가 없을 때 메시지 표시 */}
     </div>
   );
 }

@@ -1,80 +1,133 @@
-import React, { useState } from "react";
-
-import Categories1 from "/imgs/product_categories1.png";
-import Categories2 from "/imgs/product_categories2.png";
-import Categories3 from "/imgs/product_categories3.png";
-import Categories4 from "/imgs/product_categories4.png";
-import Categories5 from "/imgs/product_categories5.png";
-import Categories6 from "/imgs/product_categories6.png";
-import Categories7 from "/imgs/product_categories7.png";
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import ScrollToTop from "../UI/ScrollToTop2";
+import ImageComingSoon from '/imgs/image_coming_soon.png'
+import NoWishlist from '/imgs/no_wishlist.png'
+
 
 function Wishlist() {
 
-	const [selectedButtonId, setSelectedButtonId] = useState(1);
+	const navigate = useNavigate();
+	const [loading, setLoading] = useState(true);
+	const [currentPage, setCurrentPage] = useState(0);
+	const [hasMore, setHasMore] = useState(true);
+	const [wishes, setWishes] = useState([]);
 
-	  // 카테고리 선택 시 필터링
-		const handleCategorySelection = (id) => {
-			setSelectedButtonId(id);
-		};
+	const token = localStorage.getItem("access-token");
 
-	const buttons = [
-		{ id: 1, text: "전체", image: Categories1 },
-		{ id: 2, text: "패션", image: Categories2 },
-		{ id: 3, text: "뷰티", image: Categories3 },
-		{ id: 4, text: "식품", image: Categories4 },
-		{ id: 5, text: "스포츠", image: Categories5 },
-		{ id: 6, text: "가전", image: Categories6 },
-		{ id: 7, text: "건강", image: Categories7 },
-	];
+	useEffect(() => {
+
+		if (!token) {
+			console.log("토큰이 존재하지 않습니다.");
+			setLoading(false); // 토큰이 없는 경우 로딩 상태를 해제합니다.
+			// 추가적으로 사용자를 로그인 페이지로 리다이렉트할 수 있습니다.
+			navigate("/login-page");
+			return;
+		}
+	}, [token, navigate])
+
+	const observer = useRef();
+
+	const lastProductElementRef = useCallback(node => {
+		if (loading) return;
+		if (observer.current) observer.current.disconnect();
+		observer.current = new IntersectionObserver(entries => {
+			if (entries[0].isIntersecting && hasMore) {
+				setCurrentPage(prevPage => prevPage + 1);
+			}
+		});
+		if (node) observer.current.observe(node);
+	}, [loading, hasMore]);
+
+	useEffect(() => {
+		// Reset products when categoryId or sort changes
+		setCurrentPage(0);
+		setWishes([]);
+	}, []);
+
+	useEffect(() => {
+		// Fetch products when currentPage changes
+		loadWishes(currentPage);
+	}, [currentPage]);
+
+	const renderNoResultsMessage = () => {
+		if (!loading & wishes.length === 0) {
+			return (
+				<div className='w-full h-full text-center flex flex-col items-center'>
+					<p className='text-2xl font-cusFont4 pt-[30px]'>상품 목록에서 위시리스트를 추가해보세요!</p>
+					<img src={NoWishlist} className='w-[90%] h-auto'></img>
+					<Link to={`/product`}>
+						<button className='bg-cusColor3 text-white text-2xl mt-[20px] px-[20px] py-[10px] rounded-md'>
+							바로가기
+						</button>
+					</Link>
+				</div>
+
+			)
+		}
+		return null;
+	};
+
+	const loadWishes = async (page) => {
+		setLoading(true);
+		try {
+			const response = await fetch(import.meta.env.VITE_BASE_URL + `/api/wishlists?page=${page}&size=10`,
+				{ headers: { Authorization: `Bearer ${token}` } }
+			);
+			const json = await response.json();
+			if (json.code === 200 && json.data) {
+				const newData = page === 0 ? json.data.data : [...wishes, ...json.data.data.filter(newItem => !wishes.some(wish => wish.productId === newItem.productId))];
+				setWishes(newData);
+				setHasMore(json.data.hasNext === true);
+			} else {
+				console.error('Error fetching wishes:', json.msg);
+			}
+		} catch (error) {
+			console.error('Error fetching wishes:', error);
+		}
+		setLoading(false);
+	};
+
+	const numberWithCommas = (number) => {
+		return number.toLocaleString();
+	};
+
+	const formatReviewNum = (num) => {
+		return num >= 1000 ? "999+" : num;
+	};
+
+
 
 	return (
 		<div className="sub-layer mt-[80px] justify-start min-h-screen overflow-hidden font-cusFont2 bg-white">
-
-			<div className="ml-[13%] text-left w-full">
-				<p className="text-4xl font-cusFont5 mb-[30px]">나의 위시리스트</p>
-			</div>
-
-			<div className="ml-[1%] flex h-[10%] w-[90.5%] justify-center">
-				{/* 카테고리 버튼들 */}
-				{buttons.map((button) => (
-					<div key={button.id} className="flex h-full w-full flex-col items-center">
-						<button
-							className={`flex h-[100%] w-[80%] items-center justify-center rounded-md 
-                ${selectedButtonId === button.id && "bg-cusColor3"}`}
-							onClick={() => handleCategorySelection(button.id)}
-						>
-							<img
-								src={button.image}
-								alt={button.text}
-								className={`h-[90%] w-[90%]
-                  ${selectedButtonId === button.id && "invert"}`}
-							/>
-						</button>
-						<span className="mt-2 text-xs">{button.text}</span>
-					</div>
-				))}
-			</div>
-
-			<div className="my-[20px] flex w-[95.5%] flex-grow flex-wrap justify-center bg-white">
-				{/* 상품 박스들 */}
-				{[1, 2, 3, 4].map((id) => (
-					<div key={id} className="m-2 h-[58.5%] w-[45%] flex-col rounded-md border border-gray-300 text-[12px]">
-						<div className="image-area h-[70%] w-[100%] bg-gray-200 rounded-md">
-							{/* 빈 이미지 대신 사용될 배경 */}
+			<p className="font-cusFont5 text-4xl">나의 위시리스트</p>
+			<div className="mt-4 flex min-h-[63%] w-[95.5%] flex-grow flex-wrap justify-center overflow-y-auto bg-white font-cusfont2">
+				{wishes.map((product, index) => (
+					<div
+						key={product.productId}
+						ref={index === wishes.length - 1 ? lastProductElementRef : null}
+						className="m-2 h-[58.5%] w-[45%] flex-col rounded-md text-[12px]"
+					>
+						{/* 이미지 */}
+						<div className="w-full relative pt-[100%] rounded-md"> {/* paddingTop is same as width to maintain 1:1 aspect ratio */}
+							<Link to={`/product/${product.productId}`}>
+								<img src={product.imageUrl || ImageComingSoon} alt="" className="absolute top-0 left-0 w-[100%] h-[100%] object-cover rounded-md" />
+							</Link>
 						</div>
-						<div className="info-area m-[1px] flex h-[30%] w-[100%] flex-col justify-center p-[10px] pl-2">
-							<p className="name-placeholder bg-gray-200 rounded">상품 이름</p>
-							<p className="price-placeholder bg-gray-200 rounded">가격 정보</p>
-							<p className="review-placeholder flex items-center">
-								<span className="bg-gray-200 rounded w-[12px] h-[12px]"></span>
-								<span className="ml-1 bg-gray-200 rounded">리뷰 정보</span>
-							</p>
+						{/* 상품 정보 */}
+						<div className="m-[1px] flex h-[30%] w-[100%] flex-col justify-center p-[10px] pl-2">
+							<div>
+								<p className='truncate'>{product.productName}</p>
+								<p>{numberWithCommas(product.price)}원</p>
+							</div>
 						</div>
 					</div>
 				))}
+				{loading && <p>Loading more products...</p>}
+				{renderNoResultsMessage()} {/* 검색 결과가 없을 때 메시지 표시 */}
 			</div>
+
 			<ScrollToTop />
 		</div>
 	);

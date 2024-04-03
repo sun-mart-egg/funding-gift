@@ -1,11 +1,20 @@
 import ProgressBar from "./ProgressBar";
 import { useNavigate } from "react-router-dom";
 
-function Card({ img, title, productName, startDate, endDate, progress }) {
+function Card({
+  img,
+  title,
+  productName,
+  startDate,
+  endDate,
+  progress,
+  fundingId,
+  basePath,
+}) {
   const navigate = useNavigate();
   return (
     <div
-      onClick={() => navigate("/friend-funding-detail")}
+      onClick={() => navigate(`${basePath}/${fundingId}`)}
       className="m-1 mx-2 w-[45%] bg-white"
     >
       <div className="product_img_div mt-3 flex justify-center pb-2">

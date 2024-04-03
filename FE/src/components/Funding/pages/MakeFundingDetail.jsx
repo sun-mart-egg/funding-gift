@@ -7,6 +7,7 @@ import useFormDataStore from "../../Store/FormDataStore";
 import { createFunding } from "../api/FundingAPI";
 import { useLocation } from "react-router-dom";
 import useProductStore from "../../Store/ProductStore";
+import useUserStore from "../../Store/UserStore";
 
 function MakeFundingDetail() {
   const [accessToken, setAccessToken] = useState("");
@@ -26,6 +27,15 @@ function MakeFundingDetail() {
     selectedAccount,
   } = useStore(); // Zustand에서 상태를 가져옵니다.
 
+  const { name } = useUserStore();
+
+  useEffect(() => {
+    if (name) {
+      console.log("이름 : ", name);
+      updateFormData("name", name);
+    }
+  }, []);
+
   const CustomInput = forwardRef(({ value, onClick }, ref) => (
     <button
       onClick={() => setShowDatePicker(true)}
@@ -35,7 +45,8 @@ function MakeFundingDetail() {
       선택
     </button>
   ));
-  // product 상태가 변경될 때마다 실행되는 useEffect 그냥 데이터 확인용
+
+  // product 상태가 변경될 때마다 실행되는
   useEffect(() => {
     if (product) {
       console.log("product : " + product.imageUrl);
@@ -407,15 +418,15 @@ function MakeFundingDetail() {
             <>
               <button
                 onClick={handlePrev}
-                style={{ width: "calc(40% - 10px)" }} // 버튼 너비 조정
-                className="common-btn border-cus border border-cusColor3 bg-white text-black "
+                style={{ width: "calc(45%)" }} // 버튼 너비 조정
+                className="common-btn border-cus h-[45px] border border-cusColor3 bg-white text-black "
               >
                 이전
               </button>
               <button
                 onClick={handleNext}
-                style={{ width: "calc(40% - 10px)" }} // 버튼 너비 조정
-                className="common-btn"
+                style={{ width: "calc(45%)" }} // 버튼 너비 조정
+                className=" common-btn h-[45px]"
               >
                 다음
               </button>
@@ -424,7 +435,7 @@ function MakeFundingDetail() {
             <button
               onClick={handleNext}
               style={{ width: "calc(75% )" }} // 버튼 너비 조정
-              className="common-btn"
+              className="common-btn h-[45px]"
             >
               다음
             </button>

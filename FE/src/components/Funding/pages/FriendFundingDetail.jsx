@@ -1,10 +1,12 @@
 import FundingDetailInfo from "../component/FundingDetailInfo";
 import CongratulateList from "../component/CongratulateList";
 import BottomSheet from "../component/BottomSheet";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Route } from "react-router";
 import { useNavigate } from "react-router-dom";
 import { FaLongArrowAltRight } from "react-icons/fa";
+import { useParams } from "react-router-dom";
+import { fetchDetailFunding } from "../api/FundingAPI";
 
 function FriendFundingDetail() {
   const navigate = useNavigate();
@@ -50,13 +52,30 @@ function FriendFundingDetail() {
     },
   ];
 
+  const { fundingId } = useParams(); // URL 파라미터에서 fundingId를 가져옵니다.
+  const [fundingDetail, setFundingDetail] = useState(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen, selectId] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState("");
+
+  useEffect(() => {
+    const token = localStorage.getItem("access-token");
+    if (token && fundingId) {
+      fetchDetailFunding(token, fundingId, setFundingDetail);
+    }
+  }, [fundingId]);
+
+  useEffect(() => {
+    if (fundingDetail) {
+      console.log("Funding Detail Loaded: ", fundingDetail);
+    }
+  }, [fundingDetail]);
 
   const toggleBottomSheet = () => {
     setSelectedMessage(myParticipate);
     setIsBottomSheetOpen(!isBottomSheetOpen);
   };
+
+  if (!fundingDetail) return <div>Loading...</div>;
 
   return (
     <div className="sub-layer font-cusFont3">
@@ -65,12 +84,13 @@ function FriendFundingDetail() {
         className="absolute top-20 flex flex-col items-center justify-start pb-20"
       >
         <FundingDetailInfo
-          friendName={data.frinedName}
-          title={data.title}
-          name={data.name}
-          detail={data.detail}
-          progress={data.progress}
-          price={data.price}
+          friendName={fundingDetail.consumerName}
+          title={fundingDetail.title}
+          name={fundingDetail.productName}
+          detail={fundingDetail.content}
+          progress={0}
+          price={fundingDetail.targetPri}
+          img={fundingDetail.productImage}
         />
         <div id="participateSection" className="m-2 w-full flex-col px-7">
           <div id="subTitle" className="px-2 font-cusFont2 text-[18px]">
@@ -108,14 +128,14 @@ function FriendFundingDetail() {
       {myParticipate.price == null ? (
         <button
           className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
-          onClick={() => navigate("/participate")}
+          onClick={() => navigate(`/participate/${fundingId}`)}
         >
           펀딩 참여하기
         </button>
       ) : (
         <button
           className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
-          onClick={() => navigate("/participate")}
+          onClick={() => navigate(`/participate/${fundingId}`)}
         >
           펀딩 추가 참여하기{" "}
         </button>

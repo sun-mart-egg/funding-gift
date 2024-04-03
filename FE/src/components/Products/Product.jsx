@@ -81,7 +81,7 @@ function Product() {
 	const loadProducts = async (page) => {
 		setLoading(true);
 		try {
-			const response = await fetch(`https://j10d201.p.ssafy.io/api/products?category-id=1&page=${page}&size=10&sort=0`);
+			const response = await fetch(import.meta.env.VITE_BASE_URL + `/api/products?category-id=1&page=${page}&size=10&sort=0`);
 			const json = await response.json();
 			if (json.code === 200 && json.data) {
 				// 중복된 데이터 필터링하여 새 데이터 추가
@@ -176,6 +176,20 @@ function Product() {
 		setSelectedToggle(toggle);
 		handleToggle(toggleType);
 	};
+
+	useEffect(() => {
+  // 페이지 언마운트 시 상태 저장
+  return () => {
+    sessionStorage.setItem("productState", JSON.stringify({
+      keyword,
+      currentPage,
+      products,
+      categoryId,
+      sort,
+      scrollPosition: window.scrollY // 현재 스크롤 위치 저장
+    }));
+  };
+}, [keyword, currentPage, products, categoryId, sort]);
 
 	return (
 		<>
