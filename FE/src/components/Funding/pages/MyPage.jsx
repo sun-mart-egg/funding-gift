@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import egg from "/imgs/egg3.jpg";
 import { IoLogOut } from "react-icons/io5";
 import { AiFillCamera } from "react-icons/ai";
 import axios from "axios";
 import { useNavigate } from "react-router";
+
 
 function MyPage() {
   const navigate = useNavigate();
