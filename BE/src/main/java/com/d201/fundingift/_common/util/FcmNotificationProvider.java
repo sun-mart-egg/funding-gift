@@ -38,8 +38,8 @@ public class FcmNotificationProvider {
     }
 
     private void send(Long consumerId, FcmNotificationDto fcmNotificationDto) {
-        fcmTokenRepository.findByConsumerId(consumerId).ifPresent(
-                t -> sendMessage(buildMessage(t.getFcmTokenValue(), fcmNotificationDto)));
+        fcmTokenRepository.findAllByConsumerId(consumerId).iterator()
+                .forEachRemaining(t -> sendMessage(buildMessage(t.getFcmTokenValue(), fcmNotificationDto)));
     }
 
     private Message buildMessage(String fcmToken, FcmNotificationDto fcmNotificationDto) {
