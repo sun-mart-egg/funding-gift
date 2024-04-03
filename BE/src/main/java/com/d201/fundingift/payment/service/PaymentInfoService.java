@@ -3,7 +3,6 @@ package com.d201.fundingift.payment.service;
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.util.SecurityUtil;
-import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
 import com.d201.fundingift.attendance.entity.Attendance;
 import com.d201.fundingift.attendance.repository.AttendanceRepository;
 import com.d201.fundingift.payment.dto.request.PostPaymentInfoRequest;
@@ -35,6 +34,7 @@ public class PaymentInfoService {
     private final IamportClient iamportClient;
     private final SecurityUtil securityUtil;
 
+    @Transactional
     public IamportResponse<Payment> postPaymentInfo(PostPaymentInfoRequest postPaymentInfoRequest) {
         Long myConsumerId = securityUtil.getConsumerId();
         try {
@@ -67,6 +67,8 @@ public class PaymentInfoService {
             }
 
             PaymentInfo save = paymentInfoRepository.save(PaymentInfo.of(postPaymentInfoRequest.getPaymentInfoUid(), PaymentStatus.PAID, realPrice));
+
+            attendance.getFunding().addSumPrice(price);
 
             attendance.updatePaymentInfo(save);
 
