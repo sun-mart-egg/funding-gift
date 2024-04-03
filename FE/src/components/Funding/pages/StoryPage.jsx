@@ -98,27 +98,34 @@ function StoryPage() {
         />
         <div id="itemInfo" className="w-full text-center">
           <p className="py-2 font-cusFont3 text-sm">
-            {currentStory.name} 님의{" "}
+            {currentStory.consumerName} 님의{" "}
           </p>
           <p className="pb-2 font-cusFont1 text-2xl">{currentStory.title}</p>
           <p className="pb-2 font-cusFont2 text-sm">
             {currentStory.productName}
           </p>
           <p className="pb-2 font-cusFont2 text-sm">
-            {currentStory.targetPrice}
+            {currentStory.targetPrice} 원
           </p>
           <p className="pb-4 font-cusFont2 text-sm">
             {currentStory.anniversaryDate}
           </p>
           <div className="flex w-full items-center justify-center">
             <div id="productProgress" className="h-[18px] w-[80%]">
-              <ProgressBar progress={0} />
+              <ProgressBar
+                progress={
+                  (currentStory.sumPrice / currentStory.targetPrice) * 100
+                }
+              />
             </div>
           </div>
         </div>
       </div>
 
       <button
+        onClick={() =>
+          navigate(`/friend-funding-detail/${currentStory.fundingId}`)
+        }
         style={{ width: "calc(75% )" }} // 버튼 너비 조정
         className="common-btn absolute bottom-10  w-full"
       >

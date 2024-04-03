@@ -162,7 +162,7 @@ function MyFundingDetail() {
           title={fundingDetail.title}
           name={fundingDetail.productName}
           detail={fundingDetail.content}
-          progress={0}
+          progress={(fundingDetail.sumPrice / fundingDetail.targetPrice) * 100}
           price={fundingDetail.targetPrice}
           img={fundingDetail.productImage}
         />

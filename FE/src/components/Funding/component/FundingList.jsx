@@ -16,7 +16,7 @@ function FundingList({ listData }) {
               profileImg={item.profileImageUrl}
               people={item.consumerName}
               title={item.title}
-              progress={0}
+              progress={(item.sumPrice / item.targetPrice) * 100}
               name={item.productName}
               date={item.anniversaryDate}
               img={item.productImage}

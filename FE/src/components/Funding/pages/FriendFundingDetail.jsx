@@ -88,8 +88,8 @@ function FriendFundingDetail() {
           title={fundingDetail.title}
           name={fundingDetail.productName}
           detail={fundingDetail.content}
-          progress={0}
-          price={fundingDetail.targetPri}
+          progress={(fundingDetail.sumPrice / fundingDetail.targetPrice) * 100}
+          price={fundingDetail.targetPrice}
           img={fundingDetail.productImage}
         />
         <div id="participateSection" className="m-2 w-full flex-col px-7">
@@ -125,21 +125,22 @@ function FriendFundingDetail() {
           onClick={"메세지 내용을 볼 수 없습니다."}
         />
       </div>
-      {myParticipate.price == null ? (
-        <button
-          className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
-          onClick={() => navigate(`/participate/${fundingId}`)}
-        >
-          펀딩 참여하기
-        </button>
-      ) : (
-        <button
-          className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
-          onClick={() => navigate(`/participate/${fundingId}`)}
-        >
-          펀딩 추가 참여하기{" "}
-        </button>
-      )}
+      {fundingDetail.fundingStatus === "IN_PROGRESS" &&
+        (myParticipate.price == null ? (
+          <button
+            className="fixed bottom-5 h-[45px] w-[80%] rounded-md bg-cusColor3 text-white"
+            onClick={() => navigate(`/participate/${fundingId}`)}
+          >
+            펀딩 참여하기
+          </button>
+        ) : (
+          <button
+            className="fixed bottom-5 h-[45px] w-[80%] rounded-md bg-cusColor3 text-white"
+            onClick={() => navigate(`/participate/${fundingId}`)}
+          >
+            펀딩 추가 참여하기
+          </button>
+        ))}
 
       <BottomSheet
         isOpen={isBottomSheetOpen}
