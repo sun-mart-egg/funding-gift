@@ -35,7 +35,6 @@ function LoginCallback() {
       // fcm 토큰 요청
       getToken(messaging, { vapidKey: `${vapidKey}` }).then((currentToken) => {
         if (currentToken) {
-          console.log(currentToken);
           saveToken(currentToken);
         } else {
           console.log('No registration token available. Request permission to generate one.');
@@ -77,8 +76,6 @@ function LoginCallback() {
       if (accessToken !== null) {
         localStorage.setItem("access-token", accessToken);
         localStorage.setItem("consumer-id", consumerId);
-        console.log("토큰 : ", accessToken);
-        console.log("멤버 ID : ", consumerId);
       }
 
       // localStroage에서 access-token을 받아왔다면
@@ -86,7 +83,6 @@ function LoginCallback() {
         // nextPage의 값이 main이다 === 기존 회원
         // 메인 페이지로 돌려보낸다.
         if (nextPage === "main") {
-          window.alert("이미 당신은 생선가게 회원😊");
           return navigate("/");
         }
 

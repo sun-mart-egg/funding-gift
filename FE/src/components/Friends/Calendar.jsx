@@ -60,7 +60,7 @@ function Calendar() {
         },
       })
       .then((res) => {
-        console.log(res);
+        console.log("친구들의 펀딩목록 받아오기 성공");
         const formatEvents = res.data.data.map((item) => ({
           title: item.title,
           date: item.anniversaryDate,
@@ -69,7 +69,6 @@ function Calendar() {
           display: "background",
         }));
         setEvents(formatEvents);
-        console.log("친구들의 펀딩목록 받아오기 성공");
 
         // 페이지 접속 시, 오늘 날짜의 이벤트 목록들이 바로 출력되도록 설정
         const today = KoreaTime(); // 한국 날짜 기준으로 받아오기.
