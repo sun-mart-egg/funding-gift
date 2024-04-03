@@ -75,3 +75,7 @@ cloud:
 fcm:
   key:
     path: ${FCM_KEY_PATH}
+
+imp:
+  key: ${IMP_KEY}
+  secret: ${IMP_SECRET_KEY}

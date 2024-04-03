@@ -2,11 +2,9 @@ package com.d201.fundingift.payment.entity;
 
 import com.d201.fundingift._common.entity.BaseTime;
 import com.d201.fundingift.attendance.entity.Attendance;
+import com.d201.fundingift.payment.entity.status.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 
 @Entity
@@ -21,4 +19,27 @@ public class PaymentInfo extends BaseTime {
     @Column(name = "payment_info_id", nullable = false)
     private Long id;
 
+    private String paymentInfoUid; // 결제정보 UUID
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentStatus paymentStatus; // NOT_PAID, PAID, DELETED
+
+    private Integer price;
+
+    @Builder
+    private PaymentInfo(Long id, String paymentInfoUid, PaymentStatus paymentStatus, Integer price) {
+        this.id = id;
+        this.paymentInfoUid = paymentInfoUid;
+        this.paymentStatus = paymentStatus;
+        this.price = price;
+    }
+
+    public static PaymentInfo of(String paymentInfoUid, PaymentStatus paymentStatus, Integer price) {
+        return builder()
+                .paymentInfoUid(paymentInfoUid)
+                .paymentStatus(paymentStatus)
+                .price(price)
+                .build();
+    }
 }

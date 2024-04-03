@@ -9,6 +9,7 @@ import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
 import com.d201.fundingift.attendance.dto.request.UpdateAttendanceRequest;
 import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
 import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
+import com.d201.fundingift.attendance.dto.response.PostAttendanceResponse;
 import com.d201.fundingift.attendance.entity.Attendance;
 import com.d201.fundingift.attendance.repository.AttendanceRepository;
 import com.d201.fundingift.consumer.entity.Consumer;
@@ -41,8 +42,8 @@ public class AttendanceService {
     private final FcmNotificationProvider fcmNotificationProvider;
 
     @Transactional
-    public void postAttendance(PostAttendanceRequest postAttendanceRequest) {
-        Consumer consumer = getConsumer();
+    public PostAttendanceResponse postAttendance(PostAttendanceRequest postAttendanceRequest) {
+        Consumer attendee = getConsumer();
 
         //펀딩 존재 여부
         Funding funding = getFunding(postAttendanceRequest.getFundingId());
@@ -51,25 +52,32 @@ public class AttendanceService {
         checkingFundingStatus(String.valueOf(funding.getFundingStatus()));
 
         //펀딩 참여자의 친구목록에 펀딩 생성자가 있는지 확인
-        checkingFriend(consumer.getId(), funding.getConsumer().getId());
+        checkingFriend(attendee.getId(), funding.getConsumer().getId());
 
         //펀딩 생성자가 본인의 친구만 참여 가능하도록 설정 하였는지 확인
         if(funding.getIsPrivate()) {
             //펀딩 참여자가 펀딩 생성자의 친구인지 확인
-            checkingFriend(funding.getConsumer().getId(), consumer.getId());
+            checkingFriend(funding.getConsumer().getId(), attendee.getId());
         }
 
-        //최소 금액 만족 확인
-        checkingFundingMinPrice(funding.getMinPrice(), postAttendanceRequest.getPrice());
+        /**
+         * 최소 금액 만족 확인 조건
+         * (지불 금액 + 모인금액 > 목표금액)인 경우 예외
+         * (목표금액 - 모인금액 < 최소금액)인 경우 최소 금액 이하라도 가능
+         * 최소금액 이하인 경우 예외
+         */
+        checkingFundingPrice(funding, postAttendanceRequest.getPrice());
 
-        //펀딩한 금액 더하기,목표 금액 달성시 상태 변경, 목표 금액 이상인 경우 예외
-        checkingFundingTargetPrice(postAttendanceRequest.getPrice(), funding);
+        //주문 생성
+        Attendance saved = attendanceRepository.save(Attendance.from(postAttendanceRequest, attendee, funding));
 
-        attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding));
+        attendanceRepository.save(Attendance.from(postAttendanceRequest, attendee, funding));
 
         // 알림
         fcmNotificationProvider.sendToOne(funding.getConsumer().getId(),
-                FcmNotificationDto.of("펀딩 참여 알림", consumer.getName() + "님이 펀딩에 참여했어요!"));
+                FcmNotificationDto.of("펀딩 참여 알림", attendee.getName() + "님이 펀딩에 참여했어요!"));
+
+        return PostAttendanceResponse.from(saved, attendee, funding);
     }
 
     //펀딩 상세 조회의 펀딩 참여자 정보 리스트
@@ -169,8 +177,18 @@ public class AttendanceService {
                 .orElseThrow(() -> new CustomException(ErrorType.FRIEND_NOT_FOUND));
     }
 
-    private void checkingFundingMinPrice(Integer minPrice, Integer price) {
-        if(price < minPrice)
+    private void checkingFundingPrice(Funding funding, Integer price) {
+
+        //(지불 금액 + 모인금액 > 목표금액)인 경우 예외
+        if(price > funding.getTargetPrice() - funding.getSumPrice())
+            throw new CustomException(ErrorType.FUNDING_OVER_TARGET_PRICE);
+
+        //(목표금액 - 모인금액 < 최소금액)인 경우 최소 금액 이하라도 가능
+        if(funding.getTargetPrice() - funding.getSumPrice() < funding.getMinPrice())
+            return;
+
+        //최소금액 이하인 경우 예외
+        if(price < funding.getMinPrice())
             throw new CustomException(ErrorType. FUNDING_NOT_VERIFY_MIN_PRICE);
     }
 
