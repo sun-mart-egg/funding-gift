@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import SearchBar from "../UI/SearchBar";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +11,8 @@ import BannerImage3 from "/imgs/banner_image3.png"
 import HomeProduct from "./HomeProduct"
 import ScrollToTop from "../UI/ScrollToTop";
 
+// import { initializeApp } from 'firebase/app';
+// import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 function Home() {
 
@@ -24,6 +26,16 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+
+  // 권한 요청
+  Notification.requestPermission().then((permission) => {
+    if (permission === 'granted') {
+      console.log('Notification permission granted.');
+    }
+    else {
+      console.log('not granted');
+    }
+  });
 
   const lastProductElementRef = useCallback(node => {
     if (loading) return;
