@@ -24,7 +24,7 @@ public enum ErrorType {
 
     // 액세스 토큰
     TOKEN_NOT_FOUND(HttpStatus.BAD_REQUEST, "Http Header에 토큰이 없습니다."),
-    USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다."),
+    USER_UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없습니다."),
 
     // 사용자
     USER_NOT_FOUND(HttpStatus.BAD_REQUEST, "등록된 사용자가 없습니다."),
@@ -40,6 +40,7 @@ public enum ErrorType {
     ANNIVERSARY_CATEGORY_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 기념일 카테고리를 찾을 수 없습니다."),
     FUNDING_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 펀딩을 찾을 수 없습니다."),
     FUNDING_NOT_MINE(HttpStatus.BAD_REQUEST, "내 펀딩이 아닙니다."),
+    FUNDING_STATUS_NOT_DELETED(HttpStatus.BAD_REQUEST, "펀딩을 삭제할 수 있는 상태가 아닙니다."),
     FUNDING_DURATION_NOT_VALID(HttpStatus.BAD_REQUEST, "펀딩 기간이 7일을 넘습니다."),
     FUNDING_NOT_STARTED(HttpStatus.BAD_REQUEST, "시작하지 않은 펀딩입니다."),
     FUNDING_FINISHED(HttpStatus.BAD_REQUEST, "종료된 펀딩 입니다."),
@@ -50,7 +51,7 @@ public enum ErrorType {
     // 펀딩 참여
     FUNDING_NOT_VERIFY_MIN_PRICE(HttpStatus.BAD_REQUEST,"펀딩 참여 금액이 최소 금액을 만족하지 않습니다."),
     FUNDING_OVER_TARGET_PRICE(HttpStatus.BAD_REQUEST, "펀딩 목표 금액을 초과했습니다."),
-    FUNDING_ATTENDANCE_UNAUTHORIZED(HttpStatus.BAD_REQUEST,"해당 펀딩의 펀딩 참여자 정보를 볼 수 없습니다."),
+    ATTENDANCE_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 펀딩 참여 정보를 찾을 수 없습니다."),
 
     // 상품
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 상품을 찾을 수 없습니다."),

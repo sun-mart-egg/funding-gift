@@ -6,6 +6,7 @@ import com.d201.fundingift._common.response.SliceList;
 import com.d201.fundingift._common.util.FcmNotificationProvider;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
+import com.d201.fundingift.attendance.dto.request.UpdateAttendanceRequest;
 import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
 import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
 import com.d201.fundingift.attendance.entity.Attendance;
@@ -80,14 +81,58 @@ public class AttendanceService {
 
         //내 펀딩, (나의 친구 펀딩 + isPrivate false), (펀딩 생성자의 친한친구가 나 + isPrivate true)일 경우 상세 보기 가능
         if(checkingMyFunding(myConsumerId, funding.getConsumer().getId())) {
-            return getMyAttendanceDetailsResponseSliceList(findAllByFundingId(funding.getId(), pageable));
+            return getMyAttendanceResponseSliceList(findAllByFundingId(funding.getId(), pageable));
         } else if(!funding.getIsPrivate() && checkingMyFriend(myConsumerId, funding.getConsumer().getId())) {
-            return getMyAttendanceDetailsResponseSliceList(findAllByFundingId(funding.getId(), pageable));
+            return getMyAttendanceResponseSliceList(findAllByFundingId(funding.getId(), pageable));
         } else if(funding.getIsPrivate() && checkingIsFavoriteFriend(funding.getConsumer().getId(), myConsumerId)) {
-            return getMyAttendanceDetailsResponseSliceList(findAllByFundingId(funding.getId(), pageable));
+            return getMyAttendanceResponseSliceList(findAllByFundingId(funding.getId(), pageable));
         }
 
-        throw new CustomException(ErrorType.FUNDING_ATTENDANCE_UNAUTHORIZED);
+        throw new CustomException(ErrorType.USER_UNAUTHORIZED);
+    }
+
+    //참여자 상세 정보 조회 - 펀딩 참여자나 펀딩 생성자만 상세 조회 가능
+    public GetAttendanceDetailResponse getAttendanceDetailResponse(Long attendanceId, Long fundingId) {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        //펀딩 존재 여부 확인
+        Funding funding = getFunding(fundingId);
+
+        //펀딩 참여 존재 여부 확인
+        Attendance attendance = getAttendance(attendanceId);
+
+        //펀딩 참여 상세 정보 조회 권한 확인
+        checkingAuthorizedAttendanceDetail(funding, myConsumerId, attendance);
+
+        return GetAttendanceDetailResponse.from(attendance);
+    }
+
+    //펀딩 참여자에게 감사 메시지 작성하기 - 펀딩 생성자만 작성 가능
+    @Transactional
+    public void updateReceiveMessage(UpdateAttendanceRequest updateAttendanceRequest) {
+        Long myConsumerId = securityUtil.getConsumerId();
+
+        //펀딩 존재 여부 확인
+        Funding funding = getFunding(updateAttendanceRequest.getFundingId());
+
+        //펀딩 참여 존재 여부 확인
+        Attendance attendance = getAttendance(updateAttendanceRequest.getAttendanceId());
+
+        //감사 메시지 작성 권한 확인
+        checkingAuthorizeWritingReceiveMessage(funding, myConsumerId);
+
+        attendance.writingReceiveMessage(updateAttendanceRequest.getReceiveMessage());
+    }
+
+    /**
+     * 내부 메서드
+     */
+    private static void checkingAuthorizedAttendanceDetail(Funding funding, Long myConsumerId, Attendance attendance) {
+        log.info("myConsumerId={}, funding.getConsumer={}, attendance.getConsumer={}"
+                , myConsumerId, funding.getConsumer().getId(), attendance.getConsumer().getId());
+        if(!Objects.equals(funding.getConsumer().getId(), myConsumerId)
+                && !Objects.equals(attendance.getConsumer().getId(), myConsumerId))
+            throw new CustomException(ErrorType.USER_UNAUTHORIZED);
     }
 
     private Consumer getConsumer() {
@@ -99,7 +144,7 @@ public class AttendanceService {
                 .orElseThrow(() -> new CustomException(ErrorType.FUNDING_NOT_FOUND));
     }
 
-    private SliceList<GetAttendancesResponse> getMyAttendanceDetailsResponseSliceList(Slice<Attendance> attendances) {
+    private SliceList<GetAttendancesResponse> getMyAttendanceResponseSliceList(Slice<Attendance> attendances) {
         return SliceList.from(attendances.stream().map(GetAttendancesResponse::from).collect(Collectors.toList()), attendances.getPageable(), attendances.hasNext());
     }
 
@@ -153,5 +198,15 @@ public class AttendanceService {
 
         //보려는 펀딩 목록의 대상에 본인이 친구가 아니거나 친한 친구가 아닌 경우 -> false
         return friend.isPresent() && friend.get().getIsFavorite();
+    }
+
+    private Attendance getAttendance(Long attendanceId) {
+        return attendanceRepository.findByIdAndDeletedAtIsNull(attendanceId)
+                .orElseThrow(() -> new CustomException(ErrorType.ATTENDANCE_NOT_FOUND));
+    }
+
+    private static void checkingAuthorizeWritingReceiveMessage(Funding funding, Long myConsumerId) {
+        if(!Objects.equals(funding.getConsumer().getId(), myConsumerId))
+            throw new CustomException(ErrorType.USER_UNAUTHORIZED);
     }
 }
