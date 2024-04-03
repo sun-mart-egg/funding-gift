@@ -1,36 +1,20 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import StoryList from "../component/StoryList";
 import FundingList from "../component/FundingList";
 import ScrollToTopButton from "../../UI/ScrollToTop";
 import { getStoryList } from "../api/StoryAPI";
 import { getFundingFeed } from "../api/FundingAPI";
-
 function FundingMain() {
-  const [storyList, setStoryList] = useState([]);
+  const [storyList, setStoryList] = useState([]); // 친구목록 받아올 배열
+  const [data, setData] = useState([]);
   const [feedData, setFeedData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
 
-  const observer = useRef();
-
-  const lastFeedElementRef = useCallback(
-    (node) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setCurrentPage((prevPage) => prevPage + 1);
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    [loading, hasMore]
-  );
-
-  useEffect(() => {
-    loadFeedData();
-  }, [currentPage]); // eslint-disable-line react-hooks/exhaustive-deps
+  //친구가 만든 펀딩 받아올 배열
+  const [isLoading, setIsLoading] = useState(true);
+  let myData = {
+    people: "신시은",
+    img: "/imgs/egg3.jpg",
+  };
 
   useEffect(() => {
     console.log("업데이트 된 스토리 목록");
@@ -50,21 +34,8 @@ function FundingMain() {
     };
 
     fetchStoryList();
+    getFundingFeed(token, setFeedData);
   }, []);
-
-  const loadFeedData = async () => {
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("access-token");
-      const response = await getFundingFeed(token, currentPage);
-      const newData = response.data.data;
-      setFeedData((prevData) => [...prevData, ...newData]);
-      setHasMore(response.data.hasNext === true);
-    } catch (error) {
-      console.error("Failed to load funding feed:", error);
-    }
-    setLoading(false);
-  };
 
   return (
     <div className="sub-layer relative">
@@ -77,15 +48,13 @@ function FundingMain() {
           />
           <p className="text-center">{myData.people}</p>
         </div>
-        <div className="friendStory flex overflow-x-auto">
+        <div className="friendStory  flex overflow-x-auto">
           <StoryList listData={storyList} />
         </div>
       </div>
 
-      <div className="main absolute top-44 w-full pb-24">
+      <div className="main absolute top-44 w-full  pb-24">
         <FundingList listData={feedData} friendsData={storyList} />
-        {loading && <div>Loading...</div>}
-        <div ref={lastFeedElementRef} />
       </div>
       <ScrollToTopButton className="bottom-[25px]" />
     </div>
