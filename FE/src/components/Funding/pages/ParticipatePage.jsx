@@ -1,33 +1,52 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import FundingDetailInfo from "../component/FundingDetailInfo";
+import { fetchDetailFunding } from "../api/FundingAPI";
+import { useParams } from "react-router-dom";
+import useAttendanceStore from "../../Store/AttendanceStore";
 
 function ParticipatePage() {
   const data = {
-    frinedName: "신시은",
-    title: "EGG IS MY LIFE",
-    name: "계란 토스트",
-    price: 760000,
-    detail:
-      "친구들아 안녕. 곧 내 생일인데 고오급 계란 토스트가 너무 가지고 싶어. 많은 참여 부탁해",
     progress: 70,
-    min: 100,
   };
-
+  const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
+  const { fundingId } = useParams(); // URL 파라미터에서 fundingId를 가져옵니다.
   const [amount, setAmount] = useState("");
   const [error, setError] = useState("");
+  const [fundingDetail, setFundingDetail] = useState(null);
+  const updateUserStore = useAttendanceStore((state) => state.updateUserStore);
 
-  const navigate = useNavigate(); // useNavigate 훅을 사용합니다.
+  useEffect(() => {
+    const token = localStorage.getItem("access-token");
+    if (token && fundingId) {
+      console.log(`Fetching funding details for ID: ${fundingId}`);
+      fetchDetailFunding(token, fundingId, setFundingDetail)
+        .then(() => {
+          console.log("Funding details fetched successfully.");
+        })
+        .catch((error) => {
+          console.error("Error fetching funding details:", error);
+        });
+    }
+    updateUserStore("fundingId", fundingId);
+  }, [fundingId]); // 의존성 배열에 fundingId 추가
+
+  if (!fundingDetail) {
+    return <div>Loading...</div>; // 데이터가 로드되기 전에 로딩 표시
+  }
 
   const handleInputChange = (e) => {
     const value = e.target.value;
-    const max = data.price - data.price * (data.progress / 100);
+    const max =
+      fundingDetail.targetPrice -
+      fundingDetail.targetPrice * (data.progress / 100);
     setAmount(value);
-    if (value && Number(value) < data.min) {
-      setError(`펀딩 금액은 최소 ${data.min} 이상이어야 합니다.`);
+    if (value && Number(value) < fundingDetail.minPrice) {
+      setError(`펀딩 금액은 최소 ${fundingDetail.minPrice} 이상이어야 합니다.`);
     } else if (value && Number(value) > max) {
       setError(`펀딩 금액은 최대 ${max} 이하이어야 합니다.`);
     } else {
+      updateUserStore("price", value);
       setError("");
     }
   };
@@ -36,8 +55,10 @@ function ParticipatePage() {
     // 유효성 검사 후 navigate 실행
     if (
       amount &&
-      Number(amount) >= data.min &&
-      Number(amount) <= data.price - data.price * (data.progress / 100)
+      Number(amount) >= fundingDetail.minPrice &&
+      Number(amount) <=
+        fundingDetail.targetPrice -
+          fundingDetail.targetPrice * (data.progress / 100)
     ) {
       navigate("/pay", { state: { amount } }); // payPage로 이동하면서 amount 값을 state로 전달합니다.
     } else {
@@ -46,52 +67,66 @@ function ParticipatePage() {
     }
   };
 
+  const handleMessageChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "sendMessage") {
+      updateUserStore("sendMessage", value);
+    } else if (name === "sendMessageTitle") {
+      updateUserStore("sendMessageTitle", value);
+    }
+  };
+
   return (
-    <div className="sub-layer">
+    <div className="sub-layer overflow-auto">
       <div
         id="page"
-        className="flex flex-col items-center justify-center overflow-auto pb-4"
+        className=" absolute top-20 flex flex-col items-center justify-center overflow-auto pb-20"
       >
         <FundingDetailInfo
-          friendName={data.frinedName}
-          title={data.title}
-          name={data.name}
-          detail={data.detail}
+          img={fundingDetail.productImage}
+          friendName={fundingDetail.consumerName}
+          title={fundingDetail.title}
+          name={fundingDetail.productName}
+          detail={fundingDetail.content}
           progress={data.progress}
-          price={data.price}
+          price={fundingDetail.targetPrice}
         />
+        <input
+          type="number"
+          placeholder="펀딩할 금액을 입력하세요."
+          className="w-[80%] rounded-lg border border-gray-400 p-1"
+          value={amount}
+          onChange={handleInputChange}
+        />
+
+        <p className="w-[80%] pt-2 text-right text-[12px]">
+          최소 {fundingDetail.minPrice} / 최대 :{" "}
+          {fundingDetail.targetPrice -
+            (fundingDetail.targetPrice * data.progress) / 100}
+        </p>
+        {error && <p className=" text-red-500">{error}</p>}
+        <p className="w-[80%] text-left font-cusFont2 text-[18px]">
+          축하메세지 보내기
+        </p>
+        <input
+          name="sendMessageTitle"
+          placeholder="메세지 제목을 입력해 주세요"
+          className="mt-3 w-[80%] rounded-lg border border-gray-400 p-1"
+          onChange={handleMessageChange}
+        />
+        <textarea
+          name="sendMessage"
+          placeholder="친구에게 축하 메세지를 전달해 보세요."
+          className="p- mt-3 h-32 w-[80%] rounded-lg border border-gray-400"
+          onChange={handleMessageChange}
+        ></textarea>
+        <button
+          onClick={handleParticipate}
+          className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
+        >
+          결제하기
+        </button>
       </div>
-
-      <input
-        type="number"
-        placeholder="펀딩할 금액을 입력하세요."
-        className="w-[80%] rounded-lg border border-gray-400 p-1"
-        value={amount}
-        onChange={handleInputChange}
-      />
-
-      <p className="w-[80%] pt-2 text-right text-[12px]">
-        최소 {data.min} / 최대 :{" "}
-        {data.price - (data.price * data.progress) / 100}
-      </p>
-      {error && <p className=" text-red-500">{error}</p>}
-      <p className="w-[80%] text-left font-cusFont2 text-[18px]">
-        축하메세지 보내기
-      </p>
-      <input
-        placeholder="메세지 제목을 입력해 주세요"
-        className="mt-3 w-[80%] rounded-lg border border-gray-400 p-1"
-      />
-      <textarea
-        placeholder="친구에게 축하 메세지를 전달해 보세요."
-        className="mt-3 w-[80%] rounded-lg border border-gray-400 p-1"
-      ></textarea>
-      <button
-        onClick={handleParticipate}
-        className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
-      >
-        결제하기
-      </button>
     </div>
   );
 }

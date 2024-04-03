@@ -7,11 +7,14 @@ import { AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { fetchMyFundings } from "../api/FundingAPI";
+import { getMyAttendance } from "../api/AttendanceAPI";
 
 function MyFunding() {
   const navigate = useNavigate();
   const [buttonSelected, setButtonSelected] = useState(true);
   const [myFundings, setMyFundings] = useState([]); // API로부터 받은 데이터를 저장할 상태
+  const [friendFundings, setFriendFundings] = useState([]); // API로부터 받은 데이터를 저장할 상태
+
   const [isLoading, setIsLoading] = useState(true);
 
   const [userInfo, setUserInfo] = useState({
@@ -73,8 +76,13 @@ function MyFunding() {
       navigate("/login-page");
       return;
     }
+    //내가 만든 펀딩 정보 불러오기
     if (buttonName === "myFunding") {
       fetchMyFundings(token, setMyFundings, setIsLoading);
+    }
+    //내가 참여한 펀딩 정보 불러오기
+    if (buttonName === "friendsFunding") {
+      getMyAttendance(token, setFriendFundings);
     }
   };
 
@@ -137,7 +145,7 @@ function MyFunding() {
               : `w-3/6 border-b border-t border-cusColor3 p-4 text-xs`
           }
         >
-          내가 참여한 펀딩 ({data2.length})
+          내가 참여한 펀딩 ({friendFundings.length})
         </button>
       </div>
 
@@ -153,7 +161,7 @@ function MyFunding() {
             <CardList data={myFundings} basePath="/my-funding-detail" />
           )
         ) : (
-          <CardList data={data2} />
+          <CardList data={friendFundings} basePath="/friend-funding-detail" />
         )}
       </div>
       <button
@@ -165,31 +173,5 @@ function MyFunding() {
     </div>
   );
 }
-
-let data2 = [
-  {
-    id: 0,
-    title: "GAME IS MY LIFE",
-    name: "닌텐도 스위치",
-    date: "2024.4.15 ~ 2024.4.22",
-    progress: 10,
-  },
-
-  {
-    id: 1,
-    title: "HEALTH IS MY LIFE",
-    name: "단백질 세트",
-    date: "2024.4.15 ~ 2024.4.22",
-    progress: 70,
-  },
-
-  {
-    id: 2,
-    title: "MUSIC IS MY LIFE",
-    name: "에어팟 맥스",
-    date: "2024.4.15 ~ 2024.4.22",
-    progress: 40,
-  },
-];
 
 export default MyFunding;
