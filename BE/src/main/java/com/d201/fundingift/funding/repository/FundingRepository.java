@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,5 +64,11 @@ public interface FundingRepository extends JpaRepository<Funding, Long> {
 
     @Query("SELECT f FROM Funding f WHERE f.consumer.id = :consumerId AND f.fundingStatus = 'IN_PROGRESS' AND f.deletedAt IS NULL")
     List<Funding> findInProgressFundingsByConsumerId(@Param("consumerId") Long consumerId);
+
+    @Query("select f from Funding f where f.fundingStatus = :fundingStatus and f.startDate = :date and f.deletedAt IS NULL")
+    List<Funding> findAllByFundingStatusAndStartDateAndDeletedAtIsNull(@Param("fundingStatus")FundingStatus fundingStatus, @Param("date") LocalDate date);
+
+    @Query("select f from Funding f where f.fundingStatus = :fundingStatus and f.startDate = :date and f.deletedAt IS NULL")
+    List<Funding> findAllByFundingStatusAndEndDateAndDateAndDeletedAtIsNull(@Param("fundingStatus")FundingStatus fundingStatus, @Param("date") LocalDate date);
 
 }
