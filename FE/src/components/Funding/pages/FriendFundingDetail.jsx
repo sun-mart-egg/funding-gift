@@ -89,7 +89,7 @@ function FriendFundingDetail() {
           name={fundingDetail.productName}
           detail={fundingDetail.content}
           progress={0}
-          price={fundingDetail.targetPri}
+          price={fundingDetail.targetPrice}
           img={fundingDetail.productImage}
         />
         <div id="participateSection" className="m-2 w-full flex-col px-7">
