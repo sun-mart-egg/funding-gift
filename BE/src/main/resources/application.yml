@@ -72,6 +72,9 @@ cloud:
     stack:
       auto: false
 
+fcm:
+  key:
+    path: ${FCM_KEY_PATH}
 
 imp:
   key: ${IMP_KEY}

@@ -41,3 +41,6 @@ out/
 ._.DS_Store
 **/.DS_Store
 **/._.DS_Store
+
+### firebase secret-key ###
+src/main/resources/funding-gift-firebase-adminsdk-rch27-d435d6a4c1.json
