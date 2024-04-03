@@ -9,6 +9,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 
+import java.time.LocalDate;
+
 @Entity
 @Getter
 @ToString

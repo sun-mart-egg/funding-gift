@@ -25,6 +25,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -76,6 +77,8 @@ public class AttendanceService {
         // 알림
         fcmNotificationProvider.sendToOne(funding.getConsumer().getId(),
                 FcmNotificationDto.of("펀딩 참여 알림", attendee.getName() + "님이 펀딩에 참여했어요!"));
+
+        saved.updateDeletedAt(LocalDateTime.now());
 
         return PostAttendanceResponse.from(saved, attendee, funding);
     }

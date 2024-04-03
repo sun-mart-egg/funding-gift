@@ -40,8 +40,10 @@ public class PaymentInfoService {
         try {
             //아엠포트 결제 단건 조회
             IamportResponse<Payment> paymentIamportResponse = iamportClient.paymentByImpUid(postPaymentInfoRequest.getPaymentInfoUid());
-            Attendance attendance = attendanceRepository.findByIdAndDeletedAtIsNull(postPaymentInfoRequest.getAttendanceId())
+            Attendance attendance = attendanceRepository.findById(postPaymentInfoRequest.getAttendanceId())
                     .orElseThrow(() -> new CustomException(ErrorType.ATTENDANCE_NOT_FOUND));
+
+            attendance.updateDeletedAt(null);
 
             // 결제 완료가 아니면
             if(!paymentIamportResponse.getResponse().getStatus().equals("paid")) {
