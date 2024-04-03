@@ -38,18 +38,13 @@ function Calendar() {
   const handleCurDate = (dateInfo) => {
     // 연도와 월의 형식이 2024-04-02로 들어오는데
     // "-"를 기준으로 나눈 후에, 10진수의 정수로 반환한다.
-    let year = parseInt(dateInfo.startStr.split("-")[0], 10);
-    let month = parseInt(dateInfo.startStr.split("-")[1], 10);
-    month += 1; // 월 데이터가 0 부터 11로 되어있다. 그래서 1을 더해줘야 한다.
-    if (month > 12) {
-      // 12월 넘어가면
-      month = 1; // 1월로 초기화
-      year += 1; // 1년 추가
-    }
-    const formatMonth = month < 10 ? `0${month}` : `${month}`; // 월을 01, 02 이런식으로 표현하도록 변경
-    console.log(year, month, formatMonth)
+    let year = parseInt(dateInfo.startStr.split("-")[0], 10); // 년도
+    let month = parseInt(dateInfo.startStr.split("-")[1], 10) // 월
+    let day = parseInt(KoreaTime().split("-")[2], 10) // 일
+    
+    console.log(year, month, day)
     setCurYear(year);
-    setCurMonth(formatMonth);
+    setCurMonth(month);
   };
 
   // axios 요청을 통한 친구들의 펀딩 목록 가져오기
@@ -99,6 +94,7 @@ function Calendar() {
     });
     setSelectedEvents(ThisDate);
     setSelectedDay(clickedDate);
+    console.log(clickedDate)
   };
 
   // 캘린더 header에서 'today' 버튼 선택 시 오늘 날짜로 focus
@@ -139,6 +135,7 @@ function Calendar() {
             return "";
           }}
           eventBackgroundColor="#FD7676"
+          showNonCurrentDates={false}
         />
       </div>
 
