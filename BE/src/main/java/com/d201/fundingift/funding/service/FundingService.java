@@ -83,7 +83,7 @@ public class FundingService {
 
         // 알림
         fcmNotificationProvider.sendToMany(
-                getConsumerIdsByToConsumerIdAndFavorite(consumer.getId()),
+                getConsumersByToConsumerIdAndFavorite(consumer.getId()),
                 FcmNotificationDto.of("펀딩 등록 알림", consumer.getName() + "님이 펀딩을 등록했어요!")
         );
     }
@@ -394,9 +394,12 @@ public class FundingService {
         return "PRE_PROGRESS";
     }
 
-    private List<Long> getConsumerIdsByToConsumerIdAndFavorite(Long toConsumerId) {
-        return friendRepository.findAllByToConsumerIdAndIsFavorite(toConsumerId, true)
-                .stream().map(Friend::getConsumerId).collect(Collectors.toList());
+    private List<Consumer> getConsumersByToConsumerIdAndFavorite(Long toConsumerId) {
+        List<Long> consumerIds =  friendRepository.findAllByToConsumerIdAndIsFavorite(toConsumerId, true)
+                .stream().map(Friend::getConsumerId).toList();
+        return consumerIds.stream()
+                .map(id -> consumerRepository.findByIdAndDeletedAtIsNull(id).orElse(null))
+                .collect(Collectors.toList());
     }
 
 }

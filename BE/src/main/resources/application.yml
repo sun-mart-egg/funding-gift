@@ -75,4 +75,3 @@ cloud:
 fcm:
   key:
     path: ${FCM_KEY_PATH}
-

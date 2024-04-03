@@ -2,6 +2,7 @@ package com.d201.fundingift._common.util;
 
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.dto.FcmNotificationDto;
+import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.fcmtoken.repository.FcmTokenRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -26,9 +27,13 @@ public class FcmNotificationProvider {
         send(consumerId, fcmNotificationDto);
     }
 
-    public void sendToMany(List<Long> consumerIds, FcmNotificationDto fcmNotificationDto) {
-        for (Long consumerId : consumerIds) {
-            send(consumerId, fcmNotificationDto);
+    public void sendToMany(List<Consumer> consumers, FcmNotificationDto fcmNotificationDto) {
+        for (Consumer consumer : consumers) {
+            if (consumer == null) {
+                continue;
+            }
+            log.info("send to: {}", consumer.getId());
+            send(consumer.getId(), fcmNotificationDto);
         }
     }
 
