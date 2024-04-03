@@ -50,6 +50,13 @@ function InputProfile() {
   const handleBirthday = (event) => {
     const inputBirthday = event.target.value;
     setMyBirthday(inputBirthday);
+    // 생년월일 8자리에서 연도와 생일을 추출
+    const birthyear = inputBirthday.toString().slice(0, 4)
+    const birthday = inputBirthday.toString().slice(4)
+    
+    // store에 저장
+    updateUserStore("birthyear", birthyear)
+    updateUserStore("birthday", birthday)
     if (!/^\d{0,8}$/.test(inputBirthday) || inputBirthday.length !== 8) {
       setBirthErr("생년월일을 올바르게 입력해주세요.");
     } else {
@@ -143,18 +150,18 @@ function InputProfile() {
         </div>
       </div>
 
-      {nameErr && <p className="signup-font text-red-500">{nameErr}</p>}
-      {genderErr && <p className="signup-font text-red-500">{genderErr}</p>}
+      {nameErr && <p className="text-red-500 signup-font">{nameErr}</p>}
+      {genderErr && <p className="text-red-500 signup-font">{genderErr}</p>}
 
       <input
-        type="text"
+        type="number"
         placeholder="생년/월/일 8자리를 입력해주세요"
         className="common-btn signup-font h-[50px] w-[330px] border-[2.5px] bg-white p-3"
         value={myBirthDay}
         onChange={handleBirthday}
         required
       />
-      {birthErr && <p className="signup-font text-red-500">{birthErr}</p>}
+      {birthErr && <p className="text-red-500 signup-font">{birthErr}</p>}
 
       <input
         type="text"
@@ -164,7 +171,7 @@ function InputProfile() {
         onChange={handleEmail}
         required
       />
-      {emailErr && <p className="signup-font text-red-500">{emailErr}</p>}
+      {emailErr && <p className="text-red-500 signup-font">{emailErr}</p>}
 
       <input
         type="number"
@@ -174,7 +181,7 @@ function InputProfile() {
         onChange={handlePhoneNumber}
         required
       />
-      {phoneNumErr && <p className="signup-font text-red-500">{phoneNumErr}</p>}
+      {phoneNumErr && <p className="text-red-500 signup-font">{phoneNumErr}</p>}
 
       <button
         className="common-btn h-full max-h-[50px] w-full max-w-[284px]"
@@ -182,7 +189,7 @@ function InputProfile() {
       >
         다음
       </button>
-      {totalErr && <p className="signup-font text-red-500">{totalErr}</p>}
+      {totalErr && <p className="text-red-500 signup-font">{totalErr}</p>}
     </div>
   );
 }
