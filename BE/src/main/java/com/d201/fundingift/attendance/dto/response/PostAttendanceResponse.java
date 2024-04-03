@@ -28,14 +28,18 @@ public class PostAttendanceResponse {
     @Schema(description = "펀딩 참여자 이메일", example = "asdf@naver.com")
     private String email;
 
+    @Schema(description = "펀딩 참여자 전화번호", example = "01012341234")
+    private String phoneNumber;
+
     @Builder
-    private PostAttendanceResponse(Long attendanceId, String fundingName, Integer price, Long attendeeId, String attendeeName, String email) {
+    private PostAttendanceResponse(Long attendanceId, String fundingName, Integer price, Long attendeeId, String attendeeName, String email, String phoneNumber) {
         this.attendanceId = attendanceId;
         this.fundingName = fundingName;
         this.price = price;
         this.attendeeId = attendeeId;
         this.attendeeName = attendeeName;
         this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
     public static PostAttendanceResponse from(Attendance attendance, Consumer attendee, Funding funding) {
@@ -46,6 +50,7 @@ public class PostAttendanceResponse {
                 .attendeeId(attendee.getId())
                 .attendeeName(attendee.getName())
                 .email(attendee.getEmail())
+                .phoneNumber(attendee.getPhoneNumber())
                 .build();
     }
 }
