@@ -72,7 +72,7 @@ function FriendFundingDetail() {
           price={fundingDetail.targetPrice}
           img={fundingDetail.productImage}
         />
-        <div id="participateSection" className="m-2 w-full flex-col px-7">
+        {/* <div id="participateSection" className="m-2 w-full flex-col px-7">
           <div id="subTitle" className="px-2 font-cusFont2 text-[18px]">
             <p>내가 참여한 펀딩</p>
           </div>
@@ -98,7 +98,7 @@ function FriendFundingDetail() {
               <FaLongArrowAltRight className="m-auto text-cusColor3" />
             </button>
           </div>
-        )}
+        )} */}
 
         <CongratulateList
           listData={attendeeList}
