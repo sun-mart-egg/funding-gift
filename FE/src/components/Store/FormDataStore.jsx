@@ -1,5 +1,5 @@
 // formDataStore.js
-import create from "zustand";
+import { create } from "zustand";
 
 const useFormDataStore = create((set) => ({
   formData: {
