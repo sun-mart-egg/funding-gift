@@ -8,6 +8,7 @@ import { createFunding } from "../api/FundingAPI";
 import { useLocation } from "react-router-dom";
 import useProductStore from "../../Store/ProductStore";
 import useUserStore from "../../Store/UserStore";
+import { getAnniversaryList } from "../api/Anniversary";
 
 function MakeFundingDetail() {
   const [accessToken, setAccessToken] = useState("");
@@ -18,6 +19,8 @@ function MakeFundingDetail() {
   const { formData, updateFormData } = useFormDataStore();
   const { product, setProduct } = useProductStore();
   const { option, setOption } = useProductStore();
+  const [anniversaryCategory, setAnniversaryCategory] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const {
     contentIndex,
@@ -27,6 +30,33 @@ function MakeFundingDetail() {
     selectedAccount,
   } = useStore(); // Zustand에서 상태를 가져옵니다.
 
+  // 기념일 카테고리 변경 처리
+  const handleCategoryChange = (event) => {
+    const newCategory = event.target.value;
+    setSelectedCategory(newCategory);
+    updateFormData("anniversaryCategoryId", newCategory); // Zustand 스토어 업데이트
+  };
+
+  const handleAnniversaryChange = (e) => {
+    const newAnniversaryDate = e.target.value;
+    updateFormData("anniversaryDate", newAnniversaryDate); // Zustand 상태 업데이트
+  };
+
+  // 드롭다운 렌더링 함수
+  const renderCategoryDropdown = () => (
+    <select
+      value={selectedCategory}
+      onChange={handleCategoryChange}
+      className="mt-2 h-8 w-full rounded-md border border-gray-400 p-2 text-xs"
+    >
+      <option value="">기념일을 선택하세요</option>
+      {anniversaryCategory.map((category, index) => (
+        <option key={index} value={category.anniversaryCategoryId}>
+          {category.anniversaryCategoryName}
+        </option>
+      ))}
+    </select>
+  );
   const { name } = useUserStore();
 
   useEffect(() => {
@@ -35,6 +65,10 @@ function MakeFundingDetail() {
       updateFormData("name", name);
     }
   }, []);
+
+  useEffect(() => {
+    console.log("기념일 카테고리? : ", anniversaryCategory[0]);
+  }, [anniversaryCategory]);
 
   const CustomInput = forwardRef(({ value, onClick }, ref) => (
     <button
@@ -75,6 +109,8 @@ function MakeFundingDetail() {
         console.error("Error fetching product:", error);
       }
     };
+
+    getAnniversaryList(token, setAnniversaryCategory);
 
     // product가 null이면 fetchProduct 실행
     if (!product && location.state.params) {
@@ -138,19 +174,43 @@ function MakeFundingDetail() {
   // 날짜 범위 변경 핸들러
   const handleDateChange = (dates) => {
     const [start, end] = dates;
-    updateFormData("startDate", start);
-    updateFormData("endDate", end);
+    if (start instanceof Date) {
+      const startInKorean = toKoreanTimeZone(start);
+      updateFormData("startDate", startInKorean);
+    } else {
+      updateFormData("startDate", null);
+    }
+    if (end instanceof Date) {
+      const endInKorean = toKoreanTimeZone(end);
+      updateFormData("endDate", endInKorean);
+    } else {
+      updateFormData("endDate", null);
+    }
   };
+
+  // 날짜를 한국 시간대로 변환하는 함수
+  const toKoreanTimeZone = (date) => {
+    if (date instanceof Date) {
+      const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+      return new Date(date.getTime() + userTimezoneOffset + 9 * 60 * 60 * 1000);
+    }
+    return date;
+  };
+
+  // DatePicker 컴포넌트에서 사용할 날짜 표시 형식을 변환하는 함수
   const getFormattedDate = (date) => {
     if (!date) return "";
 
-    const options = {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      weekday: "long",
-    };
-    return date.toLocaleDateString("ko-KR", options);
+    const koreanDate = toKoreanTimeZone(date);
+
+    return koreanDate
+      .toLocaleDateString("ko-KR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      })
+      .replace(/. /g, "-")
+      .replace(".", "");
   };
 
   // 현재 보여줄 컨텐츠를 결정하는 함수
@@ -162,7 +222,7 @@ function MakeFundingDetail() {
     switch (contentIndex) {
       case 0:
         return (
-          <div className="flex flex-col items-center justify-center text-center font-cusFont3">
+          <div className=" flex flex-col items-center justify-center text-center font-cusFont3 focus:border-cusColor3">
             <div
               id="imgSection"
               className="mb-8 flex w-2/3 items-center justify-center text-center"
@@ -221,14 +281,16 @@ function MakeFundingDetail() {
           <div className="text-md flex flex-col  justify-center">
             <div id="card-content">
               <div id="anniversaryDate" className="mb-6 ">
-                <div className=" flex justify-between">
+                <div className=" flex-col justify-between">
                   <p>기념일</p>
-                  <button
-                    className="common-btn h-6 bg-gray-500 text-xs"
-                    onClick={() => navigate("/anniversary-list")}
-                  >
-                    변경
-                  </button>
+                  {renderCategoryDropdown()}
+                  <input
+                    type="date"
+                    name="anniversaryDate"
+                    value={formData.anniversaryDate || ""}
+                    onChange={handleAnniversaryChange} // 이벤트 핸들러 설정
+                    className="mt-1 h-8 w-full rounded-md border border-[#9B9B9B] px-2 text-xs focus:border-cusColor3 focus:outline-none"
+                  />
                 </div>
                 <div className="mt-2 text-xs">
                   {selectedAnniversary && (
@@ -248,13 +310,19 @@ function MakeFundingDetail() {
                   <p>펀딩 기간</p>
                   <DatePicker
                     ref={ref}
-                    selected={formData.startDate}
+                    selected={
+                      formData.startDate ? new Date(formData.startDate) : null
+                    }
                     onChange={handleDateChange}
                     onClickOutside={() => setShowDatePicker(false)}
                     open={showDatePicker}
                     selectsRange={true}
-                    startDate={formData.startDate}
-                    endDate={formData.endDate}
+                    startDate={
+                      formData.startDate ? new Date(formData.startDate) : null
+                    }
+                    endDate={
+                      formData.endDate ? new Date(formData.endDate) : null
+                    }
                     dateFormat="yyyy/MM/dd"
                     customInput={<CustomInput />}
                     className="p-2"
@@ -276,7 +344,7 @@ function MakeFundingDetail() {
                   name="minPrice"
                   value={formData.minPrice || ""}
                   placeholder="최소 금액을 입력해주세요."
-                  className="mt-2 h-7 w-full rounded-md border border-gray-400 p-2 text-xs placeholder:text-xs"
+                  className="mt-2 h-8 w-full rounded-md border border-gray-400 p-2 text-xs placeholder:text-xs"
                   onChange={handleInputChange}
                 />
               </div>
