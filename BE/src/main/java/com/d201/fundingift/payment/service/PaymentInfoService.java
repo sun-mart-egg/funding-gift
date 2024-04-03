@@ -43,8 +43,6 @@ public class PaymentInfoService {
             Attendance attendance = attendanceRepository.findById(postPaymentInfoRequest.getAttendanceId())
                     .orElseThrow(() -> new CustomException(ErrorType.ATTENDANCE_NOT_FOUND));
 
-            attendance.updateDeletedAt(null);
-
             // 결제 완료가 아니면
             if(!paymentIamportResponse.getResponse().getStatus().equals("paid")) {
                 // 펀딩 참여 삭제
@@ -71,6 +69,7 @@ public class PaymentInfoService {
             PaymentInfo save = paymentInfoRepository.save(PaymentInfo.of(postPaymentInfoRequest.getPaymentInfoUid(), PaymentStatus.PAID, realPrice));
 
             attendance.getFunding().addSumPrice(price);
+            attendance.updateDeletedAt(null);
 
             attendance.updatePaymentInfo(save);
 
