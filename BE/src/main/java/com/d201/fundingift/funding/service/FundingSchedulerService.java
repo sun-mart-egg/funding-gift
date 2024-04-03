@@ -25,9 +25,23 @@ public class FundingSchedulerService {
     @Scheduled(cron = "0 8 2 * * ?", zone = "Asia/Seoul") //테스트용
     public void updateFundingStatusInProgress() {
         log.info("start updateFundingStatusInProgress");
-        List<Funding> fundings = fundingRepository.findAllByFundingStatusAndDateAndDeletedAtIsNull(FundingStatus.PRE_PROGRESS, LocalDate.now());
+        List<Funding> fundings = fundingRepository.findAllByFundingStatusAndStartDateAndDeletedAtIsNull(FundingStatus.PRE_PROGRESS, LocalDate.now());
 
         for(Funding f : fundings)
             f.changeStatus(String.valueOf(FundingStatus.IN_PROGRESS));
+    }
+
+    @Transactional
+//    @Scheduled(cron = "0 0 0 * * ?", zone = "Asia/Seoul") //실제 서비스용
+    @Scheduled(cron = "0 48 2 * * ?", zone = "Asia/Seoul") //테스트용
+    public void updateFundingStatusSuccessOrFail() {
+        log.info("start updateFundingStatusSuccessOrFail");
+        List<Funding> fundings = fundingRepository.findAllByFundingStatusAndEndDateAndDateAndDeletedAtIsNull(FundingStatus.IN_PROGRESS, LocalDate.now().minusDays(1));
+
+        for(Funding f : fundings)
+            if(f.getSumPrice() < f.getTargetPrice())
+                f.changeStatus(String.valueOf(FundingStatus.FAIL));
+            else
+                f.changeStatus(String.valueOf(FundingStatus.SUCCESS));
     }
 }
