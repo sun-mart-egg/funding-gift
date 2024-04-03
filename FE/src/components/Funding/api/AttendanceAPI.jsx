@@ -80,4 +80,28 @@ async function getFundingAttendee(token, fundingId, setData) {
   }
 }
 
-export { createAttendance, getMyAttendance, getFundingAttendee };
+//펀딩 참여 디테일 api
+async function getAttendanceDetail(token, fundingId, attendanceId, setData) {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/attendance/detail`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          "attendance-id": attendanceId, // 수정된 부분
+          "funding-id": fundingId,
+        },
+      },
+    );
+    console.log("내 펀딩 참여 디테일 응답 : " + response.data.data);
+    setData(response.data.data);
+  } catch (error) {}
+}
+export {
+  createAttendance,
+  getMyAttendance,
+  getFundingAttendee,
+  getAttendanceDetail,
+};
