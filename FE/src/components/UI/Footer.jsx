@@ -63,11 +63,15 @@ function Footer() {
 
   const handleIconClick = (path) => {
     // 프로필 아이콘 눌렀을 때
-    if (path === "/profile") {
+    if (path === "/my-funding" || "/funding") {
 
       // 토큰이 있는 경우 내 프로필로 이동시킴
-      if (localStorage.getItem("access-token")) {
-        navigate("/my-page")
+      if (localStorage.getItem("access-token" && path === "/my-funding")) {
+        navigate("/my-funding")
+      }
+
+      else if (localStorage.getItem("access-token" && path === "/funding")) {
+        navigate("/funding")
       }
       // 토큰 없으면 로그인 하라고 보내버림
       else {
