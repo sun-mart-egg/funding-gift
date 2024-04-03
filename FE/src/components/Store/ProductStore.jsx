@@ -1,5 +1,5 @@
 // Store/ProductStore.js
-import create from "zustand";
+import { create } from "zustand";
 
 const useProductStore = create((set) => ({
   product: null,
