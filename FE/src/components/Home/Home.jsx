@@ -12,7 +12,7 @@ import HomeProduct from "./HomeProduct"
 import ScrollToTop from "../UI/ScrollToTop";
 
 import { initializeApp } from 'firebase/app';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { getMessaging, onMessage } from 'firebase/messaging';
 
 // import { initializeApp } from 'firebase/app';
 // import { getMessaging, getToken, onMessage } from 'firebase/messaging';
@@ -128,13 +128,13 @@ function Home() {
           className="relative mr-[1.5%] mt-[15px] h-[100px] w-[50%] rounded-md bg-cusColor4 p-5 text-center"
         >
           <img src={CatIcon} alt="" className="absolute top-[5%] left-1/2 transform -translate-x-1/2 w-[68px] h-[70.5px]" />
-          <p className="text-xs absolute left-0 right-0 bottom-2 w-full">펀딩 만들러 가기</p>
+          <p className="absolute left-0 right-0 w-full text-xs bottom-2">펀딩 만들러 가기</p>
         </div>
         <div
           className="relative ml-[1.5%] mt-[15px] h-[100px] w-[50%] rounded-md bg-cusColor3 p-5 text-center"
         >
           <img src={FishIcon} alt="" className="absolute top-[5%] left-1/2 transform -translate-x-1/2 w-[92px] h-[71px]" />
-          <p className="text-xs absolute left-0 right-0 bottom-2 w-full">펀딩 참여하러 가기</p>
+          <p className="absolute left-0 right-0 w-full text-xs bottom-2">펀딩 참여하러 가기</p>
         </div>
       </div>
 
