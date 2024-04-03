@@ -49,6 +49,7 @@ public class SecurityConfig {
                         .requestMatchers(antMatcher("/api/consumers/**")).authenticated()
                         .requestMatchers(antMatcher("/api/funding/**")).authenticated()
                         .requestMatchers(antMatcher("/api/attendance/**")).authenticated()
+                        .requestMatchers(antMatcher("/api/payment-info/**")).authenticated()
                         .requestMatchers(antMatcher("/h2-console/**")).permitAll()
                         .requestMatchers(antMatcher("/swagger-ui/")).permitAll()
                         .anyRequest().permitAll()
