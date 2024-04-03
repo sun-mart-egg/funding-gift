@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { initializeApp } from 'firebase/app';
-import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { getMessaging, getToken } from 'firebase/messaging';
 
 function LoginCallback() {
   const [searchParams] = useSearchParams();
@@ -46,6 +46,9 @@ function LoginCallback() {
 
       // fcm 토큰 저장 -> 서버에.
       const saveToken = async (token) => {
+        
+        // 위에서 요청한 fcm 토큰을 localStorage에도 저장
+        localStorage.setItem("fcm-token", token)
         const postData = {
           fcmToken: token
         };
