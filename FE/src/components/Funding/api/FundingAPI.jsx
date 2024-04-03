@@ -29,7 +29,7 @@ async function fetchMyFundings(token, setMyFundings, setIsLoading) {
         },
         params: {
           page: 0,
-          size: 8,
+          size: 100,
         },
       },
     );
@@ -48,9 +48,8 @@ async function fetchFriendFunding(friendId, token, setData) {
       const params = new URLSearchParams({
         "friend-consumer-id": friendId,
         page: "0",
-        size: "8",
-        sort: "createdAt",
-        sort: "DESC", // 정렬 파라미터 수정
+        size: "100",
+        sort: "",
       });
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/api/fundings/friend-fundings?${params.toString()}`,
@@ -126,7 +125,7 @@ async function getFundingFeed(token, setData) {
         },
         params: {
           page: 0,
-          size: 8,
+          size: 100,
           sort: "", // sort가 필요하다면 'columnName,asc' 또는 'columnName,desc' 형식의 값을 설정하세요.
         },
       },

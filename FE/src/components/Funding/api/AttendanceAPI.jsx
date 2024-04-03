@@ -56,4 +56,52 @@ async function getMyAttendance(token, setData) {
   }
 }
 
-export { createAttendance, getMyAttendance };
+//내 펀딩에 참여한 리스트 api
+async function getFundingAttendee(token, fundingId, setData) {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/attendance/list`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          "funding-id": fundingId, // 수정된 부분
+          page: 0,
+          size: 8,
+          sort: "", // sort가 필요하다면 'columnName,asc' 또는 'columnName,desc' 형식의 값을 설정하세요.
+        },
+      },
+    );
+    console.log("내 펀딩에 참여한 목록 응답 : " + response.data.data.data);
+    setData(response.data.data.data);
+  } catch (error) {
+    console.error("내 펀딩에 참여한 펀딩 목록 불러오기 에러", error);
+  }
+}
+
+//펀딩 참여 디테일 api
+async function getAttendanceDetail(token, fundingId, attendanceId, setData) {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/api/attendance/detail`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          "attendance-id": attendanceId, // 수정된 부분
+          "funding-id": fundingId,
+        },
+      },
+    );
+    console.log("내 펀딩 참여 디테일 응답 : " + response.data.data);
+    setData(response.data.data);
+  } catch (error) {}
+}
+export {
+  createAttendance,
+  getMyAttendance,
+  getFundingAttendee,
+  getAttendanceDetail,
+};

@@ -6,6 +6,8 @@ import { fetchDetailFunding } from "../api/FundingAPI";
 import { useParams } from "react-router-dom";
 import { deleteFunding } from "../api/FundingAPI";
 import { useNavigate } from "react-router-dom";
+import { getFundingAttendee } from "../api/AttendanceAPI";
+import { getAttendanceDetail } from "../api/AttendanceAPI";
 
 function MyFundingDetail() {
   const navigate = useNavigate();
@@ -97,11 +99,14 @@ function MyFundingDetail() {
   const [isBottomSheetOpen, setIsBottomSheetOpen, selectId] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState("");
   const [messageList, setMessageList] = useState(MessageList);
+  const [attendeeList, setAttendeeList] = useState([]);
+  const [attendanceDetail, setAttendanceDetail] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("access-token");
     if (token && fundingId) {
       fetchDetailFunding(token, fundingId, setFundingDetail);
+      getFundingAttendee(token, fundingId, setAttendeeList);
     }
   }, [fundingId]);
 
@@ -109,11 +114,20 @@ function MyFundingDetail() {
     if (fundingDetail) {
       console.log("Funding Detail Loaded: ", fundingDetail);
     }
-  }, [fundingDetail]);
+    if (attendeeList) {
+      console.log("참여 정보 목록 불러오기 완료", attendeeList);
+    }
+  }, [fundingDetail, attendeeList]);
 
   const toggleBottomSheet = (message) => {
     if (!isBottomSheetOpen) {
       setSelectedMessage(message);
+      getAttendanceDetail(
+        localStorage.getItem("access-token"),
+        fundingId,
+        message.attendanceId,
+        setAttendanceDetail,
+      );
     }
     setIsBottomSheetOpen(!isBottomSheetOpen);
   };
@@ -154,16 +168,18 @@ function MyFundingDetail() {
         />
 
         <CongratulateList
-          listData={messageList}
+          listData={attendeeList}
           onCardClick={toggleBottomSheet}
         />
       </div>
 
       <BottomSheet
+        fundingId={fundingId}
         isOpen={isBottomSheetOpen}
         setIsOpen={setIsBottomSheetOpen}
         message={selectedMessage}
         updateReply={updateReply}
+        attendanceDetail={attendanceDetail} // attendanceDetail을 prop으로 추가
       ></BottomSheet>
 
       <button
