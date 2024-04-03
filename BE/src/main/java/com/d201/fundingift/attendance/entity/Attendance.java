@@ -4,6 +4,7 @@ import com.d201.fundingift._common.entity.BaseTime;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.funding.entity.Funding;
+import com.d201.fundingift.payment.entity.PaymentInfo;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.SQLDelete;
@@ -40,6 +41,10 @@ public class Attendance extends BaseTime {
     @JoinColumn(name = "funding_id", referencedColumnName = "funding_id")
     private Funding funding;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "payment_info_id", referencedColumnName = "payment_info_id")
+    private PaymentInfo paymentInfo;
+
     @Builder
     private Attendance(String sendMessageTitle, String sendMessage, String receiveMessage, Integer price, Consumer consumer, Funding funding) {
         this.sendMessageTitle = sendMessageTitle;
@@ -62,6 +67,10 @@ public class Attendance extends BaseTime {
 
     public void writingReceiveMessage(String msg) {
         this.receiveMessage = msg;
+    }
+
+    public void updatePaymentInfo(PaymentInfo paymentInfo) {
+        this.paymentInfo = paymentInfo;
     }
 
 }

@@ -55,6 +55,9 @@ public enum ErrorType {
     FUNDING_OVER_TARGET_PRICE(HttpStatus.BAD_REQUEST, "펀딩 목표 금액을 초과했습니다."),
     ATTENDANCE_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 펀딩 참여 정보를 찾을 수 없습니다."),
 
+    //결제 정보
+    PAYMENT_FAIL(HttpStatus.BAD_REQUEST, "결제 미완료 입니다."),
+
     // 상품
     PRODUCT_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 상품을 찾을 수 없습니다."),
     PRODUCT_OPTION_NOT_FOUND(HttpStatus.BAD_REQUEST, "해당 상품 옵션을 찾을 수 없습니다."),
