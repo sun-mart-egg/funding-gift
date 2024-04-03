@@ -3,6 +3,7 @@ package com.d201.fundingift.attendance.service;
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.response.SliceList;
+import com.d201.fundingift._common.util.FcmNotificationProvider;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
 import com.d201.fundingift.attendance.dto.request.UpdateAttendanceRequest;
@@ -15,6 +16,7 @@ import com.d201.fundingift.friend.entity.Friend;
 import com.d201.fundingift.friend.repository.FriendRepository;
 import com.d201.fundingift.funding.entity.Funding;
 import com.d201.fundingift.funding.repository.FundingRepository;
+import com.d201.fundingift._common.dto.FcmNotificationDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +38,7 @@ public class AttendanceService {
     private final FundingRepository fundingRepository;
     private final FriendRepository friendRepository;
     private final SecurityUtil securityUtil;
+    private final FcmNotificationProvider fcmNotificationProvider;
 
     @Transactional
     public void postAttendance(PostAttendanceRequest postAttendanceRequest) {
@@ -63,6 +66,10 @@ public class AttendanceService {
         checkingFundingTargetPrice(postAttendanceRequest.getPrice(), funding);
 
         attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding));
+
+        // 알림
+        fcmNotificationProvider.sendToOne(funding.getConsumer().getId(),
+                FcmNotificationDto.of("펀딩 참여 알림", consumer.getName() + "님이 펀딩에 참여했어요!"));
     }
 
     //펀딩 상세 조회의 펀딩 참여자 정보 리스트
@@ -103,7 +110,7 @@ public class AttendanceService {
     //펀딩 참여자에게 감사 메시지 작성하기 - 펀딩 생성자만 작성 가능
     @Transactional
     public void updateReceiveMessage(UpdateAttendanceRequest updateAttendanceRequest) {
-        Long myConsumerId = securityUtil.getConsumerId();
+        Consumer consumer = securityUtil.getConsumer();;
 
         //펀딩 존재 여부 확인
         Funding funding = getFunding(updateAttendanceRequest.getFundingId());
@@ -112,9 +119,13 @@ public class AttendanceService {
         Attendance attendance = getAttendance(updateAttendanceRequest.getAttendanceId());
 
         //감사 메시지 작성 권한 확인
-        checkingAuthorizeWritingReceiveMessage(funding, myConsumerId);
+        checkingAuthorizeWritingReceiveMessage(funding, consumer.getId());
 
         attendance.writingReceiveMessage(updateAttendanceRequest.getReceiveMessage());
+
+        // 알림
+        fcmNotificationProvider.sendToOne(attendance.getConsumer().getId(),
+                FcmNotificationDto.of("펀딩 감사 메시지 알림", consumer.getName() + "님이 감사 메시지를 등록했어요!"));
     }
 
     /**
