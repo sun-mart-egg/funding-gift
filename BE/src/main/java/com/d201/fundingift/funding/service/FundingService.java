@@ -3,6 +3,7 @@ package com.d201.fundingift.funding.service;
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.response.SliceList;
+import com.d201.fundingift._common.util.FcmNotificationProvider;
 import com.d201.fundingift._common.util.SecurityUtil;
 import com.d201.fundingift.attendance.repository.AttendanceRepository;
 import com.d201.fundingift.consumer.entity.Consumer;
@@ -19,6 +20,7 @@ import com.d201.fundingift.funding.entity.Funding;
 import com.d201.fundingift.funding.entity.status.FundingStatus;
 import com.d201.fundingift.funding.repository.AnniversaryCategoryRepository;
 import com.d201.fundingift.funding.repository.FundingRepository;
+import com.d201.fundingift.notification.dto.FcmNotificationDto;
 import com.d201.fundingift.product.entity.Product;
 import com.d201.fundingift.product.entity.ProductOption;
 import com.d201.fundingift.product.repository.ProductOptionRepository;
@@ -45,7 +47,8 @@ public class FundingService {
     private final ProductRepository productRepository;
     private final ProductOptionRepository productOptionRepository;
     private final AnniversaryCategoryRepository anniversaryCategoryRepository;
-    private final SecurityUtil  securityUtil;
+    private final SecurityUtil securityUtil;
+    private final FcmNotificationProvider fcmNotificationProvider;
 
     @Transactional
     public void postFunding(PostFundingRequest postFundingRequest) {
@@ -77,6 +80,12 @@ public class FundingService {
 
         //시작일이 오늘이면 IN_PROGRESS로 상태 변경, 미래면 PRE_PROGRESS
         fundingRepository.save(Funding.from(postFundingRequest, IsStartDateToday(postFundingRequest.getStartDate()), consumer, anniversaryCategory, product, productOption));
+
+        // 알림
+        fcmNotificationProvider.sendToMany(
+                getConsumerIdsByToConsumerIdAndFavorite(consumer.getId()),
+                FcmNotificationDto.of("펀딩 등록 알림", consumer.getName() + "님이 펀딩을 등록했어요!")
+        );
     }
 
     @Transactional
@@ -384,4 +393,10 @@ public class FundingService {
             return "IN_PROGRESS";
         return "PRE_PROGRESS";
     }
+
+    private List<Long> getConsumerIdsByToConsumerIdAndFavorite(Long toConsumerId) {
+        return friendRepository.findAllByToConsumerIdAndIsFavorite(toConsumerId, true)
+                .stream().map(Friend::getConsumerId).collect(Collectors.toList());
+    }
+
 }

@@ -68,7 +68,7 @@ public class AttendanceService {
         attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding));
 
         // 알림
-        fcmNotificationProvider.send(funding.getConsumer().getId(),
+        fcmNotificationProvider.sendToOne(funding.getConsumer().getId(),
                 FcmNotificationDto.of("펀딩 참여 알림", consumer.getName() + "님이 펀딩에 참여했어요!"));
     }
 
@@ -124,7 +124,7 @@ public class AttendanceService {
         attendance.writingReceiveMessage(updateAttendanceRequest.getReceiveMessage());
 
         // 알림
-        fcmNotificationProvider.send(attendance.getConsumer().getId(),
+        fcmNotificationProvider.sendToOne(attendance.getConsumer().getId(),
                 FcmNotificationDto.of("펀딩 감사 메시지 알림", consumer.getName() + "님이 감사 메시지를 등록했어요!"));
     }
 
