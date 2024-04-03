@@ -18,11 +18,6 @@ function Header() {
             <img src="/imgs/calendar.png" alt="calendar-button" />
           </Link>
         </button>
-        <button>
-          <Link to={"/alarm"}>
-            <img src="/imgs/bell.png" alt="alert-button" />
-          </Link>
-        </button>
       </header>
     </header>
   );
