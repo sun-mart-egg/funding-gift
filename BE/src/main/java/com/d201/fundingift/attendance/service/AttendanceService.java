@@ -71,14 +71,14 @@ public class AttendanceService {
 
         //주문 생성
         Attendance saved = attendanceRepository.save(Attendance.from(postAttendanceRequest, attendee, funding));
-
+        saved.updateDeletedAt(LocalDateTime.now());
         attendanceRepository.save(Attendance.from(postAttendanceRequest, attendee, funding));
 
         // 알림
         fcmNotificationProvider.sendToOne(funding.getConsumer().getId(),
                 FcmNotificationDto.of("펀딩 참여 알림", attendee.getName() + "님이 펀딩에 참여했어요!"));
 
-        saved.updateDeletedAt(LocalDateTime.now());
+
 
         return PostAttendanceResponse.from(saved, attendee, funding);
     }
