@@ -15,7 +15,8 @@ function ParticipatePage() {
   const [error, setError] = useState("");
   const [fundingDetail, setFundingDetail] = useState(null);
   const updateUserStore = useAttendanceStore((state) => state.updateUserStore);
-
+  // 메시지 제목에 대한 에러 상태 추가
+  const [titleError, setTitleError] = useState("");
   useEffect(() => {
     const token = localStorage.getItem("access-token");
     if (token && fundingId) {
@@ -52,27 +53,48 @@ function ParticipatePage() {
   };
 
   const handleParticipate = () => {
-    // 유효성 검사 후 navigate 실행
+    let isValid = true;
+
+    // 메시지 제목 유효성 검사
+    const title = useAttendanceStore.getState().sendMessageTitle; // 메시지 제목 상태 가져오기
+    if (!title || title.length < 4 || title.length > 20) {
+      setTitleError("메시지 제목은 4글자 이상 20글자 이하이어야 합니다.");
+      isValid = false; // 유효하지 않으므로 isValid를 false로 설정
+    } else {
+      setTitleError(""); // 에러 메시지 초기화
+    }
+
+    // 금액 유효성 검사
     if (
-      amount &&
-      Number(amount) >= fundingDetail.minPrice &&
-      Number(amount) <=
+      !amount ||
+      Number(amount) < fundingDetail.minPrice ||
+      Number(amount) >
         fundingDetail.targetPrice -
           fundingDetail.targetPrice * (data.progress / 100)
     ) {
-      navigate("/pay", { state: { amount } }); // payPage로 이동하면서 amount 값을 state로 전달합니다.
-    } else {
-      // 에러 처리
       setError("유효한 펀딩 금액을 입력해주세요.");
+      isValid = false; // 유효하지 않으므로 isValid를 false로 설정
+    } else {
+      setError(""); // 에러 메시지 초기화
+    }
+
+    // 두 유효성 검사 모두 통과한 경우에만 navigate 실행
+    if (isValid) {
+      navigate("/pay", { state: { amount } }); // payPage로 이동하면서 amount 값을 state로 전달합니다.
     }
   };
 
   const handleMessageChange = (e) => {
     const { name, value } = e.target;
-    if (name === "sendMessage") {
-      updateUserStore("sendMessage", value);
-    } else if (name === "sendMessageTitle") {
+    if (name === "sendMessageTitle") {
+      if (value.length < 4 || value.length > 20) {
+        setTitleError("메시지 제목은 4글자 이상 20글자 이하이어야 합니다.");
+      } else {
+        setTitleError(""); // 에러 메시지 초기화
+      }
       updateUserStore("sendMessageTitle", value);
+    } else if (name === "sendMessage") {
+      updateUserStore("sendMessage", value);
     }
   };
 
@@ -98,7 +120,6 @@ function ParticipatePage() {
           value={amount}
           onChange={handleInputChange}
         />
-
         <p className="w-[80%] pt-2 text-right text-[12px]">
           최소 {fundingDetail.minPrice} / 최대 :{" "}
           {fundingDetail.targetPrice -
@@ -114,6 +135,8 @@ function ParticipatePage() {
           className="mt-3 w-[80%] rounded-lg border border-gray-400 p-1"
           onChange={handleMessageChange}
         />
+        {titleError && <p className="text-red-500">{titleError}</p>}{" "}
+        {/* 메시지 제목 에러 표시 */}
         <textarea
           name="sendMessage"
           placeholder="친구에게 축하 메세지를 전달해 보세요."
