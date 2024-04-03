@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import egg from "/imgs/egg3.jpg";
 import { IoLogOut } from "react-icons/io5";
 import { AiFillCamera } from "react-icons/ai";
 import axios from "axios";
 import { useNavigate } from "react-router";
+
 
 function MyPage() {
   const navigate = useNavigate();
@@ -91,6 +92,27 @@ function MyPage() {
         console.log("로그아웃 실패!");
       });
   };
+
+  // fcm 토큰 지우기
+  const deleteFCM = () => {
+    axios.delete(import.meta.env.VITE_BASE_URL + "/api/fcm-tokens", {
+      data: {
+        "fcmToken": localStorage.getItem("fcm-token")
+      },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+      }
+    })
+    .then((res) => {
+      console.log(res)
+      console.log("fcm 토큰 삭제 성공")
+    })
+    .catch((err) => {
+      console.error(err)
+      console.log("fcm 토큰 삭제 실패")
+    })
+  }
+
 
   // 진행중인 펀딩이 있는지 확인하고
   // 펀딩이 있는 경우 회원탈퇴 못해요 ^^
@@ -271,6 +293,7 @@ function MyPage() {
               수정 하기
             </button>
           </div>
+          <button onClick={deleteFCM} className="absolute border border-black bottom-20">FCM-TOKEN-DELETE</button>
         </>
       )}
     </div>

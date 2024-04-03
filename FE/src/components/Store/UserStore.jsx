@@ -3,7 +3,7 @@ import { create } from "zustand";
 const useUserStore = create((set) => ({
   id: null,
   email: "",
-  name: "신시은",
+  name: "",
   profileImageUrl: "",
   phoneNumber: "",
   birthday: "",
@@ -25,7 +25,7 @@ const useUserStore = create((set) => ({
     set({
       id: null,
       email: "",
-      name: "신시은",
+      name: "",
       profileImageUrl: "",
       phoneNumber: "",
       birthday: "",
