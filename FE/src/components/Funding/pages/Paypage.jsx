@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom"; // useLocation을 import합니다.
-import egg from "/imgs/egg3.jpg";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import useAttendanceStore from "../../Store/AttendanceStore";
@@ -17,6 +15,7 @@ function Paypage() {
   const selectPaymentMethod = (method) => {
     setSelectedPaymentMethod(method);
   };
+  const [attendanceResponse, setAttendanceResponse] = useState();
 
   useEffect(() => {
     const jquery = document.createElement("script");
@@ -58,8 +57,9 @@ function Paypage() {
         sendMessage,
         sendMessageTitle,
         price,
+        setAttendanceResponse,
       );
-      requestPay;
+      requestPay();
     } catch (error) {
       console.error("결제 중 오류가 발생했습니다: ", error);
       // 오류 처리 로직을 여기에 추가할 수 있습니다.
@@ -74,11 +74,11 @@ function Paypage() {
       {
         pg: "html5_inicis.INIpayTest",
         pay_method: "card",
-        merchant_uid: new Date().getTime(),
-        name: "테스트 상품",
-        amount: 1004,
-        buyer_email: "test@naver.com",
-        buyer_name: "코드쿡",
+        merchant_uid: attendanceResponse.orderId,
+        name: attendanceResponse.itemName,
+        amount: attendanceResponse.paymentPrice,
+        buyer_email: attendanceResponse.buyerEmail,
+        buyer_name: attendanceResponse.buyerName,
         buyer_tel: "010-1234-5678",
         buyer_addr: "서울특별시",
         buyer_postcode: "123-456",
@@ -86,17 +86,27 @@ function Paypage() {
       async (rsp) => {
         try {
           const { data } = await axios.post(
-            "http://localhost:8080/verifyIamport/" + rsp.imp_uid,
+            "http://localhost:8081/api/payment-info",
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+              },
+              body: JSON.stringify({
+                payment_uid: rsp.imp_uid, // 결제 고유번호
+                attendance_id: attendanceResponse.orderId,
+              }),
+            },
           );
           if (rsp.paid_amount === data.response.amount) {
             alert("결제 성공");
             navigate("/participate-funding-finish"); // 결제가 성공적으로 이루어진 후 페이지 이동
           } else {
-            alert("결제 실패");
+            alert("결제 금액이 안맞아용");
           }
         } catch (error) {
           console.error("Error while verifying payment:", error);
-          alert("결제 실패");
+          alert("결제를 실패했습니다.");
         }
       },
     );
