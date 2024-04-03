@@ -45,10 +45,9 @@ public class AttendanceController {
                     ))
     })
     @PostMapping
-    public SuccessResponse<Void> postFunding(@RequestBody @Valid PostAttendanceRequest postAttendanceRequest) {
+    public SuccessResponse<Long> postFunding(@RequestBody @Valid PostAttendanceRequest postAttendanceRequest) {
 
-        attendanceService.postAttendance(postAttendanceRequest);
-        return ResponseUtils.ok(POST_ATTENDANCE_SUCCESS);
+        return ResponseUtils.ok(attendanceService.postAttendance(postAttendanceRequest), POST_ATTENDANCE_SUCCESS);
     }
 
     @Operation(summary = "내 펀딩의 참여자 리스트",

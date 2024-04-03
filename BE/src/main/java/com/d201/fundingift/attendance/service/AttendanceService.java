@@ -38,7 +38,7 @@ public class AttendanceService {
     private final SecurityUtil securityUtil;
 
     @Transactional
-    public void postAttendance(PostAttendanceRequest postAttendanceRequest) {
+    public Long postAttendance(PostAttendanceRequest postAttendanceRequest) {
         Consumer consumer = getConsumer();
 
         //펀딩 존재 여부
@@ -56,13 +56,16 @@ public class AttendanceService {
             checkingFriend(funding.getConsumer().getId(), consumer.getId());
         }
 
-        //최소 금액 만족 확인
-        checkingFundingMinPrice(funding.getMinPrice(), postAttendanceRequest.getPrice());
+        /**
+         * 최소 금액 만족 확인 조건
+         * (지불 금액 + 모인금액 > 목표금액)인 경우 예외
+         * (목표금액 - 모인금액 < 최소금액)인 경우 최소 금액 이하라도 가능
+         * 최소금액 이하인 경우 예외
+         */
+        checkingFundingPrice(funding, postAttendanceRequest.getPrice());
 
-        //펀딩한 금액 더하기,목표 금액 달성시 상태 변경, 목표 금액 이상인 경우 예외
-        checkingFundingTargetPrice(postAttendanceRequest.getPrice(), funding);
-
-        attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding));
+        //반환값 펀딩 참여 고유번호
+        return attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding)).getId();
     }
 
     //펀딩 상세 조회의 펀딩 참여자 정보 리스트
@@ -158,8 +161,18 @@ public class AttendanceService {
                 .orElseThrow(() -> new CustomException(ErrorType.FRIEND_NOT_FOUND));
     }
 
-    private void checkingFundingMinPrice(Integer minPrice, Integer price) {
-        if(price < minPrice)
+    private void checkingFundingPrice(Funding funding, Integer price) {
+
+        //(지불 금액 + 모인금액 > 목표금액)인 경우 예외
+        if(price > funding.getTargetPrice() - funding.getSumPrice())
+            throw new CustomException(ErrorType.FUNDING_OVER_TARGET_PRICE);
+
+        //(목표금액 - 모인금액 < 최소금액)인 경우 최소 금액 이하라도 가능
+        if(funding.getTargetPrice() - funding.getSumPrice() < funding.getMinPrice())
+            return;
+
+        //최소금액 이하인 경우 예외
+        if(price < funding.getMinPrice())
             throw new CustomException(ErrorType. FUNDING_NOT_VERIFY_MIN_PRICE);
     }
 
