@@ -13,7 +13,7 @@ public class PostAttendanceResponse {
     @Schema(description = "펀딩 참여 고유번호", example = "1")
     private Long attendanceId;
 
-    @Schema(description = "펀딩생성자이름 + ", example = "대영님의 제품명 펀딩")
+    @Schema(description = "{펀딩생성자이름}님의 {제품명} 펀딩", example = "대영님의 제품명 펀딩")
     private String fundingName;
 
     @Schema(description = "펀딩 참여 금액", example = "50000")
