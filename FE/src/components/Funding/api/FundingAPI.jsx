@@ -74,7 +74,6 @@ async function createFunding(formData, token) {
     ...formData,
     startDate: formData.startDate.toISOString(),
     endDate: formData.endDate.toISOString(),
-    anniversaryDate: currentDateTime,
   };
 
   console.log(JSON.stringify(modifiedFormData));
