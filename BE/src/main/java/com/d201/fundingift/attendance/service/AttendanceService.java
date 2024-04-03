@@ -110,7 +110,7 @@ public class AttendanceService {
     //펀딩 참여자에게 감사 메시지 작성하기 - 펀딩 생성자만 작성 가능
     @Transactional
     public void updateReceiveMessage(UpdateAttendanceRequest updateAttendanceRequest) {
-        Long myConsumerId = securityUtil.getConsumerId();
+        Consumer consumer = securityUtil.getConsumer();;
 
         //펀딩 존재 여부 확인
         Funding funding = getFunding(updateAttendanceRequest.getFundingId());
@@ -119,9 +119,13 @@ public class AttendanceService {
         Attendance attendance = getAttendance(updateAttendanceRequest.getAttendanceId());
 
         //감사 메시지 작성 권한 확인
-        checkingAuthorizeWritingReceiveMessage(funding, myConsumerId);
+        checkingAuthorizeWritingReceiveMessage(funding, consumer.getId());
 
         attendance.writingReceiveMessage(updateAttendanceRequest.getReceiveMessage());
+
+        // 알림
+        fcmNotificationProvider.send(attendance.getConsumer().getId(),
+                FcmNotificationDto.of("펀딩 감사 메시지 알림", consumer.getName() + "님이 감사 메시지를 등록했어요!"));
     }
 
     /**
