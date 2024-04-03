@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import { fetchDetailFunding } from "../api/FundingAPI";
+import { getFundingAttendee } from "../api/AttendanceAPI";
 
 function FriendFundingDetail() {
   const navigate = useNavigate();
@@ -29,38 +30,17 @@ function FriendFundingDetail() {
     reply: "ㄳㄳ",
   };
 
-  const MessageList = [
-    {
-      name: "박창준",
-      title: "시은아 생일 축하해",
-    },
-    {
-      name: "임수빈",
-      title: "시은아 생일 축하해1",
-    },
-    {
-      name: "김대영",
-      title: "시은아 생일 축하해2",
-    },
-    {
-      name: "이민수",
-      title: "시은아 생일 축하해3",
-    },
-    {
-      name: "박종혁",
-      title: "시은아 생일 축하해4",
-    },
-  ];
-
   const { fundingId } = useParams(); // URL 파라미터에서 fundingId를 가져옵니다.
   const [fundingDetail, setFundingDetail] = useState(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen, selectId] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState("");
+  const [attendeeList, setAttendeeList] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("access-token");
     if (token && fundingId) {
       fetchDetailFunding(token, fundingId, setFundingDetail);
+      getFundingAttendee(token, fundingId, setAttendeeList);
     }
   }, [fundingId]);
 
@@ -121,7 +101,7 @@ function FriendFundingDetail() {
         )}
 
         <CongratulateList
-          listData={MessageList}
+          listData={attendeeList}
           onClick={"메세지 내용을 볼 수 없습니다."}
         />
       </div>

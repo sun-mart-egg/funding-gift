@@ -4,17 +4,18 @@ import FundingList from "../component/FundingList";
 import ScrollToTopButton from "../../UI/ScrollToTop";
 import { getStoryList } from "../api/StoryAPI";
 import { getFundingFeed } from "../api/FundingAPI";
+import axios from "axios";
 function FundingMain() {
   const [storyList, setStoryList] = useState([]); // 친구목록 받아올 배열
-  const [data, setData] = useState([]);
   const [feedData, setFeedData] = useState([]);
+  const [userInfo, setUserInfo] = useState({
+    name: "",
+    img: null,
+    // 추가 정보가 있다면 여기에 포함할 수 있습니다.
+  });
 
   //친구가 만든 펀딩 받아올 배열
   const [isLoading, setIsLoading] = useState(true);
-  let myData = {
-    people: "신시은",
-    img: "/imgs/egg3.jpg",
-  };
 
   useEffect(() => {
     console.log("업데이트 된 스토리 목록");
@@ -33,7 +34,33 @@ function FundingMain() {
       }
     };
 
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get(
+          import.meta.env.VITE_BASE_URL + "/api/consumers",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+            },
+          },
+        );
+
+        // 응답 데이터 콘솔에 출력
+        console.log("Received user info:", response.data.data.profileImageUrl);
+
+        // API 응답으로부터 받은 데이터로 userInfo 상태 업데이트
+        setUserInfo({
+          ...userInfo,
+          name: response.data.data.name,
+          img: response.data.data.profileImageUrl,
+        });
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+      }
+    };
+
     fetchStoryList();
+    fetchUserInfo();
     getFundingFeed(token, setFeedData);
   }, []);
 
@@ -42,11 +69,11 @@ function FundingMain() {
       <div className="story absolute inset-x-0 top-14 flex justify-start border-b border-gray-400 font-cusFont3 text-xs">
         <div className="MyStory flex-none flex-col items-center justify-center p-4">
           <img
-            src={myData.img}
-            alt={myData.people}
+            src={userInfo.img}
+            alt={userInfo.name}
             className="h-14 w-14 rounded-full" // 너비와 높이를 24로 설정
           />
-          <p className="text-center">{myData.people}</p>
+          <p className="text-center">{userInfo.name}</p>
         </div>
         <div className="friendStory  flex overflow-x-auto">
           <StoryList listData={storyList} />

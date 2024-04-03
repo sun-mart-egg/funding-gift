@@ -38,9 +38,9 @@ function ParticipatePage() {
 
   const handleInputChange = (e) => {
     const value = e.target.value;
+    const progress = (fundingDetail.sumPrice / fundingDetail.targetPrice) * 100;
     const max =
-      fundingDetail.targetPrice -
-      fundingDetail.targetPrice * (data.progress / 100);
+      fundingDetail.targetPrice - fundingDetail.targetPrice * (progress / 100);
     setAmount(value);
     if (value && Number(value) < fundingDetail.minPrice) {
       setError(`펀딩 금액은 최소 ${fundingDetail.minPrice} 이상이어야 합니다.`);
@@ -56,6 +56,7 @@ function ParticipatePage() {
     let isValid = true;
 
     // 메시지 제목 유효성 검사
+    const progress = (fundingDetail.sumPrice / fundingDetail.targetPrice) * 100;
     const title = useAttendanceStore.getState().sendMessageTitle; // 메시지 제목 상태 가져오기
     if (!title || title.length < 4 || title.length > 20) {
       setTitleError("메시지 제목은 4글자 이상 20글자 이하이어야 합니다.");
@@ -69,8 +70,7 @@ function ParticipatePage() {
       !amount ||
       Number(amount) < fundingDetail.minPrice ||
       Number(amount) >
-        fundingDetail.targetPrice -
-          fundingDetail.targetPrice * (data.progress / 100)
+        fundingDetail.targetPrice - fundingDetail.targetPrice * (progress / 100)
     ) {
       setError("유효한 펀딩 금액을 입력해주세요.");
       isValid = false; // 유효하지 않으므로 isValid를 false로 설정
@@ -110,7 +110,7 @@ function ParticipatePage() {
           title={fundingDetail.title}
           name={fundingDetail.productName}
           detail={fundingDetail.content}
-          progress={data.progress}
+          progress={(fundingDetail.sumPrice / fundingDetail.targetPrice) * 100}
           price={fundingDetail.targetPrice}
         />
         <input
@@ -123,7 +123,10 @@ function ParticipatePage() {
         <p className="w-[80%] pt-2 text-right text-[12px]">
           최소 {fundingDetail.minPrice} / 최대 :{" "}
           {fundingDetail.targetPrice -
-            (fundingDetail.targetPrice * data.progress) / 100}
+            (fundingDetail.targetPrice *
+              (fundingDetail.sumPrice / fundingDetail.targetPrice) *
+              100) /
+              100}
         </p>
         {error && <p className=" text-red-500">{error}</p>}
         <p className="w-[80%] text-left font-cusFont2 text-[18px]">
