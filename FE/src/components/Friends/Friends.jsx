@@ -55,7 +55,6 @@ function Friends() {
         },
       })
       .then((res) => {
-        console.log(res.data.data);
         setFriends(res.data.data);
         console.log("REDIS에 친구목록 요청 완료");
       })
@@ -72,8 +71,7 @@ function Friends() {
         Authorization: `Bearer ${localStorage.getItem("access-token")}`,
       },
     })
-      .then((res) => {
-        console.log(res.data.data.elements)
+      .then(() => {
         console.log("KAKAO 친구목록 동기화 성공")
         handleRedis()
       })
@@ -90,9 +88,7 @@ function Friends() {
         Authorization: `Bearer ${localStorage.getItem("access-token")}`,
       },
     })
-      .then((res) => {
-        console.log(res)
-        console.log(friends)
+      .then(() => {
         console.log("친한친구 설정 성공")
         setFriends((curFriends) =>
           curFriends.map((friend) => (
