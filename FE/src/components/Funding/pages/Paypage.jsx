@@ -27,11 +27,11 @@ function Paypage() {
 
   const requestPay = () => {
     const { IMP } = window;
-    IMP.init("store-f7f8a9c7-fb5a-44aa-a84f-ff73de81acf0");
+    IMP.init("imp40448376");
 
     IMP.request_pay(
       {
-        pg: kakaopay.TC0ONETIME,
+        pg: "html5_inicis.INIpayTest",
         pay_method: "card",
         merchant_uid: new Date().getTime(),
         name: "테스트 상품",
