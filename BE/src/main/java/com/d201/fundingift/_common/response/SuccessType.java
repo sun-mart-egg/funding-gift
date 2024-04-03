@@ -9,12 +9,14 @@ public enum SuccessType {
     LOGOUT_SUCCESS("로그아웃에 성공하였습니다."),
     GET_CONSUMER_INFO_SUCCESS("사용자 정보 조회에 성공하였습니다."),
     PUT_CONSUMER_ADDITION_INFO_SUCCESS("추가 정보 입력에 성공하였습니다."),
+    CHECK_CONSUMER_IN_PROGRESS_FUNDING("진행중인 펀딩 확인에 성공하였습니다."),
 
     // 친구
     GET_KAKAO_FRIEND_INFO_SUCCESS("카카오 친구 목록 조회에 성공하였습니다."),
     GET_FRIEND_INFO_SUCCESS("친구 목록 조회에 성공하였습니다."),
     GET_FRIENDS_STORY_SUCCESS("친구 펀딩 스토리 리스트 조회에 성공하였습니다."),
-    PUT_FAVORITE_TOGGLE_SUCCESS("친한 친구 토글에 설공하였습니다."),
+    PUT_FAVORITE_TOGGLE_SUCCESS("친한 친구 토글에 성공하였습니다."),
+    DELETE_FRIEND_RELATIONSHIP_SUCCESS("친구 관계 삭제에 성공하였습니다."),
 
     // 펀딩
     CREATE_FUNDING_SUCCESS("펀딩 등록에 성공하였습니다."),

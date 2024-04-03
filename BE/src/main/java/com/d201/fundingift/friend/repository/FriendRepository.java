@@ -12,9 +12,8 @@ import java.util.Optional;
 public interface FriendRepository extends CrudRepository<Friend, String> {
 
     List<Friend> findByConsumerId(Long consumerId);
+    List<Friend> findByToConsumerId(Long consumerId);
     Optional<Friend> findByConsumerIdAndToConsumerId(Long consumerId, Long toConsumerId);
-    void deleteByConsumerId(Long consumerId);
-    void deleteByToConsumerId(Long consumerId);
     List<Friend> findAllByToConsumerIdAndIsFavorite(Long toConsumerId, Boolean isFavorite);
 
 }

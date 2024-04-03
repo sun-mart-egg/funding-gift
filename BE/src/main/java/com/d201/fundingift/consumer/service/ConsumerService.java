@@ -3,12 +3,18 @@ package com.d201.fundingift.consumer.service;
 import com.d201.fundingift._common.exception.CustomException;
 import com.d201.fundingift._common.jwt.RedisJwtRepository;
 import com.d201.fundingift._common.oauth2.service.OAuth2UserPrincipal;
+import com.d201.fundingift._common.response.ErrorType;
 import com.d201.fundingift._common.util.SecurityUtil;
+import com.d201.fundingift.attendance.entity.Attendance;
+import com.d201.fundingift.attendance.repository.AttendanceRepository;
 import com.d201.fundingift.consumer.dto.request.PutConsumerInfoRequestDto;
 import com.d201.fundingift.consumer.dto.response.GetConsumerInfoByIdResponse;
 import com.d201.fundingift.consumer.dto.response.GetConsumerMyInfoResponse;
 import com.d201.fundingift.consumer.entity.Consumer;
 import com.d201.fundingift.consumer.repository.ConsumerRepository;
+import com.d201.fundingift.funding.entity.Funding;
+import com.d201.fundingift.funding.entity.status.FundingStatus;
+import com.d201.fundingift.funding.repository.FundingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -20,6 +26,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.d201.fundingift._common.response.ErrorType.*;
@@ -32,8 +39,11 @@ public class ConsumerService {
 
     private final ConsumerRepository consumerRepository;
     private final RedisJwtRepository redisJwtRepository;
+    private final FundingRepository fundingRepository;
+    private final AttendanceRepository attendanceRepository;
     private final SecurityUtil securityUtil;
     private final RestTemplate restTemplate;
+
 
     // 회원가입
     @Transactional
@@ -130,16 +140,29 @@ public class ConsumerService {
         consumer.updateProfileImageUrl(newProfileImageUrl);
     }
 
-    @Transactional
-    public void deleteConsumer(Long consumerId) {
-        log.info("Attempting to delete consumer with ID: {}", consumerId);
-        consumerRepository.findByIdAndDeletedAtIsNull(consumerId).ifPresentOrElse(
-                consumer -> {
-                    consumerRepository.delete(consumer);
-                    log.info("Deleted consumer with ID: {}", consumerId);
-                },
-                () -> log.warn("Consumer with ID: {} not found, cannot delete", consumerId)
-        );
+    public Boolean isConsumerInProgressOrAttendanceFunding() {
+        Long consumerId = Long.valueOf(securityUtil.getConsumer().getId());
+        log.info("진행 중이거나 참여 중인 펀딩 확인, 사용자 ID: {}", consumerId);
+
+        // 사용자가 참여한 펀딩 중 IN_PROGRESS 상태인 펀딩이 있는지 확인
+        List<Attendance> attendances = attendanceRepository.findByConsumerIdAndDeletedAtIsNull(consumerId);
+        for (Attendance attendance : attendances) {
+            Funding funding = attendance.getFunding();
+            if (funding.getFundingStatus() == FundingStatus.IN_PROGRESS) {
+                log.error("사용자 ID: {}는 진행 중인 펀딩에 참여하고 있습니다.", consumerId);
+                return true;
+            }
+        }
+
+        // 사용자가 생성한 펀딩 중 IN_PROGRESS 상태인 펀딩이 있는지 확인
+        List<Funding> userFundings = fundingRepository.findInProgressFundingsByConsumerId(consumerId);
+        if (!userFundings.isEmpty()) {
+            log.error("사용자 ID: {}가 생성한 진행 중인 펀딩이 있습니다.", consumerId);
+            return true;
+        }
+
+        return false;
     }
+
 
 }
