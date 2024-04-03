@@ -5,6 +5,7 @@ import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
 import com.d201.fundingift.attendance.dto.request.UpdateAttendanceRequest;
 import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
 import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
+import com.d201.fundingift.attendance.dto.response.PostAttendanceResponse;
 import com.d201.fundingift.attendance.service.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -45,10 +46,9 @@ public class AttendanceController {
                     ))
     })
     @PostMapping
-    public SuccessResponse<Void> postFunding(@RequestBody @Valid PostAttendanceRequest postAttendanceRequest) {
+    public SuccessResponse<PostAttendanceResponse> postFunding(@RequestBody @Valid PostAttendanceRequest postAttendanceRequest) {
 
-        attendanceService.postAttendance(postAttendanceRequest);
-        return ResponseUtils.ok(POST_ATTENDANCE_SUCCESS);
+        return ResponseUtils.ok(attendanceService.postAttendance(postAttendanceRequest), POST_ATTENDANCE_SUCCESS);
     }
 
     @Operation(summary = "내 펀딩의 참여자 리스트",
