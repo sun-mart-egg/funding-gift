@@ -55,6 +55,10 @@ function FriendFundingDetail() {
     setIsBottomSheetOpen(!isBottomSheetOpen);
   };
 
+  const handleItemClick = () => {
+    alert("다른사람의 메세지 내용은 볼 수 없습니다.");
+  };
+
   if (!fundingDetail) return <div>Loading...</div>;
 
   return (
@@ -102,7 +106,7 @@ function FriendFundingDetail() {
 
         <CongratulateList
           listData={attendeeList}
-          onClick={"메세지 내용을 볼 수 없습니다."}
+          onCardClick={handleItemClick}
         />
       </div>
       {fundingDetail.fundingStatus === "IN_PROGRESS" &&
@@ -118,7 +122,7 @@ function FriendFundingDetail() {
             className="fixed bottom-5 h-[45px] w-[80%] rounded-md bg-cusColor3 text-white"
             onClick={() => navigate(`/participate/${fundingId}`)}
           >
-            펀딩 추가 참여하기
+            펀딩 참여하기
           </button>
         ))}
 

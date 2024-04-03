@@ -2,15 +2,34 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import egg from "/imgs/egg3.jpg";
 import ProgressBar from "../component/ProgressBar";
-import { IoClose } from "react-icons/io5";
 import { getStory } from "../api/StoryAPI"; // API 호출 함수를 임포트합니다.
-
+import { IoClose } from "react-icons/io5";
+import { HiMiniBackward } from "react-icons/hi2";
+import { HiMiniForward } from "react-icons/hi2";
 function StoryPage() {
   const { selectedItem } = useParams(); // URL에서 selectedItem 값을 추출합니다.
   const [stories, setStories] = useState([]);
   const [currentStoryIndex, setCurrentStoryIndex] = useState(0);
   const [progress, setProgress] = useState(0); // 프로그레스 상태 초기화
   const navigate = useNavigate();
+
+  const goToPreviousStory = () => {
+    if (currentStoryIndex > 0) {
+      setCurrentStoryIndex(currentStoryIndex - 1);
+      setProgress(0);
+    } else {
+      alert("첫 스토리 입니다.");
+    }
+  };
+
+  const goToNextStory = () => {
+    if (currentStoryIndex < stories.length - 1) {
+      setCurrentStoryIndex(currentStoryIndex + 1);
+      setProgress(0);
+    } else {
+      alert("마지막 스토리 입니다.");
+    }
+  };
 
   useEffect(() => {
     console.log("현재 stories 상태:", stories);
@@ -77,18 +96,26 @@ function StoryPage() {
       >
         <div
           id="progress"
+          className="bg-cusColor1"
           style={{
             height: "10px",
             width: `${progress}%`,
-            backgroundColor: "blue",
             transition: "width 100ms linear",
           }}
         />
       </div>
       <button onClick={() => navigate("/funding")}>
-        {" "}
         <IoClose className="fixed right-5 top-8 text-[30px]" />
       </button>
+
+      <HiMiniBackward
+        className="fixed left-2 top-1/2 z-10 cursor-pointer text-[20px] text-cusColor1"
+        onClick={goToPreviousStory}
+      />
+      <HiMiniForward
+        className="fixed right-2 top-1/2 z-10 cursor-pointer text-[20px] text-cusColor1"
+        onClick={goToNextStory}
+      />
 
       <div className="absolute top-20 flex h-[68%] w-[75%] flex-col items-center justify-center rounded-xl bg-white p-4 shadow-md">
         <img
