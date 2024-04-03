@@ -29,7 +29,7 @@ async function fetchMyFundings(token, setMyFundings, setIsLoading) {
         },
         params: {
           page: 0,
-          size: 8,
+          size: 100,
         },
       },
     );

@@ -261,7 +261,7 @@ function ProductDetail() {
   };
 
   return (
-    <div className="sub-layer">
+    <div className="relative flex h-screen max-w-[500px] flex-col items-center justify-center bg-white pb-[60px]">
       {/* 배경 */}
       <div className="flex h-screen items-center justify-center overflow-y-auto overflow-x-hidden font-cusFont2">
         {/* 화면 - 패딩은 모바일 기준이므로 요소들이 너무 구석에 가지 않도록 설정 */}
