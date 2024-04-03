@@ -10,8 +10,8 @@ function CongratulateList({ listData, onCardClick }) {
         {listData.map((message, index) => (
           <CongratulateCard
             key={index}
-            name={message.name}
-            title={message.title}
+            name={message.consumerName}
+            title={message.sendMessageTitle}
             onClick={() => onCardClick(message)}
           />
         ))}
