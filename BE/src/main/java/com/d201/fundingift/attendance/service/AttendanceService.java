@@ -8,6 +8,7 @@ import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
 import com.d201.fundingift.attendance.dto.request.UpdateAttendanceRequest;
 import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
 import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
+import com.d201.fundingift.attendance.dto.response.PostAttendanceResponse;
 import com.d201.fundingift.attendance.entity.Attendance;
 import com.d201.fundingift.attendance.repository.AttendanceRepository;
 import com.d201.fundingift.consumer.entity.Consumer;
@@ -38,8 +39,8 @@ public class AttendanceService {
     private final SecurityUtil securityUtil;
 
     @Transactional
-    public Long postAttendance(PostAttendanceRequest postAttendanceRequest) {
-        Consumer consumer = getConsumer();
+    public PostAttendanceResponse postAttendance(PostAttendanceRequest postAttendanceRequest) {
+        Consumer attendee = getConsumer();
 
         //펀딩 존재 여부
         Funding funding = getFunding(postAttendanceRequest.getFundingId());
@@ -48,12 +49,12 @@ public class AttendanceService {
         checkingFundingStatus(String.valueOf(funding.getFundingStatus()));
 
         //펀딩 참여자의 친구목록에 펀딩 생성자가 있는지 확인
-        checkingFriend(consumer.getId(), funding.getConsumer().getId());
+        checkingFriend(attendee.getId(), funding.getConsumer().getId());
 
         //펀딩 생성자가 본인의 친구만 참여 가능하도록 설정 하였는지 확인
         if(funding.getIsPrivate()) {
             //펀딩 참여자가 펀딩 생성자의 친구인지 확인
-            checkingFriend(funding.getConsumer().getId(), consumer.getId());
+            checkingFriend(funding.getConsumer().getId(), attendee.getId());
         }
 
         /**
@@ -64,8 +65,10 @@ public class AttendanceService {
          */
         checkingFundingPrice(funding, postAttendanceRequest.getPrice());
 
-        //반환값 펀딩 참여 고유번호
-        return attendanceRepository.save(Attendance.from(postAttendanceRequest, consumer, funding)).getId();
+        Attendance saved = attendanceRepository.save(Attendance.from(postAttendanceRequest, attendee, funding));
+
+
+        return PostAttendanceResponse.from(saved, attendee, funding);
     }
 
     //펀딩 상세 조회의 펀딩 참여자 정보 리스트

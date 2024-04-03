@@ -5,6 +5,7 @@ import com.d201.fundingift.attendance.dto.request.PostAttendanceRequest;
 import com.d201.fundingift.attendance.dto.request.UpdateAttendanceRequest;
 import com.d201.fundingift.attendance.dto.response.GetAttendanceDetailResponse;
 import com.d201.fundingift.attendance.dto.response.GetAttendancesResponse;
+import com.d201.fundingift.attendance.dto.response.PostAttendanceResponse;
 import com.d201.fundingift.attendance.service.AttendanceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -45,7 +46,7 @@ public class AttendanceController {
                     ))
     })
     @PostMapping
-    public SuccessResponse<Long> postFunding(@RequestBody @Valid PostAttendanceRequest postAttendanceRequest) {
+    public SuccessResponse<PostAttendanceResponse> postFunding(@RequestBody @Valid PostAttendanceRequest postAttendanceRequest) {
 
         return ResponseUtils.ok(attendanceService.postAttendance(postAttendanceRequest), POST_ATTENDANCE_SUCCESS);
     }
