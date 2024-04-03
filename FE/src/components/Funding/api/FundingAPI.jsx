@@ -125,7 +125,7 @@ async function getFundingFeed(token, setData) {
         },
         params: {
           page: 0,
-          size: 8,
+          size: 100,
           sort: "", // sort가 필요하다면 'columnName,asc' 또는 'columnName,desc' 형식의 값을 설정하세요.
         },
       },
