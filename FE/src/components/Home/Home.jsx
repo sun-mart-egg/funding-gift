@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import SearchBar from "../UI/SearchBar";
 import { useNavigate } from "react-router-dom";
 
@@ -11,6 +11,11 @@ import BannerImage3 from "/imgs/banner_image3.png"
 import HomeProduct from "./HomeProduct"
 import ScrollToTop from "../UI/ScrollToTop";
 
+import { initializeApp } from 'firebase/app';
+import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+
+// import { initializeApp } from 'firebase/app';
+// import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 function Home() {
 
@@ -24,6 +29,37 @@ function Home() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+
+  // firebase 연결
+  const firebaseConfig = {
+    apiKey: 'AIzaSyBE1OaWA2Bo3bxh-8oUfJCKGGFz6DkNYbA',
+    authDomain: 'funding-gift.firebaseapp.com',
+    projectId: 'funding-gift',
+    storageBucket: 'funding-gift.appspot.com',
+    messagingSenderId: '184194517827',
+    appId: '1:184194517827:web:f2a715c4f6c082503afdf6',
+    measurementId: 'G-GPCQJX1FSL',
+  };
+
+  const firebaseApp = initializeApp(firebaseConfig);
+  const messaging = getMessaging(firebaseApp);
+
+  // 권한 요청
+  Notification.requestPermission().then((permission) => {
+    if (permission === 'granted') {
+      console.log('Notification permission granted.');
+    }
+    else {
+      console.log('not granted');
+    }
+  });
+
+  // fcm 알림 받기
+  onMessage(messaging, (payload) => {
+    console.log('Message received. ', payload);
+    alert(payload.notification.body);
+    // ...
+  });
 
   const lastProductElementRef = useCallback(node => {
     if (loading) return;
