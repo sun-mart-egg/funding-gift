@@ -120,10 +120,35 @@ async function getFundingFeed(token, setData) {
   }
 }
 
+//펀딩 삭제 api
+
+async function deleteFunding(token, fundingId) {
+  console.log("token :" + token);
+  console.log("fundingID : " + fundingId);
+  try {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_BASE_URL}/api/fundings`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: {
+          // 'body' 대신 'data'를 사용합니다.
+          fundingId: fundingId,
+        },
+      },
+    );
+    console.log("펀딩 삭제 응답 : ", response.data);
+  } catch (error) {
+    console.error("펀딩을 삭제하는데 실패했습니다. ", error);
+  }
+}
+
 export {
   createFunding,
   fetchFriendFunding,
   fetchMyFundings,
   fetchDetailFunding,
   getFundingFeed,
+  deleteFunding,
 };

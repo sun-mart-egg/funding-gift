@@ -4,8 +4,11 @@ import BottomSheet from "../component/BottomSheet";
 import React, { useEffect, useState } from "react";
 import { fetchDetailFunding } from "../api/FundingAPI";
 import { useParams } from "react-router-dom";
+import { deleteFunding } from "../api/FundingAPI";
+import { useNavigate } from "react-router-dom";
 
 function MyFundingDetail() {
+  const navigate = useNavigate();
   const MessageList = [
     {
       name: "박창준",
@@ -115,21 +118,28 @@ function MyFundingDetail() {
     setIsBottomSheetOpen(!isBottomSheetOpen);
   };
 
-
   if (!fundingDetail) return <div>Loading...</div>;
 
   const updateReply = (name, newReply) => {
     const newList = messageList.map((msg) =>
-      msg.name === name ? { ...msg, reply: newReply } : msg
+      msg.name === name ? { ...msg, reply: newReply } : msg,
     );
     setMessageList(newList);
-  
+
     // selectedMessage 상태도 업데이트
     if (selectedMessage && selectedMessage.name === name) {
       setSelectedMessage({ ...selectedMessage, reply: newReply });
     }
   };
 
+  const handelDelete = () => {
+    const token = localStorage.getItem("access-token");
+    if (token && fundingId) {
+      deleteFunding(token, fundingId);
+
+      navigate("/my-funding");
+    }
+  };
   return (
     <div className="sub-layer font-cusFont3">
       <div
@@ -158,7 +168,10 @@ function MyFundingDetail() {
         updateReply={updateReply}
       ></BottomSheet>
 
-      <button className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white">
+      <button
+        onClick={handelDelete}
+        className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
+      >
         펀딩 취소하기
       </button>
     </div>
