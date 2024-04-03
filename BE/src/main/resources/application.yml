@@ -76,4 +76,3 @@ cloud:
 imp:
   key: ${IMP_KEY}
   secret: ${IMP_SECRET_KEY}
-  code: ${IMP_CODE}

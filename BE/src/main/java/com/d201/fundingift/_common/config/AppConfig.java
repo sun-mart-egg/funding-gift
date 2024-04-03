@@ -1,7 +1,7 @@
 package com.d201.fundingift._common.config;
 
-import com.siot.IamportRestClient.IamportClient;
 import org.springframework.beans.factory.annotation.Value;
+import com.siot.IamportRestClient.IamportClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

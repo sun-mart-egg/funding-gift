@@ -65,8 +65,8 @@ public class AttendanceService {
          */
         checkingFundingPrice(funding, postAttendanceRequest.getPrice());
 
+        //주문 생성
         Attendance saved = attendanceRepository.save(Attendance.from(postAttendanceRequest, attendee, funding));
-
 
         return PostAttendanceResponse.from(saved, attendee, funding);
     }
