@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { useNavigate } from "react-router";
 //펀딩 상세 조회 api
 async function fetchDetailFunding(token, fundingId, setData) {
   try {
@@ -138,10 +138,37 @@ async function getFundingFeed(token, setData) {
   }
 }
 
+//펀딩 삭제 api
+
+async function deleteFunding(token, fundingId, navigate) {
+  console.log("token :" + token);
+  console.log("fundingID : " + fundingId);
+  try {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_BASE_URL}/api/fundings`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: {
+          // 'body' 대신 'data'를 사용합니다.
+          fundingId: fundingId,
+        },
+      },
+    );
+    console.log("펀딩 삭제 응답 : ", response);
+    alert("펀딩을 성공적으로 삭제하였습니다.");
+    navigate("/my-funding");
+  } catch (error) {
+    alert(error.response.data.msg);
+  }
+}
+
 export {
   createFunding,
   fetchFriendFunding,
   fetchMyFundings,
   fetchDetailFunding,
   getFundingFeed,
+  deleteFunding,
 };
