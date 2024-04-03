@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useNavigate } from "react-router";
 //펀딩 상세 조회 api
 async function fetchDetailFunding(token, fundingId, setData) {
@@ -125,7 +126,7 @@ async function getFundingFeed(token, setData) {
         },
         params: {
           page: 0,
-          size: 100,
+          size: 8,
           sort: "", // sort가 필요하다면 'columnName,asc' 또는 'columnName,desc' 형식의 값을 설정하세요.
         },
       },
