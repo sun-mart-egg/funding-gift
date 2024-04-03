@@ -78,6 +78,8 @@ function ProductComponent({ categoryId, keyword, sort }) {
     return num >= 1000 ? "999+" : num;
   };
 
+
+
   return (
     <div className="mt-4 flex min-h-[63%] w-[95.5%] flex-grow flex-wrap justify-center overflow-y-auto bg-white font-cusfont2">
       {products.map((product, index) => (
