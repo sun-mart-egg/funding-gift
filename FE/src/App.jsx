@@ -20,7 +20,6 @@ import ProductDetail from "./components/Products/ProductDetail";
 import BrandStore from "./components/Products/BrandStore";
 import Wishlist from "./components/Products/Wishlist";
 import AddressListPage from "./components/Funding/pages/AddressListPage.jsx";
-import AnniversaryListPage from "./components/Funding/pages/AnniversaryListPage.jsx";
 import FriendFundingDetail from "./components/Funding/pages/FriendFundingDetail.jsx";
 import ParticipatePage from "./components/Funding/pages/ParticipatePage.jsx";
 import Paypage from "./components/Funding/pages/Paypage.jsx";
@@ -31,7 +30,6 @@ import MyFundingDetail from "./components/Funding/pages/MyFundingDetail.jsx";
 import FundingMain from "./components/Funding/pages/FundingMain.jsx";
 import StoryPage from "./components/Funding/pages/StoryPage.jsx";
 import MyPage from "./components/Funding/pages/MyPage.jsx";
-import NewAnniversaryPage from "./components/Funding/pages/NewAnniversaryPage.jsx";
 import NewAddressPage from "./components/Funding/pages/NewAddressPage.jsx";
 import Alarm from "./components/Home/Alarm.jsx";
 
@@ -71,10 +69,8 @@ function App() {
           <Route path="/make-funding-detail" element={<MakeFundingDetail />} />
           <Route path="/make-funding-finish" element={<MakeFundingFinish />} />
           <Route path="/product/:productId" element={<ProductDetail />} />
-          <Route path="/anniversary-list" element={<AnniversaryListPage />} />
           <Route path="/address-list" element={<AddressListPage />} />
           <Route path="/account-list" element={<AccountListPage />} />
-          <Route path="/new-anniversary" element={<NewAnniversaryPage />} />
           <Route path="/new-address" element={<NewAddressPage />} />
           <Route path="/calendar" element={<Calendar />} />
           <Route path="/friends" element={<Friends />} />
