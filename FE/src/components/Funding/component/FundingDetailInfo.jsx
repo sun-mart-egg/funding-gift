@@ -7,11 +7,36 @@ function FundingDetailInfo({
   price,
   detail,
   progress,
+  fundingStatus,
+  startDate,
+  endDate,
   img,
 }) {
   return (
     <div className=" flex flex-col items-center justify-center ">
       <div id="fundingTitle " className="mb-4 flex flex-col items-center ">
+        <div className=" pb-1 font-cusFont3 text-[12px]">
+          {fundingStatus === "IN_PROGRESS" ? (
+            <div className="flex flex-col items-center justify-center ">
+              <div className="font-cusFont5 text-[14px] text-cusColor2">
+                진행중인 펀딩
+              </div>
+              <div>
+                {startDate} ~ {endDate}
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center ">
+              <div className="font-cusFont5 text-[14px] text-cusColor3">
+                진행 전인 펀딩
+              </div>
+              <div>
+                {startDate} ~ {endDate}
+              </div>
+            </div>
+          )}
+        </div>
+
         {friendName == null ? "" : <p>{friendName}님의 </p>}
         <p className="font-cusFont1 text-[30px]">{title}</p>
       </div>
@@ -31,7 +56,8 @@ function FundingDetailInfo({
           <p className="pt-2 text-[12px]">{detail}</p>
         </div>
       </div>
-      <div className="m-8 h-[20px] w-[85%]">
+
+      <div className="m-6 h-[20px] w-[85%]">
         <ProgressBar progress={progress} />
       </div>
     </div>

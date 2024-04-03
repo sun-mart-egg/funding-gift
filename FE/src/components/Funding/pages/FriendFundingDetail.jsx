@@ -68,14 +68,17 @@ function FriendFundingDetail() {
         className="absolute top-20 flex flex-col items-center justify-start pb-20"
       >
         <FundingDetailInfo
-          friendName={fundingDetail.consumerName}
           title={fundingDetail.title}
           name={fundingDetail.productName}
           detail={fundingDetail.content}
           progress={(fundingDetail.sumPrice / fundingDetail.targetPrice) * 100}
           price={fundingDetail.targetPrice}
           img={fundingDetail.productImage}
+          startDate={fundingDetail.startDate}
+          endDate={fundingDetail.endDate}
+          fundingStatus={fundingDetail.fundingStatus}
         />
+
         {/* <div id="participateSection" className="m-2 w-full flex-col px-7">
           <div id="subTitle" className="px-2 font-cusFont2 text-[18px]">
             <p>내가 참여한 펀딩</p>

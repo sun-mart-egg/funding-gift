@@ -165,6 +165,9 @@ function MyFundingDetail() {
           progress={(fundingDetail.sumPrice / fundingDetail.targetPrice) * 100}
           price={fundingDetail.targetPrice}
           img={fundingDetail.productImage}
+          startDate={fundingDetail.startDate}
+          endDate={fundingDetail.endDate}
+          fundingStatus={fundingDetail.fundingStatus}
         />
 
         <CongratulateList
