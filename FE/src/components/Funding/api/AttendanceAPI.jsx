@@ -7,7 +7,6 @@ async function createAttendance(
   sendMessage,
   sendMessageTitle,
   price,
-  setData,
 ) {
   const requestBody = {
     sendMessageTitle: sendMessageTitle,
@@ -33,9 +32,7 @@ async function createAttendance(
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const responseData = await response.json();
-
-    setData(responseData);
-    console.log("펀딩 참여 생성 응답:", responseData);
+    return responseData;
   } catch (error) {
     console.error("펀딩 참여 생성 중 오류 발생:", error);
   }

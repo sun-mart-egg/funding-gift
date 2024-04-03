@@ -15,6 +15,7 @@ function Paypage() {
   const selectPaymentMethod = (method) => {
     setSelectedPaymentMethod(method);
   };
+
   const [attendanceResponse, setAttendanceResponse] = useState();
 
   useEffect(() => {
@@ -51,22 +52,34 @@ function Paypage() {
 
   const handlePayment = async () => {
     try {
-      await createAttendance(
+      const response = await createAttendance(
         localStorage.getItem("access-token"),
         fundingId,
         sendMessage,
         sendMessageTitle,
         price,
-        setAttendanceResponse,
       );
-      requestPay();
+      console.log("참여 후 정보 잘 받아왔나? : " + response.data.fundingName);
+      setAttendanceResponse(response);
+      if (attendanceResponse) {
+        // console.log(attendanceResponse.data.fundingName);
+        requestPay();
+      } else {
+        console.error("참여 정보를 받지 못했습니다.");
+      }
     } catch (error) {
       console.error("결제 중 오류가 발생했습니다: ", error);
-      // 오류 처리 로직을 여기에 추가할 수 있습니다.
     }
   };
 
   const requestPay = () => {
+    // console.log("참여 번호 확인 :" + attendanceResponse.data.attendanceId);
+    // console.log("펀딩 이름 확인 :" + attendanceResponse.data.fundingName);
+    // console.log("참여가격 확인 :" + attendanceResponse.data.price);
+    // console.log("참여자 이메일 확인 :" + attendanceResponse.data.email);
+    // console.log("참여자 이름 확인 :" + attendanceResponse.data.attendeeName);
+    // console.log("참여자 번호 확인 :" + attendanceResponse.data.phoneNumber);
+
     const { IMP } = window;
     IMP.init("imp40448376");
 
@@ -74,39 +87,43 @@ function Paypage() {
       {
         pg: "html5_inicis.INIpayTest",
         pay_method: "card",
-        merchant_uid: attendanceResponse.orderId,
-        name: attendanceResponse.itemName,
-        amount: attendanceResponse.paymentPrice,
-        buyer_email: attendanceResponse.buyerEmail,
-        buyer_name: attendanceResponse.buyerName,
-        buyer_tel: "010-1234-5678",
+        merchant_uid: attendanceResponse.data.attendanceId,
+        name: attendanceResponse.data.fundingName,
+        amount: attendanceResponse.data.price,
+        buyer_email: attendanceResponse.data.email,
+        buyer_name: attendanceResponse.data.attendeeName,
+        buyer_tel: attendanceResponse.data.phoneNumber,
         buyer_addr: "서울특별시",
         buyer_postcode: "123-456",
       },
       async (rsp) => {
         try {
           const { data } = await axios.post(
-            "http://localhost:8081/api/payment-info",
+            `${import.meta.env.VITE_BASE_URL}/api/payment-info`,
+            {
+              paymentInfoUid: rsp.imp_uid, // 결제 고유번호
+              attendanceId: attendanceResponse.data.attendanceId,
+            },
             {
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${localStorage.getItem("access-token")}`,
               },
-              body: JSON.stringify({
-                payment_uid: rsp.imp_uid, // 결제 고유번호
-                attendance_id: attendanceResponse.orderId,
-              }),
             },
           );
-          if (rsp.paid_amount === data.response.amount) {
+          // console.log("rsp data :" + rsp.paid_amount);
+          // console.log(JSON.stringify(data.data.response.amount, null, 2));
+          // console.log(data.data.response.amount);
+
+          if (rsp.paid_amount === data.data.response.amount) {
             alert("결제 성공");
             navigate("/participate-funding-finish"); // 결제가 성공적으로 이루어진 후 페이지 이동
           } else {
-            alert("결제 금액이 안맞아용");
+            alert("결제 실패2");
           }
         } catch (error) {
           console.error("Error while verifying payment:", error);
-          alert("결제를 실패했습니다.");
+          alert("결제 실패3");
         }
       },
     );
@@ -146,29 +163,6 @@ function Paypage() {
 
             <p className="pb-1">{sendMessage}</p>
           </div>
-        </div>
-      </div>
-      <div className="w-[80%]">
-        <p className=" pb-2 pt-4 font-cusFont2 text-[20px]">결제 수단</p>
-        <div className="flex justify-between">
-          <button
-            className={`h-[50px] w-[30%]  border-2  bg-white ${selectedPaymentMethod === "카드결제" ? "rounded-md border-4 border-cusColor3" : "border-cusColor1"}`}
-            onClick={() => selectPaymentMethod("카드결제")}
-          >
-            카드결제
-          </button>
-          <button
-            className={`h-[50px] w-[30%] bg-green-500 ${selectedPaymentMethod === "네이버페이" ? "rounded-md border-4 border-cusColor3" : ""}`}
-            onClick={() => selectPaymentMethod("네이버페이")}
-          >
-            네이버페이
-          </button>
-          <button
-            className={`h-[50px] w-[30%] bg-yellow-400 ${selectedPaymentMethod === "카카오페이" ? "rounded-md border-4 border-cusColor3" : ""}`}
-            onClick={() => selectPaymentMethod("카카오페이")}
-          >
-            카카오페이
-          </button>
         </div>
       </div>
 
