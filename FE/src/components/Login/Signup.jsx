@@ -1,7 +1,7 @@
 // 이미지 import
 import SignupLogo from "/imgs/signupLogo.png";
-import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import DaumPostcodeEmbed from "react-daum-postcode";
 import useUserStore from "../Store/UserStore.jsx";
 import axios from "axios";
@@ -18,6 +18,10 @@ function Signup() {
   // 상세주소 검색창 on/off 상태변수
   const [isOpen, setIsOpen] = useState(false)
 
+  // 주소에 빈 칸 넣으면 회원가입 못해요~
+  const [isNotInputAdr, setIsNotinputAdr] = useState("")
+  const navigate = useNavigate()
+
   // 우편번호와 주소를 store에 저장
   const handleAddress = (data) => {
     updateUserStore("zipCode", data.zonecode)
@@ -30,32 +34,32 @@ function Signup() {
     updateUserStore("detailAddr", event.target.value)
   }
 
-  useEffect(() => {
-    console.log("우편번호 : ", zipCode)
-    console.log("주소 : ", defaultAddr)
-    console.log("상세주소 : ", detailAddr)
-  }, [zipCode, defaultAddr, detailAddr])
-
   const sendMyAddrData = () => {
-    axios.post(import.meta.env.VITE_BASE_URL + "/api/addresses", {
-      "name": "기본 주소",
-      "defaultAddr": defaultAddr,
-      "detailAddr": detailAddr,
-      "zipCode": zipCode,
-      "isDefault": true
-    }, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access-token")}`,
-      },
-    })
-    .then((res) => {
-      console.log(res)
-      console.log("주소 저장 성공")
-    })
-    .catch((err) => {
-      console.error(err)
-      console.log("주소 저장 실패")
-    })
+    if (zipCode && defaultAddr && detailAddr) {
+      axios.post(import.meta.env.VITE_BASE_URL + "/api/addresses", {
+        "name": "기본 주소",
+        "defaultAddr": defaultAddr,
+        "detailAddr": detailAddr,
+        "zipCode": zipCode,
+        "isDefault": true
+      }, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+        },
+      })
+        .then(() => {
+          console.log("주소 저장 성공")
+          navigate("/signupFin")
+          
+        })
+        .catch((err) => {
+          console.error(err)
+          console.log("주소 저장 실패")
+        })
+    }
+    else {
+      setIsNotinputAdr("주소를 입력해주세요.")
+    }
   }
 
   return (
@@ -74,7 +78,7 @@ function Signup() {
           readOnly
         />
         <button className="h-[30px] w-[100px] rounded bg-gray-400 text-[15px] text-white"
-        onClick={() => setIsOpen(true)}>
+          onClick={() => setIsOpen(true)}>
           우편번호 찾기
         </button>
       </div>
@@ -92,19 +96,18 @@ function Signup() {
       </div>
 
       <div className=" flex h-[50px] w-[330px] flex-row justify-between rounded-[5px] border-[2.5px] p-3">
-        <input type="text" placeholder="상세주소" className="w-full signup-font" value={detailAddr} onChange={handleDetailAddress}/>
+        <input type="text" placeholder="상세주소" className="w-full signup-font" value={detailAddr} onChange={handleDetailAddress} required />
       </div>
-
-      <Link to={"/signupFin"} className="common-btn max-w-[284px] max-h-[50px] w-full h-full" onClick={sendMyAddrData}>
-        <button>다음</button>
-      </Link>
+      <button className="common-btn max-w-[284px] max-h-[50px] w-full h-full"
+      onClick={sendMyAddrData}>다음</button>
+      {isNotInputAdr && <p className="text-red-500 signup-font">{isNotInputAdr}</p>}
 
       {/* 주소 찾으면 input 태그에 value 할당되고 검색창 자동으로 닫아짐 */}
-      {isOpen && 
-      <div className="absolute flex flex-col items-center justify-center max-w-[400px] w-full h-[500px] border-2 gap-4 bg-white">
-        <DaumPostcodeEmbed onComplete={handleAddress} autoClose />
-        <button className="common-btn max-w-[284px] max-h-[50px] w-full h-full" onClick={() => setIsOpen(false)}>닫기</button>
-      </div>
+      {isOpen &&
+        <div className="absolute flex flex-col items-center justify-center max-w-[400px] w-full h-[500px] border-2 gap-4 bg-white">
+          <DaumPostcodeEmbed onComplete={handleAddress} autoClose />
+          <button className="common-btn max-w-[284px] max-h-[50px] w-full h-full" onClick={() => setIsOpen(false)}>닫기</button>
+        </div>
       }
     </div>
   );
