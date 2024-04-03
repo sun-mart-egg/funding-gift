@@ -93,4 +93,11 @@ public class ConsumerController {
         // 로그아웃 성공 응답 반환
         return ResponseUtils.ok(SuccessType.LOGOUT_SUCCESS);
     }
+
+    @GetMapping("/in-progress-funding")
+    @Operation(summary = "진행 중인 펀딩 확인", description = "사용자가 진행 중이거나 참여 중인 펀딩이 있는지 확인합니다.")
+    public SuccessResponse<Boolean> isConsumerInProgressOrAttendanceFunding() {
+        boolean hasInProgressFunding = consumerService.isConsumerInProgressOrAttendanceFunding();
+        return ResponseUtils.ok(hasInProgressFunding,SuccessType.CHECK_CONSUMER_IN_PROGRESS_FUNDING);
+    }
 }
