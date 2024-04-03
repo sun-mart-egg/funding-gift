@@ -14,6 +14,13 @@ function FundingMain() {
 
   const observer = useRef();
 
+  //친구가 만든 펀딩 받아올 배열
+  const [isLoading, setIsLoading] = useState(true);
+  let myData = {
+    people: "신시은",
+    img: "/imgs/egg3.jpg",
+  };
+
   const lastFeedElementRef = useCallback(
     (node) => {
       if (loading) return;
