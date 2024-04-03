@@ -12,7 +12,7 @@ function CardList({ data, basePath }) {
           productName={item.productName}
           startDate={item.startDate}
           endDate={item.endDate}
-          progress={0}
+          progress={(item.sumPrice / item.targetPrice) * 100}
           img={item.productImage}
           fundingId={item.fundingId}
           basePath={basePath}
