@@ -132,12 +132,10 @@ function MyFundingDetail() {
     }
   };
 
-  const handelDelete = () => {
+  const handleDelete = async () => {
     const token = localStorage.getItem("access-token");
     if (token && fundingId) {
-      deleteFunding(token, fundingId);
-
-      navigate("/my-funding");
+      deleteFunding(token, fundingId, navigate);
     }
   };
   return (
@@ -169,7 +167,7 @@ function MyFundingDetail() {
       ></BottomSheet>
 
       <button
-        onClick={handelDelete}
+        onClick={handleDelete}
         className="fixed bottom-5  h-[45px] w-[80%]  rounded-md bg-cusColor3 text-white"
       >
         펀딩 취소하기

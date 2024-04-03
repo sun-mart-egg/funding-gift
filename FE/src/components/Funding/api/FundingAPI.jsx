@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { useNavigate } from "react-router";
 //펀딩 상세 조회 api
 async function fetchDetailFunding(token, fundingId, setData) {
   try {
@@ -140,7 +140,7 @@ async function getFundingFeed(token, setData) {
 
 //펀딩 삭제 api
 
-async function deleteFunding(token, fundingId) {
+async function deleteFunding(token, fundingId, navigate) {
   console.log("token :" + token);
   console.log("fundingID : " + fundingId);
   try {
@@ -156,9 +156,11 @@ async function deleteFunding(token, fundingId) {
         },
       },
     );
-    console.log("펀딩 삭제 응답 : ", response.data);
+    console.log("펀딩 삭제 응답 : ", response);
+    alert("펀딩을 성공적으로 삭제하였습니다.");
+    navigate("/my-funding");
   } catch (error) {
-    console.error("펀딩을 삭제하는데 실패했습니다. ", error);
+    alert(error.response.data.msg);
   }
 }
 
