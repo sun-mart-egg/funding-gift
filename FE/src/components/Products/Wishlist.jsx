@@ -107,10 +107,10 @@ function Wishlist() {
 					<div
 						key={product.productId}
 						ref={index === wishes.length - 1 ? lastProductElementRef : null}
-						className="border-[1px] border-gray-300 m-2 h-auto w-[45%] flex-col rounded-md text-[12px]"
+						className="border-[1px] border-gray-300 m-2 h-[35%%] w-[45%] flex-col rounded-md text-[12px]"
 					>
 						{/* 이미지 */}
-						<div className="w-full relative pt-[100%] rounded-md"> {/* paddingTop is same as width to maintain 1:1 aspect ratio */}
+						<div className="w-full relative h-[70%] pt-[100%] rounded-md"> {/* paddingTop is same as width to maintain 1:1 aspect ratio */}
 							<Link to={`/product/${product.productId}`}>
 								<img src={product.imageUrl || ImageComingSoon} alt="" className="absolute top-0 left-0 w-[100%] h-[100%] object-cover rounded-md" />
 							</Link>
