@@ -1,5 +1,4 @@
 import ProgressBar from "./ProgressBar";
-import Egg from "../../../../public/imgs/egg3.jpg";
 
 function FundingDetailInfo({
   friendName,
@@ -21,15 +20,12 @@ function FundingDetailInfo({
         className="flex-items  flex items-center justify-center px-4"
       >
         <div id="fundingImg" className="w-[40%]">
-          <img src={img} alt="" />
+          <img src={img} alt="" className="rounded-md" />
         </div>
         <div id="fundingInfo" className="w-3/6 pl-4">
           <p className="text-[18px] ">{name}</p>
           <div className="flex-items mt-2 flex items-center  justify-between text-[12px]">
             <p className="pt-2 ">{price} 원 </p>{" "}
-            <button className="rounded-md bg-gray-400 px-2 py-1 text-[10px] text-white">
-              배송 조회
-            </button>
           </div>
 
           <p className="pt-2 text-[12px]">{detail}</p>
