@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 import Home from "/imgs/footer_home.png";
@@ -62,7 +62,23 @@ function Footer() {
   }, [currentPath]); // currentPath 변경 시 업데이트
 
   const handleIconClick = (path) => {
-    navigate(path);
+    // 프로필 아이콘 눌렀을 때
+    if (path === "/profile") {
+
+      // 토큰이 있는 경우 내 프로필로 이동시킴
+      if (localStorage.getItem("access-token")) {
+        navigate("/my-page")
+      }
+      // 토큰 없으면 로그인 하라고 보내버림
+      else {
+        navigate("/login-page")
+      }
+    }
+    // 프로필 말고 다른 아이콘 눌렀을 경우에는
+    // 설정된 해당 경로로 이동시킴
+    else {
+      navigate(path);
+    }
   };
 
   return (

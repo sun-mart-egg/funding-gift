@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 
 function Header() {
   return (
-    <header className="header w-full justify-between">
-      <Link to={"/"} onClick={() => setActiveIcon("home")}>
+    <header className="justify-between w-full header">
+      <Link to={"/"}>
         <img src="/imgs/logo.png" alt="logo" />
       </Link>
 
