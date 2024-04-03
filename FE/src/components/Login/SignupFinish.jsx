@@ -3,8 +3,8 @@ import welcomCat from "/imgs/signupFinish.png";
 
 function SignupFinish() {
   return (
-    <div className="sub-layer">
-      <p className=" font-cusFont6 text-3xl text-cusColor1">환영합니다.</p>
+    <div className="gap-4 sub-layer">
+      <p className="text-3xl  font-cusFont6 text-cusColor1">환영합니다.</p>
       <img src={welcomCat} alt="" />
       <p className="signup-font">회원가입이 완료되었습니당</p>
       <Link
