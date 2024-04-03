@@ -92,6 +92,28 @@ function MyPage() {
       });
   };
 
+  // 진행중인 펀딩이 있는지 확인하고
+  // 펀딩이 있는 경우 회원탈퇴 못해요 ^^
+  const checkMyFunding = () => {
+    axios.get(import.meta.env.VITE_BASE_URL + "/api/consumers/in-progress-funding", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access-token")}`,
+      },
+    })
+    .then((res) => {
+      if(res.data.data) {
+        alert("너 진행중인 펀딩 있어")
+      }
+      else {
+        signOut()
+      }
+    })
+    .catch((err) => {
+      console.error(err)
+      console.log("진행중인 펀딩 확인 에러")
+    })
+  }
+  
   // 회원탈퇴 관련 ( 카카오과의 연결을 끊음 )
   const BYE_BYE_URL =
     "https://j10d201.p.ssafy.io/oauth2/authorization/kakao?redirect_uri=https://j10d201.p.ssafy.io&mode=unlink";
@@ -169,7 +191,7 @@ function MyPage() {
           </div>
           <button
             className="absolute bottom-16 right-[15%] pb-3 text-[12px] text-gray-300"
-            onClick={signOut}
+            onClick={checkMyFunding}
           >
             회원 탈퇴
           </button>
