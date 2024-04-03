@@ -105,13 +105,15 @@ function ParticipatePage() {
         className=" absolute top-20 flex flex-col items-center justify-center overflow-auto pb-20"
       >
         <FundingDetailInfo
-          img={fundingDetail.productImage}
-          friendName={fundingDetail.consumerName}
           title={fundingDetail.title}
           name={fundingDetail.productName}
           detail={fundingDetail.content}
           progress={(fundingDetail.sumPrice / fundingDetail.targetPrice) * 100}
           price={fundingDetail.targetPrice}
+          img={fundingDetail.productImage}
+          startDate={fundingDetail.startDate}
+          endDate={fundingDetail.endDate}
+          fundingStatus={fundingDetail.fundingStatus}
         />
         <input
           type="number"
