@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { useNavigate } from "react-router";
 //펀딩 상세 조회 api
 async function fetchDetailFunding(token, fundingId, setData) {
   try {
@@ -67,17 +67,35 @@ async function fetchFriendFunding(friendId, token, setData) {
   }
 }
 
+const formatDate = (date) => {
+  const d = new Date(date);
+  let month = "" + (d.getMonth() + 1);
+  let day = "" + d.getDate();
+  let year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
+};
+
 //펀딩 만들기 api
 async function createFunding(formData, token) {
-  const currentDateTime = new Date().toISOString();
-  const modifiedFormData = {
-    ...formData,
-    startDate: formData.startDate.toISOString(),
-    endDate: formData.endDate.toISOString(),
-    anniversaryDate: currentDateTime,
+  // 날짜를 한국 시간대로 변환하는 함수
+  const toKoreanTimeZone = (date) => {
+    const userTimezoneOffset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() + userTimezoneOffset + 9 * 60 * 60 * 1000);
   };
 
-  console.log(JSON.stringify(modifiedFormData));
+  // 한국 시간대로 날짜 조정
+  const modifiedFormData = {
+    ...formData,
+    startDate: formatDate(toKoreanTimeZone(formData.startDate)),
+    endDate: formatDate(toKoreanTimeZone(formData.endDate)),
+  };
+
+  console.log("Modified form data:", JSON.stringify(modifiedFormData));
+
   const response = await fetch(
     import.meta.env.VITE_BASE_URL + "/api/fundings",
     {
@@ -120,11 +138,37 @@ async function getFundingFeed(token, setData) {
   }
 }
 
-//
+//펀딩 삭제 api
+
+async function deleteFunding(token, fundingId, navigate) {
+  console.log("token :" + token);
+  console.log("fundingID : " + fundingId);
+  try {
+    const response = await axios.delete(
+      `${import.meta.env.VITE_BASE_URL}/api/fundings`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: {
+          // 'body' 대신 'data'를 사용합니다.
+          fundingId: fundingId,
+        },
+      },
+    );
+    console.log("펀딩 삭제 응답 : ", response);
+    alert("펀딩을 성공적으로 삭제하였습니다.");
+    navigate("/my-funding");
+  } catch (error) {
+    alert(error.response.data.msg);
+  }
+}
+
 export {
   createFunding,
   fetchFriendFunding,
   fetchMyFundings,
   fetchDetailFunding,
   getFundingFeed,
+  deleteFunding,
 };
