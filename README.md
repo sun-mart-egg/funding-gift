@@ -187,12 +187,16 @@
 
 ### 👀 팀원 소개
 
-- 추가 예정
+| 임수빈 | 김대영 | 박창준 | 신시은 | 박종혁 | 이민수 |
+| - | - | - | - | - | - |
+| BE | BE/Infra | BE | FE | FE | FE |
+| 리더, 상품/fcm | 펀딩/결제 | oauth/친구 | 리더, 펀딩 | 회원/친구 | 상품 |
 
 <br>
 
 ### 🧷 링크
 
 - [Notion](https://fearless-texture-68a.notion.site/PJT-D201-ef79c36622f147288d0bd98d3cc854b7?pvs=4)
+- [UCC](https://www.youtube.com/watch?v=mtanQTrCkdE)
 
 <br>
