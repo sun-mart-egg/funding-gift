@@ -164,22 +164,35 @@
     - GitLab
     - Discord
 
+<br>
+
 ### 🍡 화면 설계
 
-- 추가 예정
+![image](/uploads/b796b5dfaefcb582aa02f8c9a4a8804a/image.png)
+
+<br>
 
 ### 📐 ERD 설계
 
-- 추가 예정
+![image](/uploads/618d886c94811ced0561a1aa0c193703/image.png)
+
+<br>
+
 
 ### 🔎 서비스 아키텍처
 
-- 추가 예정
+![image](/uploads/c9914f8d59c033fec48a7132ba259036/image.png)
+
+<br>
 
 ### 👀 팀원 소개
 
 - 추가 예정
 
+<br>
+
 ### 🧷 링크
 
-- 추가 예정
+- [Notion](https://fearless-texture-68a.notion.site/PJT-D201-ef79c36622f147288d0bd98d3cc854b7?pvs=4)
+
+<br>
