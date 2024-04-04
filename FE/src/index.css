@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 공통 디자인만 여기에 적으면 될 듯? */
+
+/* 글꼴 */
+@font-face {
+  font-family: "산토끼";
+  src: url(/fonts/HSSantokki-Regular.ttf);
+}
+
+@font-face {
+  font-family: "나눔스퀘어bold";
+  src: url(/fonts/NanumSquare_acB.ttf);
+}
+
+@font-face {
+  font-family: "나눔스퀘어regular";
+  src: url(/fonts/NanumSquare_acR.ttf);
+}
+
+@font-face {
+  font-family: "온글잎시우";
+  src: url(/fonts/Ownglyph_2022_UWY_Si_Woo-Rg.ttf);
+}
+
+@font-face {
+  font-family: "호빵";
+  src: url(/fonts/SDSamliphopangcheTTFBasic.ttf);
+}
+
+@font-face {
+  font-family: "영도";
+  src: url(/fonts/Yeongdo.ttf);
+}
+
+/* 공통 버튼양식, 전체적인 레이어 등등... */
+@layer components {
+  .main-layer {
+    /* 열방향, 가운데정렬, 최대너비500, 너비반응형, 배경흰색 */
+    @apply relative mt-20 flex h-full max-w-[500px] flex-col items-center justify-center overflow-hidden bg-white pb-20;
+  }
+  .sub-layer {
+    /* 열방향, 가운데정렬, 최대너비500, 너비반응형, 배경흰색 */
+    @apply relative flex h-screen max-w-[500px] flex-col items-center justify-center bg-white  pb-20;
+  }
+  .story-layer {
+    /* 열방향, 가운데정렬, 최대너비500, 너비반응형, 배경흰색 */
+    @apply relative flex h-screen max-w-[500px] flex-col items-center justify-center bg-white;
+  }
+
+  .sub-title {
+    @apply flex justify-between pb-2 font-cusFont2 text-[18px];
+  }
+
+  .header {
+    @apply absolute top-0 z-10 flex h-full 
+        max-h-[60px] w-full 
+        max-w-[500px] flex-row
+        items-center bg-white shadow-lg;
+  }
+
+  .sub-header {
+    @apply fixed top-0 z-10 flex h-full 
+        max-h-[60px] w-full 
+        max-w-[500px] flex-row
+        items-center bg-white shadow-lg;
+  }
+
+  .footer {
+    /* 행방향, 가운데정렬, 배경흰색, absolute 바닥고정, 윗부분 회색 border */
+    @apply absolute bottom-0 flex h-[80px]
+        w-full max-w-[500px] flex-row items-center justify-between
+        border-t-[1px] border-gray-400
+        bg-white px-10;
+  }
+
+  .common-btn {
+    /* 가운데정렬, 테투리둥글게, 나눔스퀘어, 글꼴흰색, 배경주황색 */
+    @apply flex flex-row items-center justify-center p-2 text-white rounded-lg bg-cusColor3 font-cusFont3;
+  }
+
+  /* 회원, 친구목록 관련 */
+  .signup-font {
+    @apply text-gray-400 font-cusFont3;
+  }
+
+  .fav-btn {
+    @apply h-full max-h-[100px] w-full max-w-[100px] rounded border-[3px] bg-white;
+  }
+}
+
+/* 스크롤 투명하게 만듭니다 */
+::-webkit-scrollbar {
+  width: 0px;
+  display: none;
+}
