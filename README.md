@@ -62,15 +62,15 @@
 ### 🧸 서비스 화면
 1. 메인 화면
 
-    <img width="150" alt="image" src="/uploads/aaf54fe4e6d4590decbe10eac960a46c/image.png">
-
+    <img width="150" alt="image" src="https://github.com/sun-mart-egg/funding-gift/assets/66028419/048ba82e-b634-4450-ab4d-b949c2cf484ag">
+    
     - 배너
     - 펀딩 만들기, 참여하기
     - 추천 상품 조회
 
 2. 상품 목록 조회
 
-    <img width="450" alt="image" src="/uploads/5535dc8a7d36e2209c4ea873b9ed9f93/image.png">
+    <img width="450" alt="image" src="https://github.com/sun-mart-egg/funding-gift/assets/66028419/c04527a2-ad61-4c8e-b27d-b22831f25825">
 
     - 카테고리 별 조회
     - 정렬 조건 필터링
@@ -78,55 +78,55 @@
 
 3. 상품 상세 조회
 
-    <img width="300" alt="image" src="/uploads/21830420b7ab876c7c87b38e9d91f821/image.png">
+    <img width="300" alt="image" src="https://github.com/sun-mart-egg/funding-gift/assets/66028419/9fcf5537-f8bc-4b61-964f-63c3ca2c2ce8">
 
     - 상품 이미지, 이름, 옵션, 설명, 리뷰
 
 4. 펀딩 만들기
 
-    <img width="450" alt="image" src="/uploads/bc412068b29d0c87c28022fcd30c093a/image.png">
-
+    <img width="450" alt="image" src="https://github.com/sun-mart-egg/funding-gift/assets/66028419/3b4d4902-5b55-42c3-b66f-22aefc6ef18f">
+    
     - 펀딩 정보 입력
 
 5. 친구 펀딩 피드, 스토리 보기
 
-    <img width="450" alt="image" src="/uploads/11fda1fc0410a92f92bc8d63ef33bf4c/image.png">
+    <img width="450" alt="image" src="https://github.com/sun-mart-egg/funding-gift/assets/66028419/8c9f42a8-02b6-4e7e-abf8-6ad037c41681">
     
     - 친구의 진행중인 펀딩 정보
 
 6. 펀딩 참여
 
-    <img width="450" alt="image" src="/uploads/945f95166e7f40e6063c0877ff9b53c5/image.png">
+    <img width="450" alt="image" src="https://github.com/sun-mart-egg/funding-gift/assets/66028419/3a25dcef-6f07-4429-b6bb-becb650e7ac5">
 
     - 축하 메시지 보내기, 결제
 
 7. 캘린더
 
-    <img width="150" alt="image" src="/uploads/f5a1597e7afcf4da44a2f23c03648853/image.png">
+    <img width="150" alt="image" src="https://github.com/sun-mart-egg/funding-gift/assets/66028419/b94376bc-dbfb-427c-babf-af16e58313ed">
 
     - 친구들의 기념일 모아보기
 
 8. 위시리스트
 
-    <img width="150" alt="image" src="/uploads/56c43d1581f747d203efb926216425e8/image.png">
+    <img width="150" alt="image" src="https://github.com/sun-mart-egg/funding-gift/assets/66028419/19464971-02be-4783-a44f-19aef089dc3f">
 
     - 위시리스트 추가, 삭제, 조회
 
 9. 내 프로필
 
-    <img width="150" alt="image" src="/uploads/add24907d08351df59cce08ae5f7bad7/image.png">
- 
+    <img width="150" alt="image" src="https://github.com/sun-mart-egg/funding-gift/assets/66028419/79428587-774e-4d91-b7f8-d80b8bb7a509">
+
     - 내가 만든 펀딩, 내가 참여한 펀딩
 
 10. 친구 프로필
 
-    <img width="150" alt="image" src="/uploads/fd3ca716e611623f0a04203ec9ea0948/image.png">
+    <img width="150" alt="image" src="https://github.com/sun-mart-egg/funding-gift/assets/66028419/fc6c1974-7173-484a-b070-62076db286ef">
 
     - 친구가 만든 펀딩
 
 11. 친구 목록
 
-    <img width="150" alt="image" src="/uploads/1e2f6a644d948bb50c6cba2cdc8f9f05/image.png">
+    <img width="150" alt="image" src="https://github.com/sun-mart-egg/funding-gift/assets/66028419/76b06e03-d361-465a-8735-65455a7e06ad">
 
     - 카카오톡 친구 연동
 
@@ -168,20 +168,20 @@
 
 ### 🍡 화면 설계
 
-![image](/uploads/b796b5dfaefcb582aa02f8c9a4a8804a/image.png)
+![image](https://github.com/sun-mart-egg/funding-gift/assets/66028419/5de6a730-6ed0-449d-a0d7-abf5dbb677ae)
 
 <br>
 
 ### 📐 ERD 설계
 
-![image](/uploads/618d886c94811ced0561a1aa0c193703/image.png)
+![image](https://github.com/sun-mart-egg/funding-gift/assets/66028419/10bffdd4-a5f5-4904-afe8-0d0403d408de)
 
 <br>
 
 
 ### 🔎 서비스 아키텍처
 
-![image](/uploads/c9914f8d59c033fec48a7132ba259036/image.png)
+![image](https://github.com/sun-mart-egg/funding-gift/assets/66028419/9100b312-f7d5-42a0-8851-09681fd32b11)
 
 <br>
 
